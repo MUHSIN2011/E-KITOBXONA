@@ -50,7 +50,7 @@ const MyBarChart = () => {
     }
 
     return (
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div className="bg-white p-4 rounded-xl  border border-gray-100">
             <h2 className="text-lg font-bold  text-gray-700">Омори вилоятҳо</h2>
             <Chart
                 options={chartOptions}

@@ -1,7 +1,7 @@
 'use client'
 import { useGetRegionsQuery } from '@/src/api/api'
 import Card from '../../components/Card'
-import { Building2, MapPin, School } from 'lucide-react'
+import { Building2, GraduationCap, MapPin, School } from 'lucide-react'
 import MyBarChart from '@/src/components/ChartComponent'
 import DonutChart from '@/src/components/DonutChart'
 import RegionsTable from '../../components/RegionsTable'
@@ -38,7 +38,7 @@ function Page() {
                     <Card
                         NameRole={'Ҳамагӣ хонандагон'}
                         cnt={regions?.length.toString() || '0'}
-                        Icons={<MapPin />}
+                        Icons={<GraduationCap />}
                         description={'Бақайдгирифташуда'}
                     />
                 </div>

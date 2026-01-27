@@ -32,7 +32,7 @@ const DonutChart = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+    <div className="bg-white p-6 rounded-xl  border border-gray-100">
       <h3 className="text-lg font-semibold  text-gray-700">Тақсимоти буҷет</h3>
       <p className='text-foreground text-sm mb-5'>Истифодаи буҷети миллӣ</p>
       <div className="flex justify-center">

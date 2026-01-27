@@ -72,9 +72,7 @@ export default function LoginPage() {
                 <Link
                   href="/forgot-password"
                   className="text-xs text-blue-500 hover:text-blue-600"
-                >
-                  Рамзро фаромӯш кардед?
-                </Link>
+                >Рамзро фаромӯш кардед?</Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
