@@ -8,11 +8,13 @@ import { useLoginUserMutation } from "../api/api";
 import { useForm } from "react-hook-form";
 import { SaveToken } from "@/utils/axios";
 import { useRouter } from "next/navigation";
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function LoginPage() {
 
   const router = useRouter()
   const [loginUser, { isLoading }] = useLoginUserMutation();
+
 
   const {
     register,
@@ -23,19 +25,25 @@ export default function LoginPage() {
   const onSubmit = async (formData: any) => {
     try {
       const result = await loginUser(formData).unwrap();
-
-      if (result.access_token && result.refresh_token) {
+      if (result.access_token) {
         SaveToken(result.access_token, result.refresh_token);
+        window.location.href = '/dashboard';
       }
-      router.push('/dashboard')
-
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      if (error.status === 401) {
+        toast.error("Почта ё рамз хато аст!")
+      } else if (error.data?.detail) {
+        alert(error.data.detail[0].msg || "Хатогӣ дар маълумот");
+        toast.error(error.data.detail[0].msg || "Хатогӣ дар маълумот")
+      } else {
+        toast.error("Пайвастшавӣ бо сервер имконнопазир аст")
+      }
     }
   };
-
   return (
     <div className="w-full flex justify-center px-4 py-10">
+      <Toaster />
       <div className="w-full max-w-[400px]">
         <div className="text-center mb-6">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-xl mb-4 shadow-lg">

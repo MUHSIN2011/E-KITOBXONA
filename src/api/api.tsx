@@ -11,6 +11,16 @@ interface ILoginResponse {
     refresh_token: string;
     token_type: string;
 }
+interface IAddNewStudent {
+    access_token: string;
+    refresh_token: string;
+    token_type: string;
+}
+
+interface ILoginRequest {
+    email: string;
+    password: string;
+}
 
 interface IGetRegions {
     name: string,
@@ -46,6 +56,47 @@ interface IGetTextbooksResponse {
     total: number;
     skip: number;
     limit: number;
+}
+
+export interface IGetStudents {
+    first_name: string,
+    last_name: string,
+    middle_name: string,
+    class_name: string,
+    birth_year: number,
+    parent_phone: string,
+    notes: string,
+    id: number;
+    school_id: number,
+    grade: number,
+    is_active: boolean,
+    created_at: string,
+    active_rentals_count: number,
+    total_rentals_count: null
+}
+
+
+interface IGetStudentsResponse {
+    items: IGetStudents[];
+    skip: number;
+    total: number;
+    limit: number;
+    search?: string;
+}
+interface IGetStudentsParams {
+    skip: number;
+    limit: number;
+    search?: string;
+}
+
+export interface IAddNewStudentRequest {
+    first_name: string;
+    last_name: string;
+    middle_name: string;
+    class_name: string;
+    birth_year: number;
+    parent_phone: string;
+    notes?: string;
 }
 
 const baseQuery = fetchBaseQuery({
@@ -109,6 +160,14 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['Todo'],
         }),
+        AddNewStudent: builder.mutation<any, IAddNewStudentRequest>({
+            query: (newStudent) => ({
+                url: `students/`,
+                method: 'POST',
+                body: newStudent,
+            }),
+            invalidatesTags: ['Todo'],
+        }),
         GetRegions: builder.query<IGetRegions[], void>({
             query: () => ({
                 url: `territories/regions`,
@@ -125,7 +184,19 @@ export const Todo = createApi({
             }),
             providesTags: ['Todo'],
         }),
+        GetStudents: builder.query<IGetStudentsResponse, IGetStudentsParams>({
+            query: ({ skip, limit, search }) => {
+                let url = `students/?skip=${skip}&limit=${limit}`;
+                if (search) url += `&search=${search}`;
+
+                return {
+                    url: url,
+                    method: 'GET',
+                };
+            },
+            providesTags: ['Todo'],
+        }),
     }),
 });
 
-export const { useLoginUserMutation, useGetRegionsQuery, useGetTextbooksQuery } = Todo;
+export const { useLoginUserMutation, useGetRegionsQuery, useGetTextbooksQuery, useGetStudentsQuery, useAddNewStudentMutation } = Todo;

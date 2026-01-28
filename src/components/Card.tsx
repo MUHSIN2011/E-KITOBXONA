@@ -17,12 +17,16 @@ function Card({ NameRole, cnt, Icons, className, description }: CardProps) {
                 <TextAnimate className="text-[15px] font-semibold text-muted-foreground " animation="slideUp" by="word">
                     {`${NameRole}`}
                 </TextAnimate>
-                <TextAnimate animation="slideUp" by="word"  className="text-2xl font-bold">{`${cnt}`}</TextAnimate>
-                <TextAnimate animation="slideUp" by="word"  className="text-[13px] text-muted-foreground">{`${description}`}</TextAnimate>
+                <TextAnimate animation="slideUp" by="word" className="text-2xl font-bold">{`${cnt}`}</TextAnimate>
+                {
+                    description && (
+                        <TextAnimate animation="slideUp" by="word" className="text-[13px] text-muted-foreground">{`${description}`}</TextAnimate>
+                    )
+                }
             </aside>
             <aside>
                 {Icons && (
-                    
+
                     <div className="bg-[#e6edf8]  text-[#0950c3] p-2 rounded-xl">
                         {Icons}
                     </div>
