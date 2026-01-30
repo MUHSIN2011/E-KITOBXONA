@@ -1,7 +1,7 @@
 'use client'
-import { useGetRegionsQuery, useGetReportsOverviewQuery } from '@/src/api/api'
+import { useGetRegionsQuery } from '@/src/api/api'
 import Card from '../../components/Card'
-import { BookOpen, Building2, GraduationCap, MapPin, School } from 'lucide-react'
+import { Building2, GraduationCap, MapPin, School } from 'lucide-react'
 import MyBarChart from '@/src/components/ChartComponent'
 import DonutChart from '@/src/components/DonutChart'
 import RegionsTable from '../../components/RegionsTable'
@@ -9,13 +9,14 @@ import MyLineChart from '@/src/components/MyLineChart'
 import React, { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
-import { ChartRadialLabel } from '@/components/ui/chartConfig'
+import { ChartPieLabel } from '@/components/ui/chart-pie-label'
+import { DashboardMainChart } from '@/components/ui/DashboardMainChart'
+import RecentRentals from '@/components/ui/SchoolFinancialStatus'
+import SchoolFinancialStatus from '@/components/ui/SchoolFinancialStatus'
 
 function Page() {
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
-    const { data: overview } = useGetReportsOverviewQuery(1);
 
-    // Интизори AOS
     useEffect(() => {
         AOS.init({
             duration: 900, // Давомнокӣ аниматсия
@@ -45,16 +46,16 @@ function Page() {
                     </div>
                     <div data-aos="fade-right" data-aos-delay="200">
                         <Card
-                            NameRole={'Ҳамагӣ китобҳо'}
-                            cnt={overview?.total_books.toString() || '0'}
-                            Icons={<BookOpen />}
+                            NameRole={'Ҳамагӣ ноҳияҳо'}
+                            cnt={regions?.length.toString() || '0'}
+                            Icons={<Building2 />}
                             description={`Дар ${regions?.length.toString() || '0'} вилоят`}
                         />
                     </div>
                     <div data-aos="fade-right" data-aos-delay="300">
                         <Card
                             NameRole={'Ҳамагӣ мактабҳо'}
-                            cnt={overview?.total_schools.toString() || '0'}
+                            cnt={regions?.length.toString() || '0'}
                             Icons={<School />}
                             description={'Фаъол дар система'}
                         />
@@ -68,36 +69,19 @@ function Page() {
                         />
                     </div>
                 </div>
+                <SchoolFinancialStatus />
+
             </section>
 
             <section className='my-5 grid gap-5 grid-cols-1 lg:grid-cols-3'>
                 <div className="lg:col-span-2" data-aos="zoom-in" data-aos-delay="500">
-                    <MyBarChart />
+                    <DashboardMainChart />
                 </div>
                 <div className="lg:col-span-1" data-aos="zoom-in" data-aos-delay="600">
-                    <ChartRadialLabel />
+                    <ChartPieLabel />
                 </div>
             </section>
 
-            <section
-                className='border rounded-xl p-3 my-5 bg-white'
-                data-aos="fade-up"
-                data-aos-delay="700"
-            >
-                <h1 className='text-2xl font-semibold '>Вазъият аз рӯи вилоятҳо</h1>
-                <p className='text-foreground text-sm mb-3'>Нишондиҳандаҳои асосии ҳар як вилоят</p>
-                <RegionsTable />
-            </section>
-
-            <section
-                className='border rounded-xl p-3 my-5 bg-white'
-                data-aos="fade-up"
-                data-aos-delay="800"
-            >
-                <h1 className='text-2xl font-semibold '>Раванди бозпардохт</h1>
-                <p className='text-foreground text-sm mb-3'>Пешрафти умумии бозпардохти китобҳо дар 6 моҳи охир</p>
-                <MyLineChart />
-            </section>
         </div>
     )
 }

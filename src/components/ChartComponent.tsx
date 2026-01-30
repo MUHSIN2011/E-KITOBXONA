@@ -22,12 +22,12 @@ const MyBarChart = () => {
         plotOptions: {
             bar: {
                 borderRadius: 12,
-                horizontal: true, 
+                horizontal: true,
                 barHeight: '80%',
             }
         },
         xaxis: {
-            categories: regionNames, 
+            categories: regionNames,
         },
         colors: ['#3B82F6'],
         dataLabels: {
@@ -37,14 +37,13 @@ const MyBarChart = () => {
 
     const chartSeries = [{
         name: 'Нишондиҳанда',
-        data: [100,50,500,300,250,150],
+        data: regionData,
     }];
 
     if (isLoading) {
         return (
-            <div className="h-[350px] flex items-center justify-center bg-gray-50 rounded-xl border border-dashed border-gray-300">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                <p className="ml-3 text-gray-500">Дар ҳоли боргузорӣ...</p>
+            <div className="flex h-[85vh] items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
     }

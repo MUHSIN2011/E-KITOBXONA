@@ -1,5 +1,18 @@
 'use client'
+import React, { useState, useEffect } from 'react'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
+import { useForm } from "react-hook-form"
+import { ExternalLink, Funnel, Plus, BookOpen, DollarSign } from 'lucide-react'
+
+// API & UI Components
+import { IGetTextbooks, useGetTextbooksQuery, useCreateTextbookMutation } from '@/src/api/api'
 import Card from '@/src/components/Card'
+import { TextAnimate } from '@/components/ui/text-animate'
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import {
     Select,
     SelectContent,
@@ -7,62 +20,210 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { ExternalLink, Funnel, UserCog } from 'lucide-react'
-import React, { useState } from 'react'
-import { IGetTextbooks, useGetTextbooksQuery } from '@/src/api/api';
-import { TextAnimate } from '@/components/ui/text-animate'
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
 
-function page() {
+function Page() {
     const [subject, setSubject] = useState<string>("all");
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
     const { data: books, isLoading } = useGetTextbooksQuery(subject);
+    const [createTextbook] = useCreateTextbookMutation();
+
+    const { register, handleSubmit, setValue, reset } = useForm();
+
+    useEffect(() => {
+        AOS.init({ duration: 800, once: true });
+    }, []);
+
+    const onSubmit = async (data: any) => {
+        try {
+            const payload = {
+                ...data,
+                grade: Number(data.grade),
+                publication_year: Number(data.publication_year),
+                print_price: Number(data.print_price),
+                rent_value_per_year: Number(data.rent_value_per_year),
+                service_life_years: Number(data.service_life_years || 5),
+                payback_years: Number(data.payback_years || 10),
+            };
+
+            await createTextbook(payload).unwrap();
+            setIsDialogOpen(false); // Пӯшидани диалог
+            reset(); // Тоза кардани форма
+            alert("Китоб бо муваффақият илова шуд!");
+        } catch (error) {
+            console.error("Хатогӣ ҳангоми сохтан:", error);
+            alert("Хатогӣ рӯй дод!");
+        }
+    };
 
     return (
-        <main>
-            <div className='flex justify-between items-center'>
+        <main data-aos="fade-in" className="p-4">
+            <div className='flex justify-between items-center mb-6'>
                 <div>
                     <TextAnimate className='text-2xl font-bold' animation="slideUp" by="word">
                         Идоракунии фонди китобҳо
                     </TextAnimate>
-                    <TextAnimate  className='text-foreground text-sm' animation="slideUp" by="word">
+                    <p className='text-muted-foreground text-sm'>
+                        Назорат ва идоракунии китобҳои дарсӣ дар система
+                    </p>
+                </div>
 
-                        Назорат ва идоракунии китобҳои дарсӣ дар ҳамаи ҷойҳо
-                    </TextAnimate>
-                </div>
-                <button className='bg-[#0950c3] text-white py-2 px-3 rounded-sm'>+ {' '}Илова кардани китоб</button>
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogTrigger asChild>
+                        <Button className="gap-2 bg-blue-600 hover:bg-blue-700 h-11 px-6 shadow-lg ">
+                            <Plus className="h-5 w-5" /> Нашри китоби нав
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[700px] max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                            <DialogTitle className="flex items-center gap-2 text-2xl">
+                                <BookOpen className="text-blue-600" /> Иловаи китоби нав
+                            </DialogTitle>
+                            <DialogDescription>
+                                Маълумоти карточкаи китобро пур кунед.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label>Номи китоб</Label>
+                                    <Input placeholder="Забони модарӣ" {...register("title", { required: true })} />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label>Фан</Label>
+                                    <Select onValueChange={(v) => setValue("subject", v)}>
+                                        <SelectTrigger className="w-full  py-5  h-13 rounded-xl  transition-colors">
+                                            <SelectValue placeholder="Ҳама" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="all">Ҳамаи фанҳо</SelectItem>
+                                            <SelectItem value="math">Математика</SelectItem>
+                                            <SelectItem value="russian">Забони русӣ</SelectItem>
+                                            <SelectItem value="tajik">Забони тоҷикӣ</SelectItem>
+                                            <SelectItem value="english">Забони англисӣ</SelectItem>
+                                            <SelectItem value="physics">Физика</SelectItem>
+                                            <SelectItem value="chemistry">Химия</SelectItem>
+                                            <SelectItem value="biology">Биология</SelectItem>
+                                            <SelectItem value="history">Таърих</SelectItem>
+                                            <SelectItem value="geography">География</SelectItem>
+                                            <SelectItem value="literature">Адабиёт</SelectItem>
+                                            <SelectItem value="informatics">Информатика</SelectItem>
+                                            <SelectItem value="other">Дигар</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="grid gap-2">
+                                    <Label>Синф</Label>
+                                    <Input type="number" {...register("grade")} />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label>Соли нашр</Label>
+                                    <Input type="number" {...register("publication_year")} />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label>ISBN</Label>
+                                    <Input placeholder="978-..." {...register("isbn")} />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label>Муаллиф</Label>
+                                    <Input placeholder="Абдуллозода С." {...register("author", { required: true })} />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label>Ношир (Publisher)</Label>
+                                    <Input placeholder="Маориф" {...register("publisher", { required: true })} />
+                                </div>
+                            </div>
+
+                            <div className=" rounded-lg  grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                    <Label>Нархи чоп (TJS)</Label>
+                                    <Input type="number" {...register("print_price")} className="bg-white" />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label>Иҷора / сол</Label>
+                                    <Input type="number" {...register("rent_value_per_year")} className="bg-white" />
+                                </div>
+                            </div>
+
+                            <div className="grid gap-2">
+                                <Label>Тавсиф</Label>
+                                <Textarea {...register("description")} />
+                            </div>
+
+                            <DialogFooter>
+                                <Button type="submit" className="w-full bg-blue-600 h-12">Захира кардан</Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
-            <div className='grid grid-cols-4 gap-3 my-3'>
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-8'>
                 <Card
-                    NameRole={'Ҳамагӣ китобҳо'}
-                    cnt={books?.total?.toString() || "0"}
+                    NameRole='Ҳамагӣ китобҳо'
+                    cnt={books?.total?.toLocaleString() || "0"}
+                    className="text-green-600"
                 />
-                <div className='text-[#0950c3]'>
-                    <Card
-                        NameRole={'Нав'}
-                        cnt={'7 800'}
-                    />
-                </div>
-                <div className='text-yellow-500'>
-                    <Card
-                        NameRole={'Иҷорашуда'}
-                        cnt={'4 140'}
-                    />
-                </div>
-                <div className='text-red-600'>
-                    <Card
-                        NameRole={'Вайроншуда'}
-                        cnt={'470'}
-                    />
-                </div>
+
+                <Card
+                    NameRole='Дар база мавҷуд'
+                    cnt={books?.items?.reduce((acc, book) => acc + (book.available_copies || 0), 0).toLocaleString() || "0"}
+                    className="text-blue-600"
+                />
+
+                <Card
+                    NameRole='Иҷорашуда'
+                    cnt={books?.items?.reduce((acc, book) => acc + (book.rented_copies || 0), 0).toLocaleString() || "0"}
+                    className="text-yellow-500"
+                />
+
+                <Card
+                    NameRole='Нусхаҳои умумӣ'
+                    cnt={books?.items?.reduce((acc, book) => acc + (book.total_copies || 0), 0).toLocaleString() || "0"}
+                    className="text-red-600"
+                />
             </div>
-            <section className='p-3 bg-white rounded-xl border'>
+            <section
+                className='p-3 my-3 bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-300'
+
+                data-aos="zoom-in"
+
+                data-aos-delay="500"
+            >
                 <h1 className='text-2xl font-bold '>Фонди китобҳои дарсӣ</h1>
                 <p className='text-foreground text-sm'>Рӯйхати пурраи ҳамаи китобҳои дарсӣ дар система</p>
+
                 <div className='grid grid-cols-6 my-3 gap-3 items-center'>
-                    <input className='col-span-4 rounded-xl px-5 py-2 border bg-[#f9fafb]' placeholder='Ҷустуҷӯи китобҳо...' type="search" />
-                    <div className="relative col-span-1 ">
+                    <input
+                        className='col-span-4 rounded-xl px-5 py-2 border bg-[#f9fafb] focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200'
+                        placeholder='Ҷустуҷӯи китобҳо...'
+                        type="search"
+                        data-aos="fade-right"
+                        data-aos-delay="600"
+                    />
+
+                    <div
+                        className="relative col-span-1"
+                        data-aos="fade-up"
+                        data-aos-delay="700"
+                    >
                         <Funnel className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10" />
                         <Select onValueChange={(value) => setSubject(value)}>
-                            <SelectTrigger className="w-full bg-[#f9fafb] py-5 pl-10 h-13 rounded-xl">
+                            <SelectTrigger className="w-full bg-[#f9fafb] py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
                                 <SelectValue placeholder="Ҳама" />
                             </SelectTrigger>
                             <SelectContent>
@@ -82,12 +243,22 @@ function page() {
                             </SelectContent>
                         </Select>
                     </div>
-                    <button className='flex col-span-1 hover:bg-[#e7f0fe] hover:text-blue-600 duration-200 bg-[#f9fafb] border font-semibold px-2 py-2 rounded-xl gap-2 items-center justify-center '>
+
+                    <button
+                        className='flex col-span-1 hover:bg-[#e7f0fe] hover:text-blue-600 duration-200 bg-[#f9fafb] border font-semibold px-2 py-2 rounded-xl gap-2 items-center justify-center hover:scale-105 transition-all'
+                        data-aos="fade-left"
+                        data-aos-delay="800"
+                    >
                         <ExternalLink size={'18'} />
                         Экспорт
                     </button>
                 </div>
-                <div className="overflow-x-auto rounded-sm border-gray-200 bg-white">
+
+                <div
+                    className="overflow-x-auto rounded-sm border-gray-200 bg-white"
+                    data-aos="fade-up"
+                    data-aos-delay="900"
+                >
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-200">
@@ -99,16 +270,19 @@ function page() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {books?.items?.map((book: IGetTextbooks) => (
-                                <tr key={book.id} className="hover:bg-gray-50 transition-colors">
+                            {books?.items?.map((book: IGetTextbooks, index: number) => (
+                                <tr
+                                    key={book.id}
+                                    className="hover:bg-gray-50 transition-colors"
+                                    data-aos="fade-right"
+                                    data-aos-delay={index * 50}
+                                    data-aos-duration="400"
+                                >
                                     <td className="p-4 font-semibold text-gray-800">{book.title}</td>
-
                                     <td className="p-4 text-gray-600">{book.grade}</td>
-
                                     <td className="p-4 text-gray-600 font-mono">
                                         {book.total_copies} дона
                                     </td>
-
                                     <td className="p-4">
                                         {(() => {
                                             const currentYear = new Date().getFullYear();
@@ -117,7 +291,7 @@ function page() {
                                             if (age <= 2) {
                                                 return (
                                                     <span className="flex items-center w-fit gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
-                                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                                                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
                                                         Нав
                                                     </span>
                                                 );
@@ -131,7 +305,6 @@ function page() {
                                             }
                                         })()}
                                     </td>
-
                                     <td className="p-4 text-sm text-gray-500">
                                         {new Date(book.updated_at).toLocaleDateString('tg-TJ')}
                                     </td>
@@ -139,10 +312,19 @@ function page() {
                             ))}
                         </tbody>
                     </table>
+                    {isLoading && (
+                        <div
+                            className="flex justify-center items-center p-8"
+                            data-aos="fade-in"
+                        >
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                            <span className="ml-3 text-gray-600">Китобҳо дар ҳоли бор шудан...</span>
+                        </div>
+                    )}
                 </div>
             </section>
         </main>
     )
 }
 
-export default page
+export default Page;

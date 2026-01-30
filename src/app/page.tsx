@@ -42,10 +42,10 @@ export default function LoginPage() {
     }
   };
   return (
-    <div className="w-full flex justify-center px-4 py-10">
+    <div className=" flex justify-center px-4 md:py-10">
       <Toaster />
-      <div className="w-full max-w-[400px]">
-        <div className="text-center mb-6">
+      <div className="w-full max-w-[400px] m-auto">
+        <div className="text-center md:mb-6 mb-3">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-xl mb-4 shadow-lg">
             <BookOpen className="w-8 h-8 text-white" />
           </div>

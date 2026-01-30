@@ -13,11 +13,11 @@ interface CardProps {
 function Card({ NameRole, cnt, Icons, className, description }: CardProps) {
     return (
         <div className={`flex justify-between  ${className}  bg-white border rounded-sm py-5 px-5`}>
-            <aside className="flex flex-col gap-1">
-                <TextAnimate className="text-[15px] font-semibold text-muted-foreground " animation="slideUp" by="word">
+            <aside className="flex flex-col">
+                <TextAnimate animation="slideUp" by="word" className="text-3xl  font-bold">{`${cnt}`}</TextAnimate>
+                <TextAnimate className="  text-foreground text-sm " animation="slideUp" by="word">
                     {`${NameRole}`}
                 </TextAnimate>
-                <TextAnimate animation="slideUp" by="word" className="text-2xl font-bold">{`${cnt}`}</TextAnimate>
                 {
                     description && (
                         <TextAnimate animation="slideUp" by="word" className="text-[13px] text-muted-foreground">{`${description}`}</TextAnimate>

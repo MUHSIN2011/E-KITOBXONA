@@ -45,7 +45,9 @@ function StudentsPage() {
     const startItem = page * limit + 1;
     const endItem = Math.min((page + 1) * limit, totalItems);
 
-    if (isLoading) return <div className="p-10 text-center">Боргузорӣ...</div>;
+    if (isLoading) return <div className="flex h-[85vh] items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
 
 
     const onSubmit = async (formData: IAddNewStudentRequest) => {
@@ -62,7 +64,7 @@ function StudentsPage() {
             const payload = {
                 ...formData,
                 birth_year: Number(formData.birth_year),
-                school_id: Number(school_id), 
+                school_id: Number(school_id),
                 notes: formData.notes || ""
             };
 
@@ -104,12 +106,10 @@ function StudentsPage() {
                             <div className='grid grid-cols-2 gap-4'>
                                 <div className='flex flex-col gap-1'>
                                     <label className='text-sm font-medium'>Насаб *</label>
-                                    {/* Ислоҳ: Истифодаи last_name ва registerStudent */}
                                     <Input {...registerStudent("last_name", { required: true })} placeholder='Раҳимов' />
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     <label className='text-sm font-medium'>Ном *</label>
-                                    {/* Ислоҳ: Истифодаи first_name ва registerStudent */}
                                     <Input {...registerStudent("first_name", { required: true })} placeholder='Али' />
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ function StudentsPage() {
 
                             <div className='flex flex-col gap-1'>
                                 <label className='text-sm font-medium'>Телефони волидайн *</label>
-                                <Input {...registerStudent("parent_phone", { required: true })} placeholder='+992914049999' />
+                                <Input {...registerStudent("parent_phone", { required: true })} defaultValue={'+992'} placeholder='+992914049999' />
                             </div>
 
                             <div className='flex flex-col gap-1'>
