@@ -47,7 +47,6 @@ interface IGetTextbooksResponse {
 }
 
 export interface IGetStudents {
-    id: number;
     first_name: string;
     last_name: string;
     middle_name: string;
@@ -55,6 +54,7 @@ export interface IGetStudents {
     birth_year: number;
     parent_phone: string;
     notes: string;
+    id: number;
     school_id: number;
     grade: number;
     is_active: boolean;
@@ -105,11 +105,15 @@ interface IGetRentalsResponse {
     limit: number;
 }
 
-interface IRentRequest {
-    student_id: number;
-    textbook_id: number;
-    academic_year_id: number;
-    notes?: string;
+interface IGetRentalsParams {
+    skip?: number;
+    grade?: number;
+    limit?: number;
+    student_id?: number | null;
+    academic_year_id?: number | null;
+    status_filter?: string | null;
+    date_from?: string | null;
+    date_to?: string | null;
 }
 
 interface IAcademicYear {
@@ -160,6 +164,28 @@ export interface IGetbooksSchoolResponse {
     limit: number;
 }
 
+export interface IStudentDetail {
+    id: number;
+    school_id: number;
+    first_name: string;
+    last_name: string;
+    middle_name: string;
+    class_name: string;
+    grade: number;
+    birth_year: number;
+    parent_phone: string;
+    notes: string;
+    is_active: boolean;
+    active_rentals_count: number;
+    total_rentals_count: number | null;
+    created_at: string;
+}
+
+export interface IUpdateStudentRequest extends Partial<IAddNewStudentRequest> {
+    id: number;
+    is_active?: boolean;
+}
+
 const baseQuery = fetchBaseQuery({
     baseUrl: 'https://student4.softclub.tj/api/v1/',
     prepareHeaders: (headers) => {
@@ -193,7 +219,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
             );
 
             if (refreshResult.data) {
-                const newTokens = refreshResult.data as any;
+                const newTokens = refreshResult.data as ILoginResponse;
                 localStorage.setItem('access_token', newTokens.access_token);
                 if (newTokens.refresh_token) {
                     localStorage.setItem('refresh_token', newTokens.refresh_token);
@@ -211,7 +237,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -221,13 +247,24 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['Todo'],
         }),
-        GetStudents: builder.query<IGetStudentsResponse, IGetStudentsParams>({
-            query: ({ skip, limit, search }) => {
-                let url = `students/?skip=${skip}&limit=${limit}`;
-                if (search) url += `&search=${search}`;
-                return { url, method: 'GET' };
-            },
-            providesTags: ['Todo'],
+        GetStudents: builder.query<IGetStudentsResponse, IGetStudentsParams | void>({
+            query: (params) => ({
+                url: `students/`,
+                method: 'GET',
+                params: {
+                    skip: params?.skip ?? 0,
+                    limit: params?.limit ?? 100,
+                    search: params?.search
+                }
+            }),
+            providesTags: ['Students'],
+        }),
+        GetStudentById: builder.query<IStudentDetail, number>({
+            query: (id) => ({
+                url: `students/${id}`,
+                method: 'GET'
+            }),
+            providesTags: (_result, _error, id) => [{ type: 'Students', id }],
         }),
         AddNewStudent: builder.mutation<any, IAddNewStudentRequest>({
             query: (newStudent) => ({
@@ -235,32 +272,39 @@ export const Todo = createApi({
                 method: 'POST',
                 body: newStudent,
             }),
-            invalidatesTags: ['Todo'],
+            invalidatesTags: ['Students'],
         }),
         GetTextbooks: builder.query<IGetTextbooksResponse, string | void>({
             query: (subject) => ({
-                url: subject && subject !== 'all'
-                    ? `textbooks/?subject=${subject}&skip=0&limit=100`
-                    : `textbooks/?skip=0&limit=100`,
+                url: `textbooks/`,
                 method: 'GET',
+                params: {
+                    subject: subject && subject !== 'all' ? subject : undefined,
+                    skip: 0,
+                    limit: 100
+                }
             }),
-            providesTags: ['Todo'],
+            providesTags: ['Textbooks'],
         }),
-        GetRentals: builder.query<IGetRentalsResponse, { skip: number; limit: number }>({
-            query: ({ skip, limit }) => `rentals/?skip=${skip}&limit=${limit}`,
-            providesTags: ['Todo'],
+        GetRentals: builder.query<IGetRentalsResponse, IGetRentalsParams>({
+            query: (params) => ({
+                url: `rentals/`,
+                method: 'GET',
+                params: params,
+            }),
+            providesTags: ['Rentals'],
         }),
         RentTextbook: builder.mutation<any, {
             student_id: number,
             textbook_ids: number[],
-            notes?: string 
+            notes?: string
         }>({
             query: (payload) => ({
                 url: 'rentals/',
                 method: 'POST',
                 body: payload,
             }),
-            invalidatesTags: ['Rentals'],
+            invalidatesTags: ['Rentals', 'Students'],
         }),
         ReturnBook: builder.mutation<any, number>({
             query: (rentalId) => ({
@@ -268,11 +312,11 @@ export const Todo = createApi({
                 method: 'POST',
                 body: {},
             }),
-            invalidatesTags: ['Todo'],
+            invalidatesTags: ['Rentals', 'Students'],
         }),
         GetRegions: builder.query<IGetRegions[], void>({
             query: () => `territories/regions`,
-            providesTags: ['Todo'],
+            providesTags: ['Region'],
         }),
         GetActiveYear: builder.query<IAcademicYear, void>({
             query: () => `academic-years/active`,
@@ -296,7 +340,7 @@ export const Todo = createApi({
                 },
                 method: 'GET',
             }),
-            providesTags: ['Todo'],
+            providesTags: ['Copies'],
         }),
         GetReportsOverview: builder.query<{
             total_schools: number;
@@ -305,6 +349,7 @@ export const Todo = createApi({
             lost_books: number;
             damaged_books: number;
             scope: string;
+            total_districts: number;
         }, number | void>({
             query: (yearId) => `reports/overview?academic_year_id=${yearId || 1}`,
             providesTags: ['Todo'],
@@ -315,7 +360,7 @@ export const Todo = createApi({
                 method: 'POST',
                 body: newBook,
             }),
-            invalidatesTags: ['Todo'],
+            invalidatesTags: ['Textbooks'],
         }),
         addTextbookCopies: builder.mutation<any, { textbook_id: number, school_id: number, quantity: number, condition?: string }>({
             query: (payload) => ({
@@ -323,13 +368,15 @@ export const Todo = createApi({
                 method: 'POST',
                 body: payload,
             }),
-            invalidatesTags: ['Todo'],
+            invalidatesTags: ['Copies'],
         }),
         getDistricts: builder.query<any[], number>({
             query: (regionId) => `territories/regions/${regionId}/districts`,
+            providesTags: ['District'],
         }),
         getSchoolsByDistrict: builder.query<any[], number>({
             query: (districtId) => `territories/districts/${districtId}/schools`,
+            providesTags: ['School'],
         }),
         getOverview: builder.query<any, { academic_year_id: number }>({
             query: ({ academic_year_id }) => `reports/overview?academic_year_id=${academic_year_id}`,
@@ -337,6 +384,96 @@ export const Todo = createApi({
         getMe: builder.query<any, void>({
             query: () => 'auth/me',
             providesTags: ['Todo'],
+        }),
+        addRegion: builder.mutation<any, { name: string }>({
+            query: (body) => ({ url: 'territories/regions', method: 'POST', body }),
+            invalidatesTags: ['Region'],
+        }),
+        addDistrict: builder.mutation<any, { name: string, region_id: number }>({
+            query: (body) => ({ url: 'territories/districts', method: 'POST', body }),
+            invalidatesTags: ['District'],
+        }),
+        addSchool: builder.mutation<any, { name: string, district_id: number }>({
+            query: (body) => ({ url: 'territories/schools', method: 'POST', body }),
+            invalidatesTags: ['School'],
+        }),
+        updateDistrict: builder.mutation<any, { id: number, name: string, region_id: number }>({
+            query: ({ id, ...body }) => ({
+                url: `territories/districts/${id}`,
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: ['District'],
+        }),
+        updateSchool: builder.mutation<any, { id: number, name: string, district_id: number }>({
+            query: ({ id, ...body }) => ({
+                url: `territories/schools/${id}`,
+                method: 'PUT',
+                body,
+            }),
+            invalidatesTags: ['School'],
+        }),
+        deleteDistrict: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `territories/districts/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['District'],
+        }),
+        deleteSchool: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `territories/schools/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['School'],
+        }),
+        updateRegion: builder.mutation<any, { id: number, name: string }>({
+            query: ({ id, ...patch }) => ({
+                url: `territories/regions/${id}`,
+                method: 'PATCH',
+                body: patch,
+            }),
+            invalidatesTags: ['Region'],
+        }),
+        deleteRegion: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `territories/regions/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Region'],
+        }),
+        addCopies: builder.mutation<any, any>({
+            query: (newOrder) => ({
+                url: 'copies/',
+                method: 'POST',
+                body: newOrder,
+            }),
+            invalidatesTags: ['Copies'],
+        }),
+        getSchoolBudget: builder.query<any, { schoolId: number; yearId: number }>({
+            query: ({ schoolId, yearId }) => ({
+                url: `/finance/budgets/school/${schoolId}/year/${yearId}`,
+                method: 'GET',
+            }),
+            providesTags: ['Budget'],
+        }),
+        updateStudent: builder.mutation<void, IUpdateStudentRequest>({
+            query: ({ id, ...payload }) => ({
+                url: `/students/${id}`,
+                method: 'PATCH',
+                body: payload,
+            }),
+            invalidatesTags: ['Students'],
+        }),
+        getYearStatistics: builder.query<any, number>({
+            query: (yearId) => `academic-years/enhanced/${yearId}/statistics`,
+        }),
+
+        closeAcademicYear: builder.mutation<any, number>({
+            query: (yearId) => ({
+                url: `academic-years/enhanced/${yearId}/close`,
+                method: 'POST',
+            }),
         }),
     }),
 });
@@ -358,5 +495,20 @@ export const {
     useGetDistrictsQuery,
     useGetSchoolsByDistrictQuery,
     useGetOverviewQuery,
-    useGetMeQuery
+    useGetMeQuery,
+    useAddRegionMutation,
+    useAddDistrictMutation,
+    useAddSchoolMutation,
+    useUpdateDistrictMutation,
+    useUpdateSchoolMutation,
+    useDeleteDistrictMutation,
+    useDeleteSchoolMutation,
+    useUpdateRegionMutation,
+    useDeleteRegionMutation,
+    useAddCopiesMutation,
+    useGetSchoolBudgetQuery,
+    useGetStudentByIdQuery,
+    useUpdateStudentMutation,
+    useGetYearStatisticsQuery,
+    useCloseAcademicYearMutation
 } = Todo;

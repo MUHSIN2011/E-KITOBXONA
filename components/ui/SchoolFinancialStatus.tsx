@@ -1,57 +1,69 @@
 "use client"
 import { TrendingUp, Wallet, ArrowDownCircle, ArrowUpCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-// Барои ин бояд GET /api/v1/finance/budgets/.../summary-ро истифода баред
 
-export default  function SchoolFinancialStatus() {
-  // Намунаи маълумот аз Swagger SchoolFinancialSummary
-  const financialData = {
-    total_budget: 50000,
-    total_spent: 12000,
-    total_revenue: 4500, // Аз иҷора ва ҷаримаҳо
-    balance: 42500
-  }
+interface SchoolFinancialStatusProps {
+  balance?: number;
+  rentalIncome?: number;
+  totalExpenses?: number;
+  allocatedBudget?: number; // Илова кардем барои ҳисоби фоиз
+}
 
-  const spentPercentage = (financialData.total_spent / financialData.total_budget) * 100
+export default function SchoolFinancialStatus({
+  balance = 0,
+  rentalIncome = 0,
+  totalExpenses = 0,
+  allocatedBudget = 1 // Пешгирӣ аз тақсим ба 0
+}: SchoolFinancialStatusProps) {
+
+  // Ҳисоби фоизи хароҷот нисбат ба бюджети ҷудошуда
+  const spentPercentage = Math.min(Math.round((totalExpenses / (allocatedBudget || 1)) * 100), 100);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-      <Card className="bg-blue-50 border-none">
+    <div data-aos="fade-right" className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      {/* Бюджет */}
+      <Card className="bg-blue-50/50 border-blue-100 shadow-none">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <Wallet className="h-4 w-4 text-blue-600" /> Бюджети умумӣ
+          <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-600">
+            <Wallet className="h-4 w-4" /> Бюджети ҷорӣ
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{financialData.total_budget} смн.</div>
-          <p className="text-xs text-muted-foreground mt-1">Маблағи ҷудошудаи вазорат</p>
+          <div className="text-2xl font-bold text-blue-900">{balance.toLocaleString()} смн.</div>
+          <p className="text-[10px] text-blue-400 mt-1 uppercase font-semibold">Баланси умумии мактаб</p>
         </CardContent>
       </Card>
 
-      <Card className="bg-red-50 border-none">
+      {/* Хароҷот */}
+      <Card className="bg-red-50/50 border-red-100 shadow-none">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <ArrowDownCircle className="h-4 w-4 text-red-600" /> Хароҷот
+          <CardTitle className="text-sm font-medium flex items-center gap-2 text-red-600">
+            <ArrowDownCircle className="h-4 w-4" /> Хароҷот
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-red-600">-{financialData.total_spent} смн.</div>
-          <div className="w-full bg-red-200 h-1.5 mt-3 rounded-full">
-            <div className="bg-red-600 h-1.5 rounded-full" style={{ width: `${spentPercentage}%` }}></div>
+          <div className="text-2xl font-bold text-red-600">-{totalExpenses.toLocaleString()} смн.</div>
+          <div className="w-full bg-red-100 h-1.5 mt-3 rounded-full overflow-hidden">
+            <div
+              className="bg-red-500 h-1.5 transition-all duration-500"
+              style={{ width: `${spentPercentage}%` }}
+            ></div>
           </div>
+          <p className="text-[10px] text-red-400 mt-1 uppercase font-semibold">{spentPercentage}% сарф шуд</p>
         </CardContent>
       </Card>
 
-      <Card className="bg-green-50 border-none">
+      {/* Даромад */}
+      <Card className="bg-green-50/50 border-green-100 shadow-none">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-medium flex items-center gap-2">
-            <ArrowUpCircle className="h-4 w-4 text-green-600" /> Даромад (Иҷора)
+          <CardTitle className="text-sm font-medium flex items-center gap-2 text-green-600">
+            <ArrowUpCircle className="h-4 w-4" /> Даромад (Иҷора)
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold text-green-600">+{financialData.total_revenue} смн.</div>
-          <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-            <TrendingUp className="h-3 w-3" /> +12% нисбат ба соли гузашта
+          <div className="text-2xl font-bold text-green-600">+{rentalIncome.toLocaleString()} смн.</div>
+          <p className="text-[10px] text-green-500 mt-1 flex items-center gap-1 uppercase font-semibold">
+            <TrendingUp className="h-3 w-3" /> Аз ҳисоби пардохти волидайн
           </p>
         </CardContent>
       </Card>

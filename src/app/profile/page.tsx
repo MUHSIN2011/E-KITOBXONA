@@ -15,6 +15,8 @@ import {
 
 function ProfilePage() {
     const { data: user, isLoading } = useGetMeQuery()
+    console.log(user);
+    
 
     if (isLoading) return (
         <div className="flex h-[85vh] items-center justify-center">
@@ -47,12 +49,10 @@ function ProfilePage() {
                         </div>
                     </div>
                 </div>
-                {/* Background Decoration */}
                 <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 bg-blue-600/10 rounded-full blur-3xl"></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Алоқа ва Маълумот */}
                 <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
@@ -73,7 +73,6 @@ function ProfilePage() {
                     </CardContent>
                 </Card>
 
-                {/* Ҷойгиршавӣ */}
                 <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm">
                     <CardHeader>
                         <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
@@ -96,7 +95,6 @@ function ProfilePage() {
                     </CardContent>
                 </Card>
 
-                {/* Вақт ва Таърих */}
                 <Card className="border-none shadow-xl md:col-span-2">
                     <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">

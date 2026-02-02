@@ -20,11 +20,11 @@ const RegionsTable: React.FC = () => {
     );
 
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+        <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
             <div className="p-5 border-b border-gray-50">
                 <h3 className="font-bold text-gray-800">Ҳисоботи минтақавӣ</h3>
             </div>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto overflow-y-clip md:max-w-full max-w-80">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-gray-50/50">

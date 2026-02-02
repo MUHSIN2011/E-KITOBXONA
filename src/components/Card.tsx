@@ -1,4 +1,6 @@
+import { NumberTicker } from "@/components/ui/number-ticker";
 import { TextAnimate } from "@/components/ui/text-animate";
+import { useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
 interface CardProps {
@@ -7,14 +9,18 @@ interface CardProps {
     Icons?: ReactNode;
     description?: string;
     className?: string;
+    path?: string;
+    textColor?: string;
 }
 
 
-function Card({ NameRole, cnt, Icons, className, description }: CardProps) {
+function Card({ NameRole, cnt, Icons, className, description, path,textColor }: CardProps) {
+    const router = useRouter()
     return (
-        <div className={`flex justify-between  ${className}  bg-white border rounded-sm py-5 px-5`}>
+        <div onClick={() => path && router.push(path)} className={`flex justify-between cursor-pointer  ${className}  bg-white border rounded-sm py-5 px-5`}>
             <aside className="flex flex-col">
-                <TextAnimate animation="slideUp" by="word" className="text-3xl  font-bold">{`${cnt}`}</TextAnimate>
+                <NumberTicker  className={`text-4xl font-bold text-${textColor}`} value={cnt ?? 0} />
+                {/* <TextAnimate animation="slideUp" by="word" className="text-3xl  font-bold">{`${cnt}`}</TextAnimate> */}
                 <TextAnimate className="  text-foreground text-sm " animation="slideUp" by="word">
                     {`${NameRole}`}
                 </TextAnimate>

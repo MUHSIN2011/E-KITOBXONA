@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/src/components/LayoutWrapper";
 import StoreProvider from "../ReduxProvider";
+import { JetBrains_Mono } from 'next/font/google'
 
 
 const geistSans = Geist({
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   description: "Государственная система учёта школьных учебников",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="tg">
       <body
+
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
       >
         <StoreProvider>

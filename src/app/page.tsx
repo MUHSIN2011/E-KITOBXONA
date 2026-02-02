@@ -9,6 +9,7 @@ import { useForm } from "react-hook-form";
 import { SaveToken } from "@/utils/axios";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from 'react-hot-toast';
+import { jwtDecode } from "jwt-decode";
 
 export default function LoginPage() {
 
@@ -25,9 +26,25 @@ export default function LoginPage() {
   const onSubmit = async (formData: any) => {
     try {
       const result = await loginUser(formData).unwrap();
+
       if (result.access_token) {
         SaveToken(result.access_token, result.refresh_token);
-        window.location.href = '/dashboard';
+
+        const decoded = jwtDecode<any>(result.access_token);
+        const role = decoded.role;
+
+        toast.success("Хуш омадед!");
+
+        setTimeout(() => {
+          if (role === 'school') {
+            window.location.href = '/dashboard-school';
+          }
+          else if (role === 'region') {
+            window.location.href = '/dashboard-region';
+          } else {
+            window.location.href = '/dashboard';
+          }
+        }, 500);
       }
     } catch (error: any) {
       console.error(error);
@@ -43,7 +60,17 @@ export default function LoginPage() {
   };
   return (
     <div className=" flex justify-center px-4 md:py-10">
-      <Toaster />
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            borderRadius: '12px',
+            background: '#333',
+            color: '#fff',
+          },
+        }}
+      />
       <div className="w-full max-w-[400px] m-auto">
         <div className="text-center md:mb-6 mb-3">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-xl mb-4 shadow-lg">

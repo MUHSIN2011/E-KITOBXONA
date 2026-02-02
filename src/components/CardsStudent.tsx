@@ -1,3 +1,4 @@
+import { NumberTicker } from "@/components/ui/number-ticker";
 import { TextAnimate } from "@/components/ui/text-animate";
 import { ReactNode } from "react";
 
@@ -24,7 +25,7 @@ function CardsStudent({ NameRole, cnt, Icons, className, description }: CardProp
                 <TextAnimate className="text-[15px] font-semibold text-muted-foreground " animation="slideUp" by="word">
                     {`${NameRole}`}
                 </TextAnimate>
-                <TextAnimate animation="slideUp" by="word" className="text-2xl font-bold">{`${cnt}`}</TextAnimate>
+                <NumberTicker className="text-[23px] font-bold" value={cnt ?? 0} />
                 {description && (
                     <TextAnimate animation="slideUp" by="word" className="text-[13px] text-muted-foreground">{`${description}`}</TextAnimate>
                 )}

@@ -22,22 +22,36 @@ import { toast } from "react-hot-toast";
 import { Loader2, User as Userr, Search as Searchs, Check as Checks } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Card from '@/src/components/Card';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { SheetHeader } from '@/components/ui/sheet';
 
 export default function RentalsPage() {
     const [open, setOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedStudentId, setSelectedStudentId] = useState<number | null>(null);
     const [selectedBookIds, setSelectedBookIds] = useState<number[]>([]);
+    const [grade, setGrade] = useState<string>("");
+    const [status, setStatus] = useState<string | null>(null);
+    const [dateFrom, setDateFrom] = useState<string>("");
+    const [dateTo, setDateTo] = useState<string>("");
+    const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
-    const { data: rentals, isLoading: rentalsLoading, refetch: refetchRentals } = useGetRentalsQuery({ skip: 0, limit: 100 });
+    const { data: rentals, isLoading: rentalsLoading, refetch: refetchRentals } = useGetRentalsQuery({
+        grade: grade ? Number(grade) : undefined,
+        status_filter: (status === "all" || !status) ? undefined : status,
+        date_from: dateFrom || undefined,
+        date_to: dateTo || undefined,
+        limit: 10,
+        skip: 0
+    });
+
     const { data: studentsData } = useGetStudentsQuery({ search: searchTerm, skip: 0, limit: 20 });
     const { data: booksData } = useGetTextbooksQuery(undefined);
     const { data: activeYear } = useGetActiveYearQuery();
 
+
     const [rentBook, { isLoading: isRentLoading }] = useRentTextbookMutation();
     const [returnBook] = useReturnBookMutation();
-    console.log(rentals);
-
 
     const handleRent = async () => {
         if (!selectedStudentId || selectedBookIds.length === 0) {
@@ -86,7 +100,7 @@ export default function RentalsPage() {
 
 
     return (
-        <div className="px-6 space-y-6  bg-[#f8fafc]">
+        <div className="md:px-4  space-y-6  bg-[#f8fafc]">
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900">Иҷораи китобҳо</h1>
@@ -212,7 +226,7 @@ export default function RentalsPage() {
                     </DialogContent>
                 </Dialog>
             </div>
-            <div className='grid grid-cols-3 gap-3 my-7'>
+            <div className='grid md:grid-cols-3 grid-cols-1  gap-3 my-7'>
                 <div
                     className='text-green-600'
                     data-aos="fade-up"
@@ -246,15 +260,51 @@ export default function RentalsPage() {
             </div>
 
             <div className="flex flex-col gap-4  bg-white p-4 rounded-2xl border shadow-sm">
-                <div className='grid grid-cols-6 gap-2'>
-                    <div className="relative col-span-5">
+                {/* <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-6 gap-3 items-center'>
+                    <div className="relative md:col-span-5 sm:col-span-2 col-span-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input placeholder="Ҷустуҷӯ аз рӯи номи хонанда ё китоб..." className="pl-10 bg-[#f9fafb] border-none rounded-xl" />
+                        <Input
+                            placeholder="Ҷустуҷӯ аз рӯи номи хонанда ё китоб..."
+                            className="pl-10 bg-[#f9fafb] border-none rounded-xl w-full h-11"
+                        />
                     </div>
-                    <Select>
-                        <SelectTrigger className="w-[180px] col-span-1 rounded-xl bg-[#f9fafb] border-none">
-                            <Funnel className="w-4 h-4 mr-2" />
-                            <SelectValue placeholder="Ҳамаи статусҳо" />
+
+                    <div className="md:col-span-1 sm:col-span-2 col-span-1">
+                        <Select>
+                            <SelectTrigger className="w-full rounded-xl bg-[#f9fafb] border-none h-11">
+                                <div className="flex items-center gap-2">
+                                    <Funnel className="w-4 h-4" />
+                                    <SelectValue placeholder="Ҳамаи статусҳо" />
+                                </div>
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Ҳама</SelectItem>
+                                <SelectItem value="active">Дар даст</SelectItem>
+                                <SelectItem value="returned">Баргардонидашуда</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div> */}
+                <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2'>
+                    <div className="relative md:col-span-2 col-span-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                        <Input placeholder="Ҷустуҷӯ..." className="pl-10 bg-[#f9fafb] border-none rounded-xl h-11" />
+                    </div>
+
+                    <Select onValueChange={(value) => setGrade(value)}>
+                        <SelectTrigger className="md:col-span-1 py-5 w-full rounded-xl bg-[#f9fafb] border-none">
+                            <SelectValue placeholder="Синф" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'].map(g => (
+                                <SelectItem key={g} value={g}>{g}-ум</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+
+                    <Select onValueChange={(value) => setStatus(value)}>
+                        <SelectTrigger className="md:col-span-1 py-5 w-full rounded-xl bg-[#f9fafb] border-none h-15">
+                            <SelectValue placeholder="Статус" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">Ҳама</SelectItem>
@@ -262,9 +312,91 @@ export default function RentalsPage() {
                             <SelectItem value="returned">Баргардонидашуда</SelectItem>
                         </SelectContent>
                     </Select>
+                    <Input
+                        type="date"
+                        value={dateFrom}
+                        onChange={(e) => setDateFrom(e.target.value)}
+                        className="rounded-xl bg-[#f9fafb] border-none h-11"
+                    />
+                    <Input
+                        type="date"
+                        value={dateTo}
+                        // min={dateFrom}
+                        onChange={(e) => setDateTo(e.target.value)}
+                        className="rounded-xl bg-[#f9fafb] border-none h-11"
+                    />
                 </div>
 
-                <div className="rounded-2xl overflow-hidden bg-white ">
+                <Sheet open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
+                    <SheetContent className="sm:max-w-[500px] overflow-y-auto px-4">
+                        <SheetHeader className="border-b pb-4">
+                            <SheetTitle className="text-2xl font-bold flex items-center gap-2">
+                                <User className="w-6 h-6 text-blue-600" />
+                                Маълумоти пурра
+                            </SheetTitle>
+                        </SheetHeader>
+
+                        {selectedStudent && (
+                            <div className="py-5 space-y-8">
+                                <div className="flex items-center gap-4 bg-blue-50 p-3 rounded-2xl">
+                                    <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                                        {selectedStudent.student_name[0]}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-gray-900">{selectedStudent.student_name}</h3>
+                                        <div>
+                                            <p className="text-sm text-gray-500">ID: {selectedStudent.student_id}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="space-y-1">
+                                        <p className="text-xs text-gray-400 uppercase font-semibold">Китоб</p>
+                                        <p className="text-sm font-medium">{selectedStudent.textbook_title}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-xs text-gray-400 uppercase font-semibold">Рақами инвентарӣ</p>
+                                        <p className="text-sm font-medium font-mono text-blue-600">{selectedStudent.inventory_number}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-xs text-gray-400 uppercase font-semibold">Санаи супоридан</p>
+                                        <p className="text-sm font-medium">{selectedStudent.rent_start}</p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-xs text-gray-400 uppercase font-semibold">Санаи Гирифтан</p>
+                                        <p className="text-sm font-medium">{selectedStudent.rent_end ? selectedStudent.rent_end : '--'}</p>
+                                    </div>
+                                    <div className="space-y-1 items-center">
+                                        <p className="text-sm text-gray-500">ID: <span className='font-bold text-black'>{selectedStudent.student_id}</span></p>
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-xs text-gray-400 uppercase font-semibold">Статус</p>
+                                        <span className={`text-[10px] px-2 py-1 rounded-full font-bold ${selectedStudent.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                                            }`}>
+                                            {selectedStudent.status === 'active' ? 'ДАР ДАСТ' : 'Гирифта шуд'}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="bg-gray-50 p-4 rounded-xl space-y-2">
+                                    <p className="text-xs text-gray-400 uppercase font-semibold">Эзоҳ (Notes)</p>
+                                    <p className="text-sm text-gray-700 italic">
+                                        {selectedStudent.notes || "Ягон эзоҳ илова нашудааст."}
+                                    </p>
+                                </div>
+
+                                <div className="flex gap-3 pt-6 border-t">
+                                    <Button className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-xl">
+                                        Гирифтани китобхо
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+                    </SheetContent>
+                </Sheet>
+
+                <div className="rounded-2xl overflow-hidden overflow-x-auto overflow-y-clip md:max-w-full max-w-90 bg-white ">
                     <Table>
                         <TableHeader className="bg-gray-50/50">
                             <TableRow className="border-b">
@@ -273,19 +405,19 @@ export default function RentalsPage() {
                                 <TableHead className="font-bold">Санаи супоридан</TableHead>
                                 <TableHead className="font-bold">Санаи Гирифт</TableHead>
                                 <TableHead className="font-bold text-center">Статус</TableHead>
-                                <TableHead className=" font-bold text-right pr-7">Амал</TableHead>
+                                {/* <TableHead className=" font-bold text-right pr-7">Амал</TableHead> */}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {rentalsLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={5} className="text-center py-20 text-gray-500">
+                                    <TableCell colSpan={6} className="text-center py-20  text-gray-500">
                                         <Loader2 className="h-8 w-8 animate-spin mx-auto mb-2 opacity-20" />
                                         Дар ҳоли боркунӣ...
                                     </TableCell>
                                 </TableRow>
                             ) : rentals?.items?.map((rental: any) => (
-                                <TableRow key={rental.id} className="hover:bg-gray-50/50 transition-colors">
+                                <TableRow onClick={() => setSelectedStudent(rental)} key={rental.id} className="hover:bg-gray-50/50 transition-colors">
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-[#0950c3]">
@@ -330,7 +462,7 @@ export default function RentalsPage() {
                                             {rental.status === 'active' ? 'Дар даст' : 'Баргардонида шуд'}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-right px-6">
+                                    {/* <TableCell className="text-right px-6">
                                         {rental.status === 'active' && (
                                             <Button
                                                 size="sm"
@@ -341,7 +473,7 @@ export default function RentalsPage() {
                                                 Қабул кардан
                                             </Button>
                                         )}
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             ))}
                         </TableBody>

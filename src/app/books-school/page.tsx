@@ -13,8 +13,10 @@ import { IGetTextbooks, useGetBooksSchoolQuery } from '@/src/api/api';
 import { TextAnimate } from '@/components/ui/text-animate'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
+import { useRouter } from 'next/navigation'
 
 function Page() {
+    const router = useRouter()
     const [subject, setSubject] = useState<string>("all");
     const [search, setSearch] = useState<string>("");
     const [currentPage, setCurrentPage] = useState(1);
@@ -54,23 +56,13 @@ function Page() {
     }, [])
 
     return (
-        <main data-aos="fade-in" className='md:px-0 px-3 md:py-0 py-3'>
+        <main data-aos="fade-in" className='md:px-4 px-3 md:py-0 py-3'>
             <div className='flex justify-between items-center mb-3'>
                 <div>
-                    <TextAnimate className='md:text-2xl font-bold' animation="slideUp" by="word">
-                        Идоракунии фонди китобҳо
-                    </TextAnimate>
-                    <TextAnimate className='text-foreground text-sm' animation="slideUp" by="word">
-                        Назорат ва идоракунии китобҳои дарсӣ дар ҳамаи ҷойҳо
-                    </TextAnimate>
+                    <TextAnimate className='md:text-2xl font-bold' animation="slideUp" by="word">Идоракунии китобҳо</TextAnimate>
+                    <TextAnimate className='text-foreground text-sm w-auto w-60' animation="slideUp" by="word">Назорат ва идоракунии китобҳои дарсӣ дар ҳамаи ҷойҳо</TextAnimate>
                 </div>
-                <button
-                    className='bg-[#0950c3] text-white py-2 px-3 rounded-sm hover:bg-[#0a45a5] transition-colors duration-200'
-                    data-aos="fade-left"
-                    data-aos-delay="300"
-                >
-                    + {' '}Илова кардани китоб
-                </button>
+                <button onClick={() => router.push('/RentBook')} className='bg-[#0950c3] text-white py-2 px-3 rounded-sm hover:bg-[#0a45a5] transition-colors duration-200' data-aos="fade-left" data-aos-delay="300">+ Иловаи китоб</button>
             </div>
 
             <div className='grid md:grid-cols-4 grid-cols-1  gap-3 my-7'>
@@ -82,6 +74,7 @@ function Page() {
                     <Card
                         NameRole={'Ҳамагӣ китобҳо'}
                         cnt={totalBooks.toString()}
+                        className="p-4 md:p-6 sm:p-2 "
                     />
                 </div>
                 <div
@@ -92,6 +85,7 @@ function Page() {
                     <Card
                         NameRole={'Нав'}
                         cnt={newBooksCount.toString()}
+                        className="p-4 md:p-6"
                     />
                 </div>
                 <div
@@ -102,6 +96,7 @@ function Page() {
                     <Card
                         NameRole={'Иҷорашуда'}
                         cnt={rentedBooksCount.toString()}
+                        className="p-4 md:p-6"
                     />
                 </div>
                 <div
@@ -112,6 +107,7 @@ function Page() {
                     <Card
                         NameRole={'Вайроншуда'}
                         cnt={damagedBooksCount.toString()}
+                        className="p-4 md:p-6"
                     />
                 </div>
             </div>
@@ -119,9 +115,9 @@ function Page() {
             <section
                 className='p-3 my-3 bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-300'
                 data-aos="zoom-in"
-                data-aos-delay="500"
+                data-aos-delay="100"
             >
-                <h1 className='text-2xl font-bold '>Фонди китобҳои дарсӣ</h1>
+                <h1 className='text-2xl font-bold '>китобҳои дарсӣ</h1>
                 <p className='text-foreground text-sm'>Рӯйхати пурраи ҳамаи китобҳои дарсӣ дар система</p>
 
                 <div className='flex flex-col lg:flex-row gap-4 my-5 items-center justify-between' data-aos="fade-up">
@@ -137,7 +133,6 @@ function Page() {
                             />
                         </div>
 
-                        {/* Ҳолат */}
                         <div className="md:col-span-1">
                             <Select onValueChange={(v) => { setCondition(v); setCurrentPage(1); }}>
                                 <SelectTrigger className="w-full rounded-xl bg-[#f9fafb] border-gray-200 hover:bg-white transition-colors h-10">
@@ -158,7 +153,6 @@ function Page() {
                             </Select>
                         </div>
 
-                        {/* Статус */}
                         <div className="md:col-span-1">
                             <Select onValueChange={(v) => { setStatus(v); setCurrentPage(1); }}>
                                 <SelectTrigger className="w-full rounded-xl bg-[#f9fafb] border-gray-200 hover:bg-white transition-colors h-10">
@@ -176,8 +170,29 @@ function Page() {
                                 </SelectContent>
                             </Select>
                         </div>
+                        <div className="md:col-span-1">
+                            <Select onValueChange={(value) => setSubject(value)}>
+                                <SelectTrigger className="w-full bg-[#f9fafb] py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
+                                    <SelectValue placeholder="Ҳама" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Ҳамаи фанҳо</SelectItem>
+                                    <SelectItem value="math">Математика</SelectItem>
+                                    <SelectItem value="russian">Забони русӣ</SelectItem>
+                                    <SelectItem value="tajik">Забони тоҷикӣ</SelectItem>
+                                    <SelectItem value="english">Забони англисӣ</SelectItem>
+                                    <SelectItem value="physics">Физика</SelectItem>
+                                    <SelectItem value="chemistry">Химия</SelectItem>
+                                    <SelectItem value="biology">Биология</SelectItem>
+                                    <SelectItem value="history">Таърих</SelectItem>
+                                    <SelectItem value="geography">География</SelectItem>
+                                    <SelectItem value="literature">Адабиёт</SelectItem>
+                                    <SelectItem value="informatics">Информатика</SelectItem>
+                                    <SelectItem value="other">Дигар</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                        {/* Switcher барои Мобилӣ (дар экранҳои хурд дар ҳамин grid меистад) */}
                         <div className="md:hidden flex bg-gray-100 p-1 rounded-xl gap-1">
                             <button onClick={() => setViewType('table')} className={`flex-1 flex justify-center py-1.5 rounded-lg ${viewType === 'table' ? 'bg-white shadow text-blue-600' : 'text-gray-500'}`}><TableIcon size={18} /></button>
                             <button onClick={() => setViewType('grid')} className={`flex-1 flex justify-center py-1.5 rounded-lg ${viewType === 'grid' ? 'bg-white shadow text-blue-600' : 'text-gray-500'}`}><LayoutGrid size={18} /></button>
@@ -258,15 +273,22 @@ function Page() {
                                     </table>
                                 </div>
                             ) : (
-                                /* --- НАМУДИ КАРТОЧКАҲО --- */
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                     {filteredBooks.map((item: any) => (
                                         <div key={item.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                                            <div className="flex justify-between items-start mb-3">
-                                                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded uppercase">
+                                            <div
+                                                className="flex justify-between items-start mb-3 p-3 rounded-lg h-40 bg-cover bg-center relative overflow-hidden shadow-inner"
+                                                style={{
+                                                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0)), url('https://student4.softclub.tj/api/v1/images/${item.cover_image_url}')`
+                                                }}
+                                            >
+                                                <span className="text-[10px] font-bold text-blue-700 bg-white/90 backdrop-blur-sm px-2 py-1 rounded shadow-sm uppercase border border-blue-100">
                                                     {item.inventory_number}
                                                 </span>
-                                                <span className="text-xs text-gray-400">#{item.id}</span>
+
+                                                <span className="text-[10px] font-medium text-white bg-black/40 backdrop-blur-md px-1.5 py-0.5 rounded">
+                                                    #{item.id}
+                                                </span>
                                             </div>
                                             <h3 className="font-bold text-gray-900 mb-4 line-clamp-1">{item.textbook.title}</h3>
                                             <div className="flex justify-between text-sm border-t border-gray-50 pt-3">
@@ -286,7 +308,7 @@ function Page() {
                         </div>
                     )}
                 </div>
-                <div className="flex justify-between items-center mt-5 p-4 bg-gray-50 rounded-xl border">
+                <div className="flex md:flex-row flex-col-reverse justify-between items-center mt-5 p-4 bg-gray-50 rounded-xl border">
                     <p className="text-sm text-gray-500">
                         Намоиши {books?.items?.length || 0} аз {books?.total || 0} китоб
                     </p>

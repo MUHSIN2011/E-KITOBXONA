@@ -1,10 +1,10 @@
 "use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TextAnimate } from '@/components/ui/text-animate'
-import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useGetStudentsQuery } from '@/src/api/api'
+import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useUpdateStudentMutation } from '@/src/api/api'
 import CardsStudent from '@/src/components/CardsStudent'
-import { Book, DollarSign, Funnel, Users } from 'lucide-react'
-import React, { useState } from 'react'
+import { Book, BookOpen, Calendar, DollarSign, FileText, Funnel, Hash, Phone, User, Users } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input';
 import {
     Dialog,
@@ -21,12 +21,16 @@ import { Button } from '@/components/ui/button'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { jwtDecode } from 'jwt-decode'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import { Label } from '@/components/ui/label'
 
 function StudentsPage() {
     const [page, setPage] = useState(0);
     const [search, setSearch] = useState('');
     const limit = 10;
     const [open, setOpen] = useState(false);
+    const [idx, setIdx] = useState<number | null>(null);
+    const [isEditOpen, setIsEditOpen] = useState(false);
     const {
         register: registerStudent,
         handleSubmit: handleSubmitStudent,
@@ -34,6 +38,13 @@ function StudentsPage() {
         formState: { errors: studentErrors }
     } = useForm<IAddNewStudentRequest>();
     const [addNewStudent, { isLoading: isAdding }] = useAddNewStudentMutation();
+    const { data: studentbyid, isLoading: isStudenting } = useGetStudentByIdQuery(
+        idx as number,
+        { skip: !idx }
+    )
+    console.log(studentbyid);
+
+    const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
 
     const { data: students, isLoading } = useGetStudentsQuery({
         skip: page * limit,
@@ -44,6 +55,12 @@ function StudentsPage() {
     const totalItems = students?.total || 0;
     const startItem = page * limit + 1;
     const endItem = Math.min((page + 1) * limit, totalItems);
+    const [editData, setEditData] = useState<any>(null);
+    useEffect(() => {
+        if (studentbyid) {
+            setEditData(studentbyid);
+        }
+    }, [studentbyid]);
 
     if (isLoading) return <div className="flex h-[85vh] items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -57,26 +74,39 @@ function StudentsPage() {
                 toast.error("Шумо ворид нашудаед!");
                 return;
             }
-
             const decoded: any = jwtDecode(token);
-            const school_id = decoded.school_id;
-
             const payload = {
                 ...formData,
                 birth_year: Number(formData.birth_year),
-                school_id: Number(school_id),
+                school_id: Number(decoded.school_id),
                 notes: formData.notes || ""
             };
-
-            console.log("Фиристодан ба сервер:", payload);
-
             await addNewStudent(payload).unwrap();
-
-            toast.success("Хонанда бомуваффақият илова шуд!");
+            toast.success("Хонанда илова шуд!");
             resetStudent();
             setOpen(false);
         } catch (error) {
             toast.error("Хатогӣ ҳангоми иловакунӣ!");
+        }
+    };
+
+    const handleUpdate = async () => {
+        try {
+            if (!studentbyid || !editData) {
+                toast.error("Маълумот барои таҳрир нопурра аст");
+                return;
+            }
+
+            await updateStudent({
+                ...editData,
+                id: studentbyid.id,
+                birth_year: Number(editData.birth_year)
+            }).unwrap();
+
+            toast.success("Маълумот нав карда шуд!");
+            setIsEditOpen(false);
+        } catch (error) {
+            toast.error("Хатогӣ ҳангоми навсозӣ!");
         }
     };
 
@@ -93,7 +123,7 @@ function StudentsPage() {
                 </div>
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger className='bg-[#0950c3] hover:bg-blue-700 flex gap-2 text-white py-2 px-4 rounded-xl text-sm font-medium'>
-                        + Илова кардани хонанда
+                        + Иловаи хонанда
                     </DialogTrigger>
 
                     <DialogContent className='max-h-[95vh] h-auto bg-gray-50 overflow-y-auto sm:max-w-[500px]'>
@@ -103,9 +133,9 @@ function StudentsPage() {
                         </DialogHeader>
 
                         <form id="student-form" onSubmit={handleSubmitStudent(onSubmit)} className='my-3 flex flex-col gap-4'>
-                            <div className='grid grid-cols-2 gap-4'>
+                            <div className='grid md:grid-cols-2 grid-cols-1 gap-4'>
                                 <div className='flex flex-col gap-1'>
-                                    <label className='text-sm font-medium'>Насаб *</label>
+                                    <Label className='text-sm font-medium'>Насаб *</Label>
                                     <Input {...registerStudent("last_name", { required: true })} placeholder='Раҳимов' />
                                 </div>
                                 <div className='flex flex-col gap-1'>
@@ -164,6 +194,233 @@ function StudentsPage() {
                 <CardsStudent Icons={<DollarSign className="text-red-500" />} NameRole='Бо ҷуброн' cnt={'2'} />
             </div>
 
+            <Sheet open={!!idx} onOpenChange={() => setIdx(null)}>
+                <SheetContent className="sm:max-w-[500px] overflow-y-auto px-0"> {/* px-0 барои он ки Header пурра ранг гирад */}
+                    <SheetHeader className="px-6 pb-6 pt-2 bg-gradient-to-r from-blue-50 to-white border-b">
+                        <div className="flex justify-between items-start pt-4">
+                            <SheetTitle className="text-2xl font-bold flex items-center gap-3 text-slate-800">
+                                <div className="p-2 bg-blue-600 rounded-lg">
+                                    <User className="w-5 h-5 text-white" />
+                                </div>
+                                Профили хонанда
+                            </SheetTitle>
+                        </div>
+                    </SheetHeader>
+
+                    {studentbyid && (
+                        <div className="px-6 py-6 space-y-8">
+                            <div className="flex items-center gap-5 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                                <div className="w-20 h-20 bg-blue-100 border-4 border-white shadow-sm rounded-full flex items-center justify-center text-blue-700 text-3xl font-black">
+                                    {studentbyid.first_name[0]}
+                                </div>
+                                <div className="space-y-1">
+                                    <h3 className="text-xl font-bold text-slate-900 leading-tight">
+                                        {studentbyid.last_name} {studentbyid.first_name}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 font-medium">{studentbyid.middle_name}</p>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-md uppercase">
+                                            Синфи {studentbyid.class_name}
+                                        </span>
+                                        <span className={`px-2 py-0.5 text-[10px] font-bold rounded-md uppercase ${studentbyid.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                            {studentbyid.is_active ? 'Фаъол' : 'Ғайрифаъол'}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-y-6 gap-x-4">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-slate-400">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        <p className="text-[11px] uppercase font-bold tracking-wider">Соли таваллуд</p>
+                                    </div>
+                                    <p className="text-sm font-semibold text-slate-700 ml-5.5">{studentbyid.birth_year}</p>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-slate-400">
+                                        <Phone className="w-3.5 h-3.5" />
+                                        <p className="text-[11px] uppercase font-bold tracking-wider">Телефони волидайн</p>
+                                    </div>
+                                    <p className="text-sm font-semibold text-slate-700 ml-5.5">{studentbyid.parent_phone}</p>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-slate-400">
+                                        <Hash className="w-3.5 h-3.5" />
+                                        <p className="text-[11px] uppercase font-bold tracking-wider">ID-и Хонанда</p>
+                                    </div>
+                                    <p className="text-sm font-mono font-bold text-blue-600 ml-5.5">#{studentbyid.id}</p>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-slate-400">
+                                        <BookOpen className="w-3.5 h-3.5" />
+                                        <p className="text-[11px] uppercase font-bold tracking-wider">Иҷораҳои фаъол</p>
+                                    </div>
+                                    <p className="text-sm font-bold text-slate-700 ml-5.5">
+                                        {studentbyid.active_rentals_count} адад
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                <div className="flex items-center gap-2 text-slate-400">
+                                    <FileText className="w-3.5 h-3.5" />
+                                    <p className="text-[11px] uppercase font-bold tracking-wider">Эзоҳи иловагӣ</p>
+                                </div>
+                                <div className="p-4 bg-amber-50/50 border border-amber-100 rounded-xl">
+                                    <p className="text-sm text-slate-600 leading-relaxed italic">
+                                        {studentbyid.notes || "Ягон эзоҳ илова нашудааст."}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 pt-6 border-t">
+                                <Button
+                                    variant="outline"
+                                    className="rounded-xl h-11 font-semibold text-slate-600 hover:bg-slate-50"
+                                    onClick={() => {
+                                        setIdx(null);
+                                        setIsEditOpen(true);
+                                    }}
+                                >
+                                    Таҳрир кардан
+                                </Button>
+                                <Button className="bg-blue-600 hover:bg-blue-700 rounded-xl h-11 font-semibold shadow-md shadow-blue-200">
+                                    Додани китоб
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </SheetContent>
+            </Sheet>
+
+            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto border-none shadow-2xl">
+                    <DialogHeader className="space-y-1">
+                        <div className='flex  items-center gap-2'>
+                            <div className="p-3 bg-blue-50 w-fit rounded-2xl">
+                                <User className="w-6 h-6 text-blue-600" />
+                            </div>
+                            <div>
+                                <DialogTitle className="text-2xl font-bold text-slate-800">Таҳрири профил</DialogTitle>
+                                <p className="text-slate-500 text-sm">Маълумоти хонандаро навсозӣ кунед</p>
+                            </div>
+                        </div>
+                    </DialogHeader>
+
+                    <div className="grid gap-2 py-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="last_name" className="text-sm font-semibold text-slate-700">Насаб</Label>
+                                <Input
+                                    id="last_name"
+                                    className="rounded-xl border-slate-200 focus:ring-blue-500"
+                                    value={editData?.last_name || ""}
+                                    onChange={(e) => setEditData({ ...editData, last_name: e.target.value } as IGetStudents)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="first_name" className="text-sm font-semibold text-slate-700">Ном</Label>
+                                <Input
+                                    id="first_name"
+                                    className="rounded-xl border-slate-200 focus:ring-blue-500"
+                                    value={editData?.first_name || ""}
+                                    onChange={(e) => setEditData({ ...editData, first_name: e.target.value } as IGetStudents)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="middle_name" className="text-sm font-semibold text-slate-700">Номи падар</Label>
+                            <Input
+                                id="middle_name"
+                                className="rounded-xl border-slate-200"
+                                value={editData?.middle_name || ""}
+                                onChange={(e) => setEditData({ ...editData, middle_name: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Блоки Синф ва Соли таваллуд */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="class_name" className="text-sm font-semibold text-slate-700">Синф</Label>
+                                <Input
+                                    id="class_name"
+                                    className="rounded-xl border-slate-200"
+                                    value={editData?.class_name || ""}
+                                    onChange={(e) => setEditData({ ...editData, class_name: e.target.value })}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="birth_year" className="text-sm font-semibold text-slate-700">Соли таваллуд</Label>
+                                <Input
+                                    id="birth_year"
+                                    type="number"
+                                    className="rounded-xl border-slate-200"
+                                    value={editData?.birth_year || ""}
+                                    onChange={(e) => setEditData({ ...editData, birth_year: Number(e.target.value) })}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Телефони волидайн */}
+                        <div className="space-y-2">
+                            <Label htmlFor="parent_phone" className="text-sm font-semibold text-slate-700">Телефони волидайн</Label>
+                            <Input
+                                id="parent_phone"
+                                className="rounded-xl border-slate-200"
+                                value={editData?.parent_phone || ""}
+                                onChange={(e) => setEditData({ ...editData, parent_phone: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Эзоҳ ва Статус */}
+                        <div className="space-y-2">
+                            <Label htmlFor="notes" className="text-sm font-semibold text-slate-700">Эзоҳ</Label>
+                            <Textarea
+                                id="notes"
+                                className="rounded-xl border-slate-200 min-h-13.5"
+                                value={editData?.notes || ""}
+                                onChange={(e) => setEditData({ ...editData, notes: e.target.value })}
+                            />
+                        </div>
+
+                        <div className="flex items-center space-x-2 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                            <input
+                                type="checkbox"
+                                id="is_active"
+                                className="w-4 h-4 text-blue-600 rounded"
+                                checked={editData?.is_active || false}
+                                onChange={(e) => setEditData({ ...editData, is_active: e.target.checked })}
+                            />
+                            <Label htmlFor="is_active" className="text-sm font-medium text-slate-700 cursor-pointer">
+                                Ҳолати фаъол (Active)
+                            </Label>
+                        </div>
+                    </div>
+
+                    <DialogFooter className="pt-4 border-t gap-2">
+                        <Button
+                            variant="outline"
+                            className="rounded-xl px-6"
+                            onClick={() => setIsEditOpen(false)}
+                        >
+                            Бекор кардан
+                        </Button>
+                        <Button
+                            disabled={isUpdating} // Ҳангоми боргузорӣ тугмаро ғайрифаъол мекунем
+                            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-8 shadow-lg shadow-blue-200"
+                            onClick={handleUpdate}
+                        >
+                            {isUpdating ? "Дар ҳоли захира..." : "Захира кардан"}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
             <section className='py-5 px-3 bg-white rounded-xl border shadow-sm'>
                 <h1 className='text-xl font-bold'>Рӯйхати хонандагон</h1>
                 <p className='text-muted-foreground text-sm mb-4'>Ҳамаи хонандагони бақайдгирифташуда</p>
@@ -191,7 +448,7 @@ function StudentsPage() {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto border rounded-lg">
+                <div className="overflow-x-auto md:max-w-full max-w-84 border rounded-lg">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b">
@@ -204,7 +461,7 @@ function StudentsPage() {
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {students?.items?.map((student: IGetStudents) => (
-                                <tr key={student.id} className="hover:bg-gray-50/50 transition-colors">
+                                <tr key={student.id} onClick={() => setIdx(student.id)} className="hover:bg-gray-50/50 transition-colors">
                                     <td className="p-4">
                                         <div className="font-semibold text-gray-800">{student.first_name} {student.last_name}</div>
                                         <div className="text-xs text-gray-400">{student.middle_name}</div>

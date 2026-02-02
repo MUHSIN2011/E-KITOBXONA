@@ -37,11 +37,11 @@ export function ChartRadialLabel() {
     ]
 
     if (isLoading) return <div className="flex h-[85vh] items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
 
     return (
-        <Card className="flex flex-col border-none shadow-none bg-white">
+        <Card className="flex flex-col border-none shadow-none ">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Таносуби фонд</CardTitle>
                 <CardDescription>Нишондиҳандаҳои умумии китобҳо</CardDescription>
@@ -66,7 +66,7 @@ export function ChartRadialLabel() {
                             <LabelList
                                 position="insideStart"
                                 dataKey="status"
-                                className="fill-white capitalize mix-blend-luminosity"
+                                className="fill-gray-400 capitalize mix-blend-luminosity"
                                 fontSize={11}
                                 formatter={(value: string) => chartConfig[value as keyof typeof chartConfig]?.label}
                             />
