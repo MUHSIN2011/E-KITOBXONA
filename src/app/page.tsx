@@ -33,6 +33,12 @@ export default function LoginPage() {
         const decoded = jwtDecode<any>(result.access_token);
         const role = decoded.role;
 
+        localStorage.setItem("user", JSON.stringify({
+          role: role,
+          email: decoded.email,
+          id: decoded.sub
+        }));
+
         toast.success("Хуш омадед!");
 
         setTimeout(() => {

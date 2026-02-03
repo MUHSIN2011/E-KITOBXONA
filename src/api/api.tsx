@@ -87,18 +87,23 @@ export interface IAddNewStudentRequest {
     notes?: string;
 }
 
-export interface IRental {
-    id: number;
-    student_id: number;
-    student_name: string;
+export interface IRentedBook {
+    rental_id: number;
     textbook_title: string;
-    rent_start: string;
-    rent_end: string;
-    status: 'active' | 'returned';
     inventory_number: string;
+    rent_start: string;
+    status: 'active' | 'returned';
 }
 
-interface IGetRentalsResponse {
+export interface IRental {
+    student_id: number;
+    student_name: string;
+    class_name: string;
+    total_books_taken: number;
+    rented_books: IRentedBook[]; 
+}
+
+export interface IGetRentalsResponse {
     items: IRental[];
     total: number;
     skip: number;
@@ -184,6 +189,27 @@ export interface IStudentDetail {
 export interface IUpdateStudentRequest extends Partial<IAddNewStudentRequest> {
     id: number;
     is_active?: boolean;
+}
+
+export interface ICreateTextbookRequest {
+    title: string;
+    subject_id: number;
+    grade: number;
+    author: string;
+    publisher: string;
+    publication_year: number;
+    isbn: string;
+    print_price: number;
+    rent_value_per_year: number;
+    service_life_years: number;
+    payback_years: number;
+    description: string;      // Майдони ҳатмӣ ё холӣ ("")
+    cover_image_url?: string; // Агар илова кардан хоҳед
+}
+
+interface ISubject {
+    id: number;
+    name: string;
 }
 
 const baseQuery = fetchBaseQuery({
@@ -354,7 +380,7 @@ export const Todo = createApi({
             query: (yearId) => `reports/overview?academic_year_id=${yearId || 1}`,
             providesTags: ['Todo'],
         }),
-        createTextbook: builder.mutation<any, any>({
+        createTextbook: builder.mutation<IGetTextbooks[], ICreateTextbookRequest>({
             query: (newBook) => ({
                 url: 'textbooks/',
                 method: 'POST',
@@ -475,6 +501,19 @@ export const Todo = createApi({
                 method: 'POST',
             }),
         }),
+        GetSubjects: builder.query<ISubject[], void>({
+            query: () => ({
+                url: `subjects/`,
+                method: 'GET',
+            }),
+            providesTags: ['Todo'],
+        }),
+        CreateDamageReport: builder.mutation<any, number>({
+            query: (yearId) => ({
+                url: `damage-reports/`,
+                method: 'POST',
+            }),
+        }),
     }),
 });
 
@@ -510,5 +549,7 @@ export const {
     useGetStudentByIdQuery,
     useUpdateStudentMutation,
     useGetYearStatisticsQuery,
-    useCloseAcademicYearMutation
+    useCloseAcademicYearMutation,
+    useGetSubjectsQuery,
+    useCreateDamageReportMutation
 } = Todo;

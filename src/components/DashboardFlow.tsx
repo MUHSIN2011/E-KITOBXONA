@@ -172,7 +172,6 @@ export default function DashboardFlow() {
           </div>
         </div>
 
-        {/* Анимированные лучи */}
         <div className="absolute inset-0 pointer-events-none ">
           <AnimatedBeam
             containerRef={containerRef}
@@ -197,15 +196,15 @@ export default function DashboardFlow() {
           <AnimatedBeam containerRef={containerRef} fromRef={div3Ref} toRef={div7Ref} duration={3.3} gradientStartColor="rgb(99 102 241)" gradientStopColor="rgb(6 182 212)" />
         </div>
 
-        <div className="absolute top-4 right-4 hidden md:flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full border border-blue-200">
+        {/* <div className="absolute top-4 right-4 hidden md:flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-full border border-blue-200">
           <div className="flex items-center gap-1 ">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-xs font-medium text-slate-700">Система фаъол аст</span>
           </div>
           <div className="text-xs text-slate-500 ml-2">24/7</div>
-        </div>
+        </div> */}
 
-        <div className="absolute bottom-4 left-4 hidden md:flex items-center gap-3">
+        {/* <div className="absolute bottom-4 left-4 hidden md:flex items-center gap-3">
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-green-600" />
             <span className="text-xs text-slate-600">Амнияти баланд</span>
@@ -214,7 +213,7 @@ export default function DashboardFlow() {
             <Cloud className="w-4 h-4 text-blue-600" />
             <span className="text-xs text-slate-600">Облакӣ</span>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="mt-8 grid grid-cols-2  md:grid-cols-4 gap-4">

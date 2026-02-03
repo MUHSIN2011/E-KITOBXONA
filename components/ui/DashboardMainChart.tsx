@@ -1,8 +1,8 @@
 "use client"
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from "recharts"
-import { useGetRentalsQuery } from "@/src/api/api" //
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { useGetRentalsQuery } from "@/src/api/api"
 
 import {
     Card,
@@ -26,34 +26,34 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function DashboardMainChart() {
-    // 1. Гирифтани маълумот аз API
     const { data, isLoading } = useGetRentalsQuery({ skip: 0, limit: 1000 })
 
-    // 2. Коркарди маълумот
     const chartData = React.useMemo(() => {
         if (!data?.items || data.items.length === 0) return [];
 
-        // 1. Объект барои захира (ҳамаи моҳҳоро бо 0 оғоз мекунем)
         const counts: Record<string, number> = {
             "январ": 0, "феврал": 0, "март": 0, "апрел": 0, "май": 0, "июн": 0,
             "июл": 0, "август": 0, "сентябр": 0, "октябр": 0, "ноябр": 0, "декабр": 0
         };
 
-        data.items.forEach((item) => {
-            if (item.rent_start) {
-                const parts = item.rent_start.split("-");
-                const monthIndex = parseInt(parts[1], 10) - 1;
+        const monthsInternal = [
+            "январ", "феврал", "март", "апрел", "май", "июн",
+            "июл", "август", "сентябр", "октябр", "ноябр", "декабр"
+        ];
 
-                const monthsInternal = [
-                    "январ", "феврал", "март", "апрел", "май", "июн",
-                    "июл", "август", "сентябр", "октябр", "ноябр", "декабр"
-                ];
-
-                const monthName = monthsInternal[monthIndex];
-                if (monthName) {
-                    counts[monthName] += 1;
+        // Ислоҳи мантиқ: Гузаштан ба дохили rented_books
+        data.items.forEach((student) => {
+            student.rented_books?.forEach((book: any) => {
+                if (book.rent_start) {
+                    const parts = book.rent_start.split("-"); // Формат: "2026-02-03"
+                    const monthIndex = parseInt(parts[1], 10) - 1;
+                    const monthName = monthsInternal[monthIndex];
+                    
+                    if (monthName) {
+                        counts[monthName] += 1;
+                    }
                 }
-            }
+            });
         });
 
         const monthsOrder = [
@@ -61,35 +61,40 @@ export function DashboardMainChart() {
             "июл", "август", "сентябр", "октябр", "ноябр", "декабр"
         ];
 
-        return monthsOrder.map(m => ({
-            month: m.charAt(0).toUpperCase() + m.slice(1),
-            rentals: counts[m]
-        })).slice(0, 6);
+        // Моҳи ҷориро ёфта, 6 моҳи охирро нишон медиҳем
+        const currentMonth = new Date().getMonth();
+        const last6Months = [];
+        
+        for (let i = 5; i >= 0; i--) {
+            let idx = currentMonth - i;
+            if (idx < 0) idx += 12;
+            const m = monthsOrder[idx];
+            last6Months.push({
+                month: m.charAt(0).toUpperCase() + m.slice(1),
+                rentals: counts[m]
+            });
+        }
+
+        return last6Months;
     }, [data]);
 
-    if (isLoading) return <div className="flex h-[85vh] items-center justify-center">
+    if (isLoading) return (
+        <div className="flex h-[350px] items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         </div>
-
-    if (chartData.length === 0) {
-        return (
-            <Card className="flex h-[350px] items-center justify-center border-none shadow-none">
-                <p className="text-muted-foreground">Маълумот барои иҷора ёфт нашуд</p>
-            </Card>
-        )
-    }
+    )
 
     return (
         <Card className="border-none shadow-none bg-white">
             <CardHeader>
                 <CardTitle>Динамикаи иҷораи китобҳо</CardTitle>
-                <CardDescription>Миқдори китобҳои додашуда аз рӯи моҳҳо</CardDescription>
+                <CardDescription>Миқдори китобҳои додашуда дар 6 моҳи охир</CardDescription>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig} className="md:h-[320px] w-full">
+                <ChartContainer config={chartConfig} className="h-[320px] w-full">
                     <AreaChart
                         data={chartData}
-                        margin={{ left: 0, right: 0, top: 10, bottom: 0 }}
+                        margin={{ left: 12, right: 12, top: 10, bottom: 0 }}
                     >
                         <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
                         <XAxis
@@ -98,14 +103,14 @@ export function DashboardMainChart() {
                             axisLine={false}
                             tickMargin={8}
                         />
-                        <YAxis tickLine={false} axisLine={false} hide />
+                        <YAxis tickLine={false} axisLine={false} tickMargin={8} />
                         <ChartTooltip content={<ChartTooltipContent />} />
                         <Area
                             dataKey="rentals"
                             type="monotone"
-                            fill="#3b82f6"
+                            fill="var(--color-rentals)"
                             fillOpacity={0.2}
-                            stroke="#3b82f6"
+                            stroke="var(--color-rentals)"
                             strokeWidth={2}
                         />
                     </AreaChart>

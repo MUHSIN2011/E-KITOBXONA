@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { BookOpen, TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
-import { useGetBooksSchoolQuery } from "@/src/api/api" // Боварӣ ҳосил кунед, ки суроға дуруст аст
+import { BookOpen } from "lucide-react"
+import { Label, Pie, PieChart, Cell } from "recharts"
+import { useGetBooksSchoolQuery } from "@/src/api/api"
 
 import {
     Card,
@@ -20,12 +20,13 @@ import {
     type ChartConfig,
 } from "@/components/ui/chart"
 
+// Конфигуратсияи рангҳо ва номҳо
 const chartConfig = {
-    count: { label: "Шумора", color: "#cbd5e1" }, 
     available: { label: "Озод", color: "#22c55e" },
     rented: { label: "Дар иҷора", color: "#3b82f6" },
     damaged: { label: "Зарардида", color: "#eab308" },
     lost: { label: "Гумшуда", color: "#ef4444" },
+    other: { label: "Дигар", color: "#cbd5e1" },
 } satisfies ChartConfig
 
 export function ChartPieLabel() {
@@ -37,59 +38,68 @@ export function ChartPieLabel() {
     const chartData = React.useMemo(() => {
         if (!data?.items) return []
 
-        const stats = data.items.reduce((acc: Record<string, number>, item) => {
-            const status = item.status.toLowerCase()
-            acc[status] = (acc[status] || 0) + 1
-            return acc
-        }, {})
+        // Ҳисоб кардани миқдор аз рӯи статус
+        const stats = data.items.reduce((acc: Record<string, number>, item: any) => {
+            // Агар статус бо ҳарфи калон бошад (масалан 'Available'), онро ба 'available' табдил медиҳем
+            const status = (item.status || "other").toLowerCase();
+            acc[status] = (acc[status] || 0) + 1;
+            return acc;
+        }, {});
 
         return Object.entries(stats).map(([status, count]) => ({
             status,
             count,
-            fill: chartConfig[status as keyof typeof chartConfig]?.color || "#cbd5e1"
-        }))
+            // Интихоби ранг аз конфигуратсия
+            fill: chartConfig[status as keyof typeof chartConfig]?.color || chartConfig.other.color
+        }));
     }, [data])
 
     if (isLoading) {
-        return <div className="flex md:h-[85vh] items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        </div>
+        return (
+            <div className="flex h-[350px] items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        )
     }
 
     return (
-        <Card className="flex flex-col border-none shadow-none">
+        <Card className="flex flex-col border-none shadow-none bg-white">
             <CardHeader className="items-center pb-0">
-                <CardTitle className="text-xl">Ҳолати фонди китоб</CardTitle>
-                <CardDescription>Тақсимоти нусхаҳо аз рӯи статус</CardDescription>
+                <CardTitle className="text-xl font-bold">Ҳолати фонди китоб</CardTitle>
+                <CardDescription>Тақсимот аз рӯи статус</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
                     config={chartConfig}
-                    className="mx-auto aspect-square max-h-[250px] [&_.recharts-text]:fill-foreground"
+                    className="mx-auto aspect-square max-h-[200px]"
                 >
                     <PieChart>
-                        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                        <ChartTooltip 
+                            cursor={false} 
+                            content={<ChartTooltipContent hideLabel />} 
+                        />
                         <Pie
                             data={chartData}
                             dataKey="count"
                             nameKey="status"
-                            innerRadius={50}
+                            innerRadius={60}
                             outerRadius={80}
-                            strokeWidth={5}
-                            labelLine={true}
-                            label={({ status, percent }) =>
-                                `${chartConfig[status as keyof typeof chartConfig]?.label} (${(percent * 100).toFixed(0)}%)`
-                            }
+                            strokeWidth={2}
+                            stroke="#fff"
                         >
+                            {chartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
+                            
                             <Label
                                 content={({ viewBox }) => {
                                     if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                                         return (
                                             <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                                                <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-2xl font-bold">
+                                                <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
                                                     {data?.total || 0}
                                                 </tspan>
-                                                <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 20} className="fill-muted-foreground text-xs">
+                                                <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground text-sm">
                                                     Нусха
                                                 </tspan>
                                             </text>
@@ -101,12 +111,20 @@ export function ChartPieLabel() {
                     </PieChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col gap-2 text-sm">
-                <div className="flex items-center gap-2 font-medium leading-none">
-                    Ҳамагӣ нусхаҳо: {data?.total || 0} адад <BookOpen className="h-4 w-4" />
+            <CardFooter className="flex-col  text-sm">
+                <div className="grid grid-cols-2 gap-x-4 ">
+                    {chartData.map((item) => (
+                        <div key={item.status} className="flex items-center gap-2">
+                            <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.fill }} />
+                            <span className="text-muted-foreground italic">
+                                {chartConfig[item.status as keyof typeof chartConfig]?.label || item.status}:
+                            </span>
+                            <span className="font-bold">{item.count}</span>
+                        </div>
+                    ))}
                 </div>
-                <div className="leading-none text-muted-foreground">
-                    Назорати ҳолати техникӣ ва мавҷудият
+                <div className="mt-4 flex items-center gap-2 font-medium border-t pt-2 w-full justify-center">
+                    Ҳамагӣ: {data?.total || 0} адад <BookOpen className="h-4 w-4 text-blue-500" />
                 </div>
             </CardFooter>
         </Card>

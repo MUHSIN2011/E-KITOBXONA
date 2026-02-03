@@ -3,10 +3,14 @@ import React, { useState, useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { useForm } from "react-hook-form"
-import { ExternalLink, Funnel, Plus, BookOpen, DollarSign } from 'lucide-react'
+import { ExternalLink, Funnel, Plus, BookOpen, Loader2 } from 'lucide-react'
 
-// API & UI Components
-import { IGetTextbooks, useGetTextbooksQuery, useCreateTextbookMutation } from '@/src/api/api'
+import { 
+    IGetTextbooks, 
+    useGetTextbooksQuery, 
+    useCreateTextbookMutation, 
+    useGetSubjectsQuery 
+} from '@/src/api/api'
 import Card from '@/src/components/Card'
 import { TextAnimate } from '@/components/ui/text-animate'
 import { Button } from "@/components/ui/button"
@@ -34,8 +38,9 @@ function Page() {
     const [subject, setSubject] = useState<string>("all");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const { data: books, isLoading } = useGetTextbooksQuery(subject);
-    const [createTextbook] = useCreateTextbookMutation();
+    const { data: books, isLoading: booksLoading } = useGetTextbooksQuery(subject);
+    const { data: subjectsData } = useGetSubjectsQuery();
+    const [createTextbook, { isLoading: isCreating }] = useCreateTextbookMutation();
 
     const { register, handleSubmit, setValue, reset } = useForm();
 
@@ -47,20 +52,23 @@ function Page() {
         try {
             const payload = {
                 ...data,
+                subject_id: Number(data.subject_id),
                 grade: Number(data.grade),
                 publication_year: Number(data.publication_year),
                 print_price: Number(data.print_price),
                 rent_value_per_year: Number(data.rent_value_per_year),
                 service_life_years: Number(data.service_life_years || 5),
                 payback_years: Number(data.payback_years || 10),
+                description: data.description || "",
+                isbn: data.isbn || ""
             };
 
             await createTextbook(payload).unwrap();
-            setIsDialogOpen(false); // Пӯшидани диалог
-            reset(); // Тоза кардани форма
+            setIsDialogOpen(false);
+            reset();
             alert("Китоб бо муваффақият илова шуд!");
         } catch (error) {
-            console.error("Хатогӣ ҳангоми сохтан:", error);
+            console.error(error);
             alert("Хатогӣ рӯй дод!");
         }
     };
@@ -101,24 +109,16 @@ function Page() {
                                 </div>
                                 <div className="grid gap-2">
                                     <Label>Фан</Label>
-                                    <Select onValueChange={(v) => setValue("subject", v)}>
-                                        <SelectTrigger className="w-full  py-5  h-13 rounded-xl  transition-colors">
-                                            <SelectValue placeholder="Ҳама" />
+                                    <Select onValueChange={(v) => setValue("subject_id", v)}>
+                                        <SelectTrigger className="w-full py-5 h-13 rounded-xl transition-colors">
+                                            <SelectValue placeholder="Интихоби фан" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="all">Ҳамаи фанҳо</SelectItem>
-                                            <SelectItem value="math">Математика</SelectItem>
-                                            <SelectItem value="russian">Забони русӣ</SelectItem>
-                                            <SelectItem value="tajik">Забони тоҷикӣ</SelectItem>
-                                            <SelectItem value="english">Забони англисӣ</SelectItem>
-                                            <SelectItem value="physics">Физика</SelectItem>
-                                            <SelectItem value="chemistry">Химия</SelectItem>
-                                            <SelectItem value="biology">Биология</SelectItem>
-                                            <SelectItem value="history">Таърих</SelectItem>
-                                            <SelectItem value="geography">География</SelectItem>
-                                            <SelectItem value="literature">Адабиёт</SelectItem>
-                                            <SelectItem value="informatics">Информатика</SelectItem>
-                                            <SelectItem value="other">Дигар</SelectItem>
+                                            {subjectsData?.map((sub: any) => (
+                                                <SelectItem key={sub.id} value={sub.id.toString()}>
+                                                    {sub.name}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -138,6 +138,7 @@ function Page() {
                                     <Input placeholder="978-..." {...register("isbn")} />
                                 </div>
                             </div>
+
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label>Муаллиф</Label>
@@ -149,14 +150,14 @@ function Page() {
                                 </div>
                             </div>
 
-                            <div className=" rounded-lg  grid grid-cols-2 gap-4">
+                            <div className="rounded-lg grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                     <Label>Нархи чоп (TJS)</Label>
-                                    <Input type="number" {...register("print_price")} className="bg-white" />
+                                    <Input type="number" step="0.01" {...register("print_price")} className="bg-white" />
                                 </div>
                                 <div className="grid gap-2">
                                     <Label>Иҷора / сол</Label>
-                                    <Input type="number" {...register("rent_value_per_year")} className="bg-white" />
+                                    <Input type="number" step="0.01" {...register("rent_value_per_year")} className="bg-white" />
                                 </div>
                             </div>
 
@@ -166,42 +167,41 @@ function Page() {
                             </div>
 
                             <DialogFooter>
-                                <Button type="submit" className="w-full bg-blue-600 h-12">Захира кардан</Button>
+                                <Button type="submit" disabled={isCreating} className="w-full bg-blue-600 h-12">
+                                    {isCreating ? <Loader2 className="animate-spin" /> : "Захира кардан"}
+                                </Button>
                             </DialogFooter>
                         </form>
                     </DialogContent>
                 </Dialog>
             </div>
+
             <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-8'>
                 <Card
                     NameRole='Ҳамагӣ китобҳо'
                     cnt={books?.total?.toLocaleString() || "0"}
                     className="text-green-600"
                 />
-
                 <Card
                     NameRole='Дар база мавҷуд'
                     cnt={books?.items?.reduce((acc, book) => acc + (book.available_copies || 0), 0).toLocaleString() || "0"}
                     className="text-blue-600"
                 />
-
                 <Card
                     NameRole='Иҷорашуда'
                     cnt={books?.items?.reduce((acc, book) => acc + (book.rented_copies || 0), 0).toLocaleString() || "0"}
                     className="text-yellow-500"
                 />
-
                 <Card
                     NameRole='Нусхаҳои умумӣ'
                     cnt={books?.items?.reduce((acc, book) => acc + (book.total_copies || 0), 0).toLocaleString() || "0"}
                     className="text-red-600"
                 />
             </div>
+
             <section
                 className='p-3 my-3 bg-white rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-300'
-
                 data-aos="zoom-in"
-
                 data-aos-delay="500"
             >
                 <h1 className='text-2xl font-bold '>Фонди китобҳои дарсӣ</h1>
@@ -228,18 +228,11 @@ function Page() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Ҳамаи фанҳо</SelectItem>
-                                <SelectItem value="math">Математика</SelectItem>
-                                <SelectItem value="russian">Забони русӣ</SelectItem>
-                                <SelectItem value="tajik">Забони тоҷикӣ</SelectItem>
-                                <SelectItem value="english">Забони англисӣ</SelectItem>
-                                <SelectItem value="physics">Физика</SelectItem>
-                                <SelectItem value="chemistry">Химия</SelectItem>
-                                <SelectItem value="biology">Биология</SelectItem>
-                                <SelectItem value="history">Таърих</SelectItem>
-                                <SelectItem value="geography">География</SelectItem>
-                                <SelectItem value="literature">Адабиёт</SelectItem>
-                                <SelectItem value="informatics">Информатика</SelectItem>
-                                <SelectItem value="other">Дигар</SelectItem>
+                                {subjectsData?.map((sub: any) => (
+                                    <SelectItem key={sub.id} value={sub.name}>
+                                        {sub.name}
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -287,7 +280,6 @@ function Page() {
                                         {(() => {
                                             const currentYear = new Date().getFullYear();
                                             const age = currentYear - book.publication_year;
-
                                             if (age <= 2) {
                                                 return (
                                                     <span className="flex items-center w-fit gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
@@ -312,12 +304,9 @@ function Page() {
                             ))}
                         </tbody>
                     </table>
-                    {isLoading && (
-                        <div
-                            className="flex justify-center items-center p-8"
-                            data-aos="fade-in"
-                        >
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                    {booksLoading && (
+                        <div className="flex justify-center items-center p-8">
+                            <Loader2 className="animate-spin h-12 w-12 text-blue-600" />
                             <span className="ml-3 text-gray-600">Китобҳо дар ҳоли бор шудан...</span>
                         </div>
                     )}

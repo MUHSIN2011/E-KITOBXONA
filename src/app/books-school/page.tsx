@@ -45,6 +45,8 @@ function Page() {
         e.textbook.title.toLowerCase().includes(search.toLowerCase())
     ) || []
 
+
+
     useEffect(() => {
         AOS.init({
             duration: 900,
@@ -273,30 +275,35 @@ function Page() {
                                     </table>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                    {filteredBooks.map((item: any) => (
-                                        <div key={item.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                                            <div
-                                                className="flex justify-between items-start mb-3 p-3 rounded-lg h-40 bg-cover bg-center relative overflow-hidden shadow-inner"
-                                                style={{
-                                                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0)), url('https://student4.softclub.tj/api/v1/images/${item.cover_image_url}')`
-                                                }}
-                                            >
-                                                <span className="text-[10px] font-bold text-blue-700 bg-white/90 backdrop-blur-sm px-2 py-1 rounded shadow-sm uppercase border border-blue-100">
-                                                    {item.inventory_number}
-                                                </span>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    {filteredBooks.map((item: any) => {
+                                        const imageUrl = item.textbook.cover_image_url?.startsWith('http')
+                                            ? item.textbook.cover_image_url
+                                            : `https://student4.softclub.tj/api/v1/images/${item.textbook.cover_image_url}`;
+                                        return (
+                                            < div key={item.id} className="bg-white p-3 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow" >
+                                                <div
+                                                    className="flex justify-between items-start mb-3 p-3 rounded-lg h-70 bg-cover bg-center relative overflow-hidden shadow-inner"
+                                                    style={{
+                                                        backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0)), url('${imageUrl}')`
+                                                    }}
+                                                >
+                                                    <span className="text-[10px] font-bold text-blue-700 bg-white/90 backdrop-blur-sm px-2 py-1 rounded shadow-sm uppercase border border-blue-100">
+                                                        {item.inventory_number}
+                                                    </span>
 
-                                                <span className="text-[10px] font-medium text-white bg-black/40 backdrop-blur-md px-1.5 py-0.5 rounded">
-                                                    #{item.id}
-                                                </span>
+                                                    <span className="text-[10px] font-medium text-white bg-black/40 backdrop-blur-md px-1.5 py-0.5 rounded">
+                                                        #{item.id}
+                                                    </span>
+                                                </div>
+                                                <h3 className="font-bold text-gray-900 mb-4 line-clamp-1">{item.textbook.title}</h3>
+                                                <div className="flex justify-between text-sm border-t border-gray-50 pt-3">
+                                                    <div className="text-gray-500">Синф: <span className="font-bold text-gray-900">{item.textbook.grade}</span></div>
+                                                    <div className="text-gray-500">Сол: <span className="font-bold text-gray-900">{item.textbook.publication_year}</span></div>
+                                                </div>
                                             </div>
-                                            <h3 className="font-bold text-gray-900 mb-4 line-clamp-1">{item.textbook.title}</h3>
-                                            <div className="flex justify-between text-sm border-t border-gray-50 pt-3">
-                                                <div className="text-gray-500">Синф: <span className="font-bold text-gray-900">{item.textbook.grade}</span></div>
-                                                <div className="text-gray-500">Сол: <span className="font-bold text-gray-900">{item.textbook.publication_year}</span></div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </div>
                             )}
                         </>
@@ -336,7 +343,7 @@ function Page() {
                     </div>
                 </div>
             </section>
-        </main>
+        </main >
     )
 }
 

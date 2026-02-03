@@ -9,6 +9,7 @@ import { ChartPieLabel } from '@/components/ui/chart-pie-label'
 import { DashboardMainChart } from '@/components/ui/DashboardMainChart'
 import SchoolFinancialStatus from '@/components/ui/SchoolFinancialStatus'
 import DashboardFlow from '@/src/components/DashboardFlow'
+import ProtectedRoute from '@/src/components/ProtectedRoute'
 
 function Page() {
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
@@ -38,58 +39,63 @@ function Page() {
     if (isError) return <div className="p-10 text-center text-red-500">Хатогӣ ҳангоми гирифтани маълумот</div>
 
     return (
-        <div className="md:px-6 px-4 py-4 space-y-6">
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <Card
-                    data-aos="fade-up" data-aos-delay="100"
-                    path='/books-school'
-                    NameRole='Ҳамагӣ Китобҳо'
-                    cnt={items?.total_books?.toString() || '0'}
-                    Icons={<Book className="text-blue-600" />}
-                    description='Дар фонди мактаб'
-                />
-                <Card
-                    data-aos="fade-up" data-aos-delay="200"
-                    NameRole='Дар иҷора'
-                    cnt={items?.rented_books?.toString() || '0'}
-                    Icons={<BookUser className="text-orange-600" />}
-                    description='Дар дасти хонандагон'
-                />
-                <Card
-                    data-aos="fade-up" data-aos-delay="300"
-                    NameRole='Ҳамагӣ мактабҳо'
-                    cnt={regions?.length.toString() || '0'}
-                    Icons={<School className="text-green-600" />}
-                    description='Дар ноҳия/вилоят'
-                />
-                <Card
-                    data-aos="fade-up" data-aos-delay="400"
-                    path='/students'
-                    NameRole='Хонандагон'
-                    cnt={students?.total?.toString() || '0'}
-                    Icons={<GraduationCap className="text-purple-600" />}
-                    description='Фаъол дар система'
-                />
-            </section>
-
-                    <SchoolFinancialStatus
-                        balance={budget?.balance}
-                        rentalIncome={budget?.rental_income}
-                        totalExpenses={budget?.total_expenses}
+        <ProtectedRoute allowedRoles={["school"]}>
+            <div className="md:px-6 px-4 py-4 space-y-6">
+                <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <Card
+                        data-aos="fade-up" data-aos-delay="100"
+                        path='/books-school'
+                        NameRole='Ҳамагӣ Китобҳо'
+                        cnt={items?.total_books?.toString() || '0'}
+                        Icons={<Book className="text-blue-600" />}
+                        description='Дар фонди мактаб'
                     />
-            <DashboardFlow />
+                    <Card
+                        path='/rentals'
+                        data-aos="fade-up" data-aos-delay="200"
+                        NameRole='Дар иҷора'
+                        cnt={items?.rented_books?.toString() || '0'}
+                        Icons={<BookUser className="text-orange-600" />}
+                        description='Дар дасти хонандагон'
+                    />
+                    <Card
+                        path='/books-school'
+                        data-aos="fade-up" data-aos-delay="300"
+                        NameRole='Ҳамагӣ мактабҳо'
+                        cnt={regions?.length.toString() || '0'}
+                        Icons={<School className="text-green-600" />}
+                        description='Дар ноҳия/вилоят'
+                    />
+                    <Card
+                        data-aos="fade-up" data-aos-delay="400"
+                        path='/students'
+                        NameRole='Хонандагон'
+                        cnt={students?.total?.toString() || '0'}
+                        Icons={<GraduationCap className="text-purple-600" />}
+                        description='Фаъол дар система'
+                    />
+                </section>
 
-            <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-6">
-                <div className="lg:col-span-2 bg-white p-4 rounded-xl border shadow-sm" data-aos="zoom-in">
-                    <h3 className="text-lg font-semibold mb-4">Статистикаи солона</h3>
-                    <DashboardMainChart />
-                </div>
-                <div className="lg:col-span-1 bg-white p-4 rounded-xl border shadow-sm" data-aos="zoom-in" data-aos-delay="200">
-                    <h3 className="text-lg font-semibold mb-4">Тақсимоти китобҳо</h3>
-                    <ChartPieLabel />
-                </div>
-            </section>
-        </div>
+                <SchoolFinancialStatus
+                    balance={budget?.balance}
+                    rentalIncome={budget?.rental_income}
+                    totalExpenses={budget?.total_expenses}
+                />
+                <DashboardFlow />
+
+                <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-6">
+                    <div className="lg:col-span-2 bg-white p-4 rounded-xl border shadow-sm" data-aos="zoom-in">
+                        <h3 className="text-lg font-semibold mb-4">Статистикаи солона</h3>
+                        <DashboardMainChart />
+                    </div>
+                    <div className="lg:col-span-1 bg-white p-4 rounded-xl border shadow-sm" data-aos="zoom-in" data-aos-delay="200">
+                        <h3 className="text-lg font-semibold mb-4">Тақсимоти китобҳо</h3>
+                        <ChartPieLabel />
+                    </div>
+                </section>
+            </div>
+        </ProtectedRoute>
+
     )
 }
 
