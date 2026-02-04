@@ -49,7 +49,6 @@ export default function RentalsPage() {
     const { data: booksData } = useGetTextbooksQuery(undefined);
     const [rentBook, { isLoading: isRentLoading }] = useRentTextbookMutation();
 
-    // Ислоҳи 1: Илова кардани isReturnLoading
     const [returnBook, { isLoading: isReturnLoading }] = useReturnBookMutation();
 
     const handleRent = async () => {
@@ -108,11 +107,11 @@ export default function RentalsPage() {
     }, 0) || 0;
 
     return (
-        <div className="md:px-4 space-y-6 bg-[#f8fafc]">
+        <div className="md:px-4 space-y-6 bg-[#f8fafc] dark:bg-black">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Иҷораи китобҳо</h1>
-                    <p className="text-gray-500 text-sm">Назорати китобҳои додашуда ва баргардонидашуда</p>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Иҷораи китобҳо</h1>
+                    <p className="text-gray-500 text-sm dark:text-gray-400">Назорати китобҳои додашуда ва баргардонидашуда</p>
                 </div>
 
                 <Dialog open={open} onOpenChange={setOpen}>
@@ -121,17 +120,17 @@ export default function RentalsPage() {
                             + Иҷораи нав
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px] bg-white rounded-2xl border-0 shadow-xl">
+                    <DialogContent className="sm:max-w-125 bg-white dark:bg-[#1a1a1a] rounded-2xl border-0 shadow-xl">
                         <DialogHeader className="space-y-3">
-                            <DialogTitle className="text-xl font-bold text-gray-900">Додани китоби нав</DialogTitle>
+                            <DialogTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">Додани китоби нав</DialogTitle>
                             <DialogDescription>Маълумоти хонанда ва китобро интихоб кунед.</DialogDescription>
                             <div className="h-1 w-20 bg-[#0950c3] rounded-full"></div>
                         </DialogHeader>
 
                         <div className="grid gap-6 py-4">
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
-                                    <Userr className="h-4 w-4 text-[#0950c3]" /> Хонанда:
+                                <label className="text-sm font-medium text-gray-700  dark:text-gray-200 flex items-center gap-1">
+                                    <Userr className="h-4 w-4 text-[#0950c3] " /> Хонанда:
                                 </label>
                                 <Popover>
                                     <PopoverTrigger asChild>
@@ -163,7 +162,7 @@ export default function RentalsPage() {
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm font-medium text-gray-700 flex items-center gap-1">
+                                <label className="text-sm font-medium text-gray-700  dark:text-gray-200 flex items-center gap-1">
                                     <BookOpen className="h-4 w-4 text-[#0950c3]" /> Китобҳо:
                                 </label>
                                 <Popover>
@@ -186,8 +185,8 @@ export default function RentalsPage() {
                                                                     {isSelected && <Check className="h-3.5 w-3.5 text-white" />}
                                                                 </div>
                                                                 <div className="flex flex-col">
-                                                                    <span className="font-semibold text-gray-900">{book.title}</span>
-                                                                    <span className="text-[11px] text-gray-500">Муаллиф: {book.author} | Дастрас: {book.available_copies}</span>
+                                                                    <span className="font-semibold text-gray-900 dark:text-white">{book.title}</span>
+                                                                    <span className="text-[11px] text-gray-500 dark:text-gray-300">Муаллиф: {book.author} | Дастрас: {book.available_copies}</span>
                                                                 </div>
                                                             </div>
                                                             <Badge variant="outline" className="text-[10px]">Синфи {book.grade}</Badge>
@@ -203,7 +202,7 @@ export default function RentalsPage() {
 
                         <DialogFooter className="gap-3 pt-4 border-t">
                             <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl flex-1">Бекор кардан</Button>
-                            <Button onClick={handleRent} disabled={isRentLoading} className="bg-[#0950c3] text-white rounded-xl flex-1">
+                            <Button onClick={handleRent} disabled={isRentLoading} className="bg-[#0950c3] dark:hover:bg-[#0950c3b0] text-white rounded-xl flex-1">
                                 {isRentLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Тасдиқ кардан"}
                             </Button>
                         </DialogFooter>
@@ -212,12 +211,12 @@ export default function RentalsPage() {
             </div>
 
             <div className='grid md:grid-cols-3 grid-cols-1 gap-3 my-7'>
-                <div className='text-green-600'><Card NameRole={'Иҷораҳои фаъол'} cnt={statusBooksCount.toString()} /></div>
-                <div className='text-red-600'><Card NameRole={'Вайроншуда'} cnt={'0'} /></div>
-                <div className='text-yellow-500'><Card NameRole={'Баргардонидашуда'} cnt={statusReturnBooksCount.toString()} /></div>
+                <div><Card NameRole={'Иҷораҳои фаъол'} textColor='green-600' cnt={statusBooksCount.toString()} /></div>
+                <div><Card NameRole={'Вайроншуда'} textColor='red-600' cnt={'0'} /></div>
+                <div><Card NameRole={'Баргардонидашуда'}  textColor='yellow-500' cnt={statusReturnBooksCount.toString()} /></div>
             </div>
 
-            <div className="flex flex-col gap-4 bg-white p-4 rounded-2xl border shadow-sm">
+            <div className="flex flex-col gap-4 bg-white dark:bg-[#1a1a1a] p-4 rounded-2xl border shadow-sm">
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2'>
                     <div className="relative md:col-span-2 col-span-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -250,9 +249,9 @@ export default function RentalsPage() {
                     <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="rounded-xl bg-[#f9fafb] border-none h-11" />
                 </div>
 
-                <div className="rounded-2xl overflow-hidden overflow-x-auto bg-white">
+                <div className="rounded-2xl overflow-hidden overflow-x-auto bg-white dark:bg-[#1a1a1a]">
                     <Table>
-                        <TableHeader className="bg-gray-50/50">
+                        <TableHeader className="bg-gray-50/50 dark:bg-black">
                             <TableRow className="border-b">
                                 <TableHead className="font-bold py-4 pl-4">Хонанда</TableHead>
                                 <TableHead className="font-bold">Синфи</TableHead>
@@ -264,12 +263,12 @@ export default function RentalsPage() {
                             {rentalsLoading ? (
                                 <TableRow><TableCell colSpan={3} className="text-center py-10"><Loader2 className="animate-spin mx-auto" /></TableCell></TableRow>
                             ) : rentals?.items?.map((rental: any) => (
-                                <TableRow onClick={() => setSelectedStudent(rental)} key={rental.id} className="hover:bg-gray-50/50 transition-colors cursor-pointer">
+                                <TableRow onClick={() => setSelectedStudent(rental)} key={rental.id} className="hover:bg-gray-50/50 hover:dark:bg-blue-500/50 transition-colors cursor-pointer">
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-[#0950c3]"><User className="w-4 h-4" /></div>
                                             <div>
-                                                <div className="font-semibold text-gray-900">{rental.student_name}</div>
+                                                <div className="font-semibold text-gray-900 dark:text-white">{rental.student_name}</div>
                                                 <div className="text-[10px] text-gray-400">ID: {rental.student_id}</div>
                                             </div>
                                         </div>
@@ -298,7 +297,7 @@ export default function RentalsPage() {
 
                     {selectedStudent && (
                         <div className="py-6 space-y-6">
-                            <div className="flex items-center gap-4 bg-blue-50 p-4 rounded-xl">
+                            <div className="flex items-center gap-4 bg-blue-50 dark:bg-[#1a1a1a] p-4 rounded-xl">
                                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                                     {selectedStudent.student_name[0]}
                                 </div>
@@ -314,7 +313,7 @@ export default function RentalsPage() {
                                     <Button size="sm" variant="outline" className="text-red-600" >Ҳамаро гирифтан</Button>
                                 </div>
                                 {selectedStudent.rented_books?.map((book: any, index: number) => (
-                                    <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-xl shadow-sm items-center  relative overflow-hidden bg-white mb-2">
+                                    <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-xl shadow-sm items-center  relative overflow-hidden bg-white dark:bg-black mb-2">
                                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600"></div>
                                         <div className="space-y-1">
                                             <p className="text-xs text-gray-400 uppercase font-semibold">Номи китоб</p>

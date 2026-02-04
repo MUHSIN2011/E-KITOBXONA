@@ -53,52 +53,52 @@ function ProfilePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm">
+                <Card className="border-none shadow-xl bg-white/80 dark:bg-[#1a1a1a] backdrop-blur-sm">
                     <CardHeader>
-                        <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
+                        <CardTitle className="text-lg flex items-center gap-2 text-slate-700 dark:text-white">
                             <Mail className="text-blue-500" size={18} /> Маълумоти тамос
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                        <div className="p-3 bg-slate-50 rounded-xl flex justify-between items-center">
-                            <span className="text-slate-500 text-sm">Почтаи электронӣ:</span>
-                            <span className="font-semibold text-slate-800">{user?.email}</span>
+                        <div className="p-3 bg-slate-50 dark:bg-black rounded-xl flex justify-between items-center">
+                            <span className="text-slate-500 text-sm dark:text-slate-400">Почтаи электронӣ:</span>
+                            <span className="font-semibold text-slate-800 dark:text-slate-300">{user?.email}</span>
                         </div>
-                        <div className="p-3 bg-slate-50 rounded-xl flex justify-between items-center">
-                            <span className="text-slate-500 text-sm">Статуси верификатсия:</span>
-                            <span className={user?.is_verified ? "text-green-600 font-bold" : "text-amber-600 font-bold"}>
+                        <div className="p-3 bg-slate-50 rounded-xl  dark:bg-black flex justify-between items-center">
+                            <span className="text-slate-500  dark:text-slate-400 text-sm">Статуси верификатсия:</span>
+                            <span className={user?.is_verified ? "text-green-600 font-bold  " : "text-amber-600 font-bold"}>
                                 {user?.is_verified ? "Тасдиқшуда" : "Мунтазири тасдиқ"}
                             </span>
                         </div>
                     </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-xl bg-white/80 backdrop-blur-sm">
+                <Card className="border-none shadow-xl bg-white/80 dark:bg-[#1a1a1a] backdrop-blur-sm">
                     <CardHeader>
-                        <CardTitle className="text-lg flex items-center gap-2 text-slate-700">
+                        <CardTitle className="text-lg flex items-center gap-2 text-slate-700 dark:text-white">
                             <MapPin className="text-red-500" size={18} /> Ҳудуди фаъолият
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-3 gap-2 text-center text-xs font-bold uppercase tracking-wider">
-                        <div className="p-3 bg-orange-50 rounded-xl text-orange-700">
+                    <CardContent className="grid grid-cols-1 gap-2 text-center text-xs font-bold uppercase tracking-wider">
+                        <div className="p-3 bg-orange-50 dark:bg-red-900/60 rounded-xl text-orange-700 dark:text-white">
                             <p className="text-[10px] text-orange-500 opacity-70">Вилоят</p>
-                            ID: {user?.region_id}
+                            ID: {user?.region_name}
                         </div>
-                        <div className="p-3 bg-blue-50 rounded-xl text-blue-700">
+                        <div className="p-3 bg-blue-50 rounded-xl text-blue-700 dark:bg-black">
                             <p className="text-[10px] text-blue-500 opacity-70">Ноҳия</p>
-                            ID: {user?.district_id}
+                            ID: {user?.district_name}
                         </div>
-                        <div className="p-3 bg-green-50 rounded-xl text-green-700">
-                            <p className="text-[10px] text-green-500 opacity-70">Мактаб</p>
-                            ID: {user?.school_id}
+                        <div className="p-3 bg-green-50 rounded-xl text-green-700 dark:text-green-300 dark:bg-green-500/50">
+                            <p className="text-[10px] text-green-500 opacity-70 dark:text-green-300">Мактаб</p>
+                            ID: {user?.full_name}
                         </div>
                     </CardContent>
                 </Card>
 
                 <Card className="border-none shadow-xl md:col-span-2">
                     <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
-                            <div className="p-3 bg-white rounded-xl shadow-sm">
+                        <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-black rounded-2xl">
+                            <div className="p-3 bg-white rounded-xl dark:bg-[#1a1a1a] shadow-sm">
                                 <Calendar className="text-blue-500" />
                             </div>
                             <div>
@@ -109,8 +109,8 @@ function ProfilePage() {
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl">
-                            <div className="p-3 bg-white rounded-xl shadow-sm">
+                        <div className="flex items-center gap-4 p-4 bg-slate-50 dark:bg-black rounded-2xl">
+                            <div className="p-3 bg-white rounded-xl dark:bg-[#1a1a1a] shadow-sm">
                                 <Clock className="text-purple-500" />
                             </div>
                             <div>

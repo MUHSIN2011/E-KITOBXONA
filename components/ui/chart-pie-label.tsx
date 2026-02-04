@@ -59,7 +59,7 @@ export function ChartPieLabel() {
     }
 
     return (
-        <Card className="flex flex-col border-none shadow-none bg-white">
+        <Card className="flex flex-col border-none shadow-none bg-white dark:bg-[#1a1a1a]">
             <CardHeader className="items-center pb-0">
                 <CardTitle className="text-xl font-bold">Ҳолати фонди китоб</CardTitle>
                 <CardDescription>Тақсимот аз рӯи статус</CardDescription>

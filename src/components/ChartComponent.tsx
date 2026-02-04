@@ -15,7 +15,6 @@ const MyBarChart = () => {
     const chartData = useMemo(() => {
         const data = districtsData as any;
         const items = Array.isArray(data) ? [...data] : [...(data?.items || [])];
-
         items.sort((a: any, b: any) => b.schools_count - a.schools_count);
 
         return {
@@ -29,12 +28,13 @@ const MyBarChart = () => {
             type: 'bar',
             toolbar: { show: false },
             fontFamily: 'Inter, sans-serif',
-            // Ин қисм барои мутобиқшавӣ ба Dark Mode муҳим аст
             background: 'transparent',
-            foreColor: '#94a3b8',
+            // Ранги умумии текстҳо (xaxis ва ғайра) акнун ба ҷои сафед, хокистарии мулоим аст
+            foreColor: '#64748b', 
         },
+        // Мо 'theme.mode'-ро хомӯш мекунем ё 'light' мемонем, то худамон рангҳоро идора кунем
         theme: {
-            mode: 'dark', // Ин автоматикӣ эффектҳои торикро илова мекунад
+            mode: 'light', 
         },
         plotOptions: {
             bar: {
@@ -51,7 +51,7 @@ const MyBarChart = () => {
             style: {
                 fontSize: '12px',
                 fontWeight: 700,
-                colors: ['#fff']
+                colors: ['#fff'] // Рақами дохили сутунҳо ҳамеша сафед мемонад (зеро сутунҳо рангаанд)
             },
             formatter: (val: any) => `${val}`,
             offsetX: 5,
@@ -62,7 +62,10 @@ const MyBarChart = () => {
             axisBorder: { show: false },
             axisTicks: { show: false },
             labels: {
-                style: { colors: '#94a3b8', fontSize: '12px' }
+                style: { 
+                    colors: '#64748b', // Ранги ададҳои поёни график
+                    fontSize: '12px' 
+                }
             },
         },
         yaxis: {
@@ -70,18 +73,21 @@ const MyBarChart = () => {
                 style: {
                     fontSize: '11px',
                     fontWeight: 600,
-                    colors: '#f8fafc' // Ранги номи ноҳияҳо дар режими торик
+                    // ИН ҶОИ АСОСӢ: Ранги номи ноҳияҳоро 'inherit' ё ранги ториктар мемонем
+                    // то ки дар ҳарду ҳолат (сафед ва dark) бо ёрии foreColor-и ApexCharts кор кунад.
+                    colors: '#475569' 
                 }
             }
         },
         grid: {
-            borderColor: '#334155', // Ранги хатҳои сетка дар Dark Mode
+            // Ранги сетка акнун хеле хира аст, ки дар сафед ҳам халал нарасонад
+            borderColor: '#e2e8f0', 
             strokeDashArray: 4,
             xaxis: { lines: { show: true } },
             yaxis: { lines: { show: false } }
         },
         tooltip: {
-            theme: 'dark', // Тоолтип ҳам бояд торик бошад
+            theme: 'light', // Tooltip-ро light кардам, то дар ҳарду режим бехато намояд
             y: {
                 formatter: (val: number) => `${val} адад мактаб`
             }
@@ -105,7 +111,7 @@ const MyBarChart = () => {
                         className="bg-transparent border-none text-sm font-bold text-gray-700 dark:text-slate-200 focus:ring-0 outline-none cursor-pointer"
                     >
                         {regions?.map((region: any) => (
-                            <option key={region.id} value={region.id} className="dark:bg-[#1a1a1a]">
+                            <option key={region.id} value={region.id} className="text-gray-900">
                                 {region.name}
                             </option>
                         ))}
