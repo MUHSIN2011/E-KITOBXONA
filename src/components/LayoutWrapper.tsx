@@ -154,7 +154,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                                         </MenubarMenu>
                                     </Menubar>
                                 </div>
-                                <button onClick={Logout} className="flex items-center gap-3 text-slate-400 hover:text-red-500 transition-all text-sm font-semibold w-full px-1">
+                                <button onClick={Logout} className="flex items-center gap-3 cursor-pointer hover:bg-red-500/10 p-3 rounded-sm text-slate-400 hover:text-red-500 transition-all text-sm font-semibold w-full px-1">
                                     <LogOut size={18} /> Баромад
                                 </button>
                             </footer>

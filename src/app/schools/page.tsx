@@ -256,17 +256,32 @@ function DeliveryPage() {
                                     Номи китоби дарсӣ
                                 </Label>
                                 <Select onValueChange={(v) => setFormData({ ...formData, textbook_id: v })}>
-                                    <SelectTrigger className="h-14 border-slate-200 bg-white shadow-sm text-lg">
-                                        <SelectValue placeholder="Китобро интихоб кунед..." />
+                                    <SelectTrigger className="min-h-[70px] h-auto border-slate-200 bg-white shadow-sm text-lg py-2 px-4 transition-all">
+                                        {/* Мо SelectValue-ро дар дохили як контейнер мегирем, ки overflow-ро идора кунад */}
+                                        <div className="flex flex-col items-start text-left w-full overflow-hidden leading-tight">
+                                            <SelectValue placeholder="Китобро интихоб кунед..." />
+                                        </div>
                                     </SelectTrigger>
-                                    <SelectContent className="max-h-[400px]">
+
+                                    <SelectContent className="max-h-[400px] w-[var(--radix-select-trigger-width)]">
                                         {textbooks?.items?.map((book: any) => (
-                                            <SelectItem key={book.id} value={book.id.toString()}>
-                                                <div className="flex flex-col py-2">
-                                                    <span className="font-semibold">{book.title}</span>
-                                                    <span className="text-sm text-slate-500">
+                                            <SelectItem
+                                                key={book.id}
+                                                value={book.id.toString()}
+                                                className="focus:bg-blue-50 cursor-pointer py-3"
+                                            >
+                                                <div className="flex flex-col gap-0.5">
+                                                    <span className="font-bold text-slate-900 leading-none">
+                                                        {book.title}
+                                                    </span>
+                                                    <span className="text-sm text-slate-500 font-medium">
                                                         Синфи {book.grade} • {book.author}
                                                     </span>
+                                                    {book.print_price && (
+                                                        <span className="text-[10px] text-blue-600 uppercase tracking-wider font-bold">
+                                                            {book.print_price} TJS
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </SelectItem>
                                         ))}

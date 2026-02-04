@@ -100,7 +100,7 @@ export interface IRental {
     student_name: string;
     class_name: string;
     total_books_taken: number;
-    rented_books: IRentedBook[]; 
+    rented_books: IRentedBook[];
 }
 
 export interface IGetRentalsResponse {
@@ -305,12 +305,15 @@ export const Todo = createApi({
                 url: `textbooks/`,
                 method: 'GET',
                 params: {
-                    subject: subject && subject !== 'all' ? subject : undefined,
+                    subject_id: subject && subject !== 'all' ? subject : undefined,
                     skip: 0,
                     limit: 100
                 }
             }),
-            providesTags: ['Textbooks'],
+            providesTags: (result, error, subject) => [
+                { type: 'Textbooks', id: subject || 'ALL' },
+                ...(result?.items?.map(item => ({ type: 'Textbooks' as const, id: item.id })) || [])
+            ],
         }),
         GetRentals: builder.query<IGetRentalsResponse, IGetRentalsParams>({
             query: (params) => ({

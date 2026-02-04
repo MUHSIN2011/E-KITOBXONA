@@ -5,11 +5,11 @@ import 'aos/dist/aos.css'
 import { useForm } from "react-hook-form"
 import { ExternalLink, Funnel, Plus, BookOpen, Loader2 } from 'lucide-react'
 
-import { 
-    IGetTextbooks, 
-    useGetTextbooksQuery, 
-    useCreateTextbookMutation, 
-    useGetSubjectsQuery 
+import {
+    IGetTextbooks,
+    useGetTextbooksQuery,
+    useCreateTextbookMutation,
+    useGetSubjectsQuery
 } from '@/src/api/api'
 import Card from '@/src/components/Card'
 import { TextAnimate } from '@/components/ui/text-animate'
@@ -36,9 +36,13 @@ import {
 
 function Page() {
     const [subject, setSubject] = useState<string>("all");
+    console.log(subject);
+
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const { data: books, isLoading: booksLoading } = useGetTextbooksQuery(subject);
+    const { data: books, isFetching, isLoading: booksLoading } = useGetTextbooksQuery(subject);
+    console.log(books);
+
     const { data: subjectsData } = useGetSubjectsQuery();
     const [createTextbook, { isLoading: isCreating }] = useCreateTextbookMutation();
 
@@ -229,7 +233,7 @@ function Page() {
                             <SelectContent>
                                 <SelectItem value="all">Ҳамаи фанҳо</SelectItem>
                                 {subjectsData?.map((sub: any) => (
-                                    <SelectItem key={sub.id} value={sub.name}>
+                                    <SelectItem key={sub.id} value={sub.id.toString()}>
                                         {sub.name}
                                     </SelectItem>
                                 ))}
@@ -248,8 +252,9 @@ function Page() {
                 </div>
 
                 <div
-                    className="overflow-x-auto rounded-sm border-gray-200 bg-white"
-                    data-aos="fade-up"
+                    className={`overflow-x-auto rounded-sm border-gray-200 bg-white transition-opacity duration-200 ${isFetching ? "opacity-50" : "opacity-100"
+                        }`}
+                    // data-aos="fade-up"
                     data-aos-delay="900"
                 >
                     <table className="w-full text-left border-collapse">

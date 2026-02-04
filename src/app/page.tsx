@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Lock, Mail } from "lucide-react";
+import { BookOpen, Lock, Mail, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useLoginUserMutation } from "../api/api";
 import { useForm } from "react-hook-form";
@@ -10,11 +10,13 @@ import { SaveToken } from "@/utils/axios";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from 'react-hot-toast';
 import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
 
 export default function LoginPage() {
 
   const router = useRouter()
   const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [showPassword, setShowPassword] = useState(false);
 
 
   const {
@@ -117,12 +119,25 @@ export default function LoginPage() {
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+
                 <Input
                   {...register("password", { required: "Рамз ҳатмист" })}
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className={`pl-10 h-12 rounded-xl ${errors.password ? "border-red-500" : ""}`}
+                  className={`pl-10 pr-10 h-12 rounded-xl ${errors.password ? "border-red-500" : ""}`}
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
               </div>
               {errors.password && <p className="text-red-500 text-xs">{errors.password.message as string}</p>}
             </div>

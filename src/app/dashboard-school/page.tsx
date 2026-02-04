@@ -1,5 +1,5 @@
 'use client'
-import { useGetMeQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetSchoolBudgetQuery, useGetStudentsQuery } from '@/src/api/api'
+import { useGetActiveYearQuery, useGetMeQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetSchoolBudgetQuery, useGetStudentsQuery } from '@/src/api/api'
 import Card from '../../components/Card'
 import { Book, BookUser, GraduationCap, School } from 'lucide-react'
 import React, { useEffect } from 'react'
@@ -7,14 +7,17 @@ import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { ChartPieLabel } from '@/components/ui/chart-pie-label'
 import { DashboardMainChart } from '@/components/ui/DashboardMainChart'
-import SchoolFinancialStatus from '@/components/ui/SchoolFinancialStatus'
+import { SchoolFinancialStatus } from '@/components/ui/SchoolFinancialStatus'
 import DashboardFlow from '@/src/components/DashboardFlow'
 import ProtectedRoute from '@/src/components/ProtectedRoute'
 
 function Page() {
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
-    const { data: items } = useGetReportsOverviewQuery()
     const { data: me } = useGetMeQuery()
+    const { data: activeYear } = useGetActiveYearQuery()
+    const currentYearId = activeYear?.id
+    const { data: items } = useGetReportsOverviewQuery(currentYearId, { skip: !currentYearId })
+
     const { data: students } = useGetStudentsQuery({ skip: 0, limit: 1 })
 
     const { data: budget } = useGetSchoolBudgetQuery(
@@ -78,8 +81,12 @@ function Page() {
 
                 <SchoolFinancialStatus
                     balance={budget?.balance}
-                    rentalIncome={budget?.rental_income}
+                    rentalIncome={budget?.total_income}
                     totalExpenses={budget?.total_expenses}
+                    paybackPercent={budget?.total_expenses > 0
+                        ? (budget.total_income / budget.total_expenses) * 100
+                        : 0
+                    }
                 />
                 <DashboardFlow />
 
