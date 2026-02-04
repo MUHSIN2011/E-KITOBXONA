@@ -1,5 +1,5 @@
 'use client'
-import { useCloseAcademicYearMutation, useGetRegionsQuery, useGetReportsOverviewQuery } from '@/src/api/api'
+import { useCloseAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery } from '@/src/api/api'
 import Card from '../../components/Card'
 import { BookOpen, Building2, CalendarDays, GraduationCap, Lock, MapPin, School } from 'lucide-react'
 import MyBarChart from '@/src/components/ChartComponent'
@@ -16,9 +16,11 @@ import ProtectedRoute from '@/src/components/ProtectedRoute'
 
 function Page() {
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
-    const { data: overview } = useGetReportsOverviewQuery(1);
     const [closeYear, { isLoading: isClosing }] = useCloseAcademicYearMutation();
-    const activeYearId = 1;
+    const { data: getyears } = useGetActiveYearQuery();
+    const activeYearId = getyears?.id;
+    const { data: overview } = useGetReportsOverviewQuery(getyears?.id);
+    console.log(getyears);
 
     useEffect(() => {
         AOS.init({
@@ -31,9 +33,18 @@ function Page() {
     }, [])
 
     const handleCloseYear = async () => {
+        if (!activeYearId) {
+            alert("ID-и соли таҳсил ёфт нашуд!");
+            return;
+        }
+
         if (window.confirm("Оё шумо мутмаин ҳастед, ки мехоҳед соли таҳсилро бандед? Ин амал баргардонда намешавад!")) {
-            await closeYear(activeYearId);
-            alert("Соли таҳсил бо муваффақият баста шуд.");
+            try {
+                await closeYear(activeYearId).unwrap();
+                alert("Соли таҳсил бо муваффақият баста шуд.");
+            } catch (error) {
+                alert("Хатогӣ ҳангоми бастан.");
+            }
         }
     }
 
@@ -45,12 +56,12 @@ function Page() {
     return (
         <ProtectedRoute allowedRoles={["ministry"]}>
             <div className="px-4 py-3">
-                <div className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white p-4 rounded-2xl border border-blue-100 shadow-sm gap-4" data-aos="fade-down">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white dark:bg-[#1a1a1a] p-4 rounded-2xl border border-blue-100 dark:border-0 shadow-sm gap-4" data-aos="fade-down">
                     <div>
-                        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800">
-                            <CalendarDays className="text-blue-600" /> Соли таҳсили 2025-2026
+                        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
+                            <CalendarDays className="text-blue-600" /> Соли таҳсили {getyears?.name}
                         </h2>
-                        <p className="text-sm text-slate-500">Назорати умумидавлатии фондҳои китоб</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-300">Назорати умумидавлатии фондҳои китоб</p>
                     </div>
                     <div className="flex gap-3">
                         <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
@@ -114,7 +125,7 @@ function Page() {
                 </section>
 
                 <section
-                    className='border rounded-xl p-3 my-5 bg-white'
+                    className='border rounded-xl p-3 my-5 bg-white dark:bg-[#1a1a1a]'
                 // data-aos="fade-up"
                 // data-aos-delay="100"
                 >
@@ -124,7 +135,7 @@ function Page() {
                 </section>
 
                 <section
-                    className='border rounded-xl p-3  bg-white'
+                    className='border rounded-xl p-3  bg-white dark:bg-[#1a1a1a]'
                 // data-aos="fade-up"
                 // data-aos-delay="100"
                 >

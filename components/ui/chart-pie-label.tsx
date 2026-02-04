@@ -20,7 +20,6 @@ import {
     type ChartConfig,
 } from "@/components/ui/chart"
 
-// Конфигуратсияи рангҳо ва номҳо
 const chartConfig = {
     available: { label: "Озод", color: "#22c55e" },
     rented: { label: "Дар иҷора", color: "#3b82f6" },
@@ -38,9 +37,7 @@ export function ChartPieLabel() {
     const chartData = React.useMemo(() => {
         if (!data?.items) return []
 
-        // Ҳисоб кардани миқдор аз рӯи статус
         const stats = data.items.reduce((acc: Record<string, number>, item: any) => {
-            // Агар статус бо ҳарфи калон бошад (масалан 'Available'), онро ба 'available' табдил медиҳем
             const status = (item.status || "other").toLowerCase();
             acc[status] = (acc[status] || 0) + 1;
             return acc;
@@ -49,7 +46,6 @@ export function ChartPieLabel() {
         return Object.entries(stats).map(([status, count]) => ({
             status,
             count,
-            // Интихоби ранг аз конфигуратсия
             fill: chartConfig[status as keyof typeof chartConfig]?.color || chartConfig.other.color
         }));
     }, [data])

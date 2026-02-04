@@ -377,7 +377,7 @@ export const Todo = createApi({
             scope: string;
             total_districts: number;
         }, number | void>({
-            query: (yearId) => `reports/overview?academic_year_id=${yearId || 1}`,
+            query: (yearId) => `reports/overview?academic_year_id=${yearId}`,
             providesTags: ['Todo'],
         }),
         createTextbook: builder.mutation<IGetTextbooks[], ICreateTextbookRequest>({

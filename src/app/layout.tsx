@@ -32,13 +32,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
 
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased dark:bg-black bg-gray-50`}
       >
         <StoreProvider>
           <LayoutWrapper>
             <ThemeProvider
               attribute="class"
-              defaultTheme="system"
+              defaultTheme="light"
               enableSystem
               disableTransitionOnChange
             >

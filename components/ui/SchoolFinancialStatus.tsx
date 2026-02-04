@@ -6,17 +6,16 @@ interface SchoolFinancialStatusProps {
   balance?: number;
   rentalIncome?: number;
   totalExpenses?: number;
-  allocatedBudget?: number; // Илова кардем барои ҳисоби фоиз
+  allocatedBudget?: number; 
 }
 
 export default function SchoolFinancialStatus({
   balance = 0,
   rentalIncome = 0,
   totalExpenses = 0,
-  allocatedBudget = 1 // Пешгирӣ аз тақсим ба 0
+  allocatedBudget = 1 
 }: SchoolFinancialStatusProps) {
 
-  // Ҳисоби фоизи хароҷот нисбат ба бюджети ҷудошуда
   const spentPercentage = Math.min(Math.round((totalExpenses / (allocatedBudget || 1)) * 100), 100);
 
   return (

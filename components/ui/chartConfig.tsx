@@ -28,6 +28,7 @@ const chartConfig = {
 
 export function ChartRadialLabel() {
     const { data: overview, isLoading } = useGetReportsOverviewQuery(1)
+    console.log(overview);
 
     const chartData = [
         { status: "total", count: overview?.total_books || 0, fill: "var(--color-total)" },

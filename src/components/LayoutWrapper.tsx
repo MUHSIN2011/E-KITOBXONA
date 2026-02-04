@@ -9,6 +9,7 @@ import AsideNavbar from "@/src/components/AsideNavbar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menubar, MenubarContent, MenubarGroup, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger } from "@/components/ui/menubar";
+import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 
 interface UserToken {
     full_name: string;
@@ -84,7 +85,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                                     <Menu size={24} />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="p-0 w-72 bg-slate-900 border-r-slate-800 text-white">
+                            <SheetContent side="left" className="p-0 w-72 bg-slate-900 dark:bg-black border-r-slate-800 text-white">
                                 <div className="flex flex-col h-full text-white">
                                     <div className="px-4 py-5">
                                         <div className="flex items-center gap-3 mb-8">
@@ -122,7 +123,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                         </Sheet>
                     </div>
 
-                    <aside className={`hidden lg:block bg-slate-900 text-white fixed h-full z-10 border-r border-slate-800 shadow-2xl transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-64 translate-x-0" : "w-0 -translate-x-full"}`}>
+                    <aside className={`hidden lg:block bg-slate-900 dark:bg-[#1a1a1a] text-white fixed h-full z-10 border-r border-slate-800 shadow-2xl transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-64 translate-x-0" : "w-0 -translate-x-full"}`}>
                         <div className={`p-6 flex flex-col justify-between h-screen w-64 transition-opacity duration-300 ${isSidebarOpen ? "opacity-100" : "opacity-0"}`}>
                             <div>
                                 <div className="flex items-center gap-3 mb-8">
@@ -174,19 +175,20 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
             <main className={`flex-1 min-h-screen flex flex-col transition-all duration-300 ease-in-out ${!isLoginPage && !isRegisterPage ? (isSidebarOpen ? "lg:ml-64" : "ml-0") : "justify-center items-center"}`}>
                 {!isLoginPage && !isRegisterPage && (
-                    <header className="h-16 bg-white border-b sticky top-0 z-40 px-4 md:px-6 flex items-center justify-between w-full">
+                    <header className="h-16 bg-white dark:bg-[#1a1a1a] border-b sticky top-0 z-40 px-4 md:px-6 flex items-center justify-between w-full">
                         <div className="flex items-center gap-2">
                             <button
                                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                                className="hidden lg:block hover:bg-slate-100 rounded-lg transition-colors text-slate-600"
+                                className="hidden lg:block dark:hover:bg-black hover:bg-slate-100 dark:hover:text-blue-600 rounded-lg transition-colors dark:text-white text-slate-600"
                             >
                                 {isSidebarOpen ? <PanelRightClose size={22} /> : <PanelLeftClose size={22} />}
                             </button>
-                            <span className="text-sm font-medium text-gray-500 hidden sm:block">
+                            <span className="text-sm dark:text-white text-slate-600 font-medium  hidden sm:block">
                                 {user?.role === "ministry" ? "Маориф" : `Сатҳи мактабӣ ${user?.email?.split('@')[0] || ""}`}
                             </span>
                         </div>
                         <div className="flex items-center ml-auto lg:ml-0">
+                            <AnimatedThemeToggler />
                             <Search className="relative left-9 text-blue-500 z-10" size={18} />
                             <Input
                                 id="search"

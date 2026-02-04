@@ -41,11 +41,10 @@ export function DashboardMainChart() {
             "июл", "август", "сентябр", "октябр", "ноябр", "декабр"
         ];
 
-        // Ислоҳи мантиқ: Гузаштан ба дохили rented_books
         data.items.forEach((student) => {
             student.rented_books?.forEach((book: any) => {
                 if (book.rent_start) {
-                    const parts = book.rent_start.split("-"); // Формат: "2026-02-03"
+                    const parts = book.rent_start.split("-");
                     const monthIndex = parseInt(parts[1], 10) - 1;
                     const monthName = monthsInternal[monthIndex];
                     
