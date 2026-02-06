@@ -5,7 +5,7 @@ import { CircleUser, Database, School, BookOpen, Landmark, Users, BarChart3, Clo
 import { AnimatedBeam } from "@/components/ui/animated-beam";
 import { motion } from "framer-motion";
 
-export default function DashboardFlow() {
+export default function DashboardFlow({UsersCount, total_books, BooksCount, RegionsCount}: any) {
   const containerRef = useRef<HTMLDivElement>(null);
   const div1Ref = useRef<HTMLDivElement>(null);
   const div2Ref = useRef<HTMLDivElement>(null);
@@ -28,7 +28,6 @@ export default function DashboardFlow() {
         className="relative w-full items-center justify-center overflow-hidden rounded-3xl border border-blue-100/50 dark:border-slate-800 bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-8 md:p-12 shadow-2xl shadow-blue-500/5 backdrop-blur-sm"
         ref={containerRef}
       >
-        {/* Сеткаи пасманзар барои Dark Mode */}
         <div className="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-800/50 [mask-image:radial-gradient(ellipse_at_center,white,transparent_70%)]" />
         <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-100/10 to-indigo-100/5 dark:via-blue-900/10" />
 
@@ -169,16 +168,47 @@ export default function DashboardFlow() {
 
       <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { color: "from-blue-500 to-blue-600", label: "Корбарони система", desc: "Досту ба система" },
-          { color: "from-emerald-500 to-green-600", label: "Китобҳо", desc: "Нашрияҳои дарсӣ" },
-          { color: "from-indigo-500 to-purple-600", label: "Системаи марказӣ", desc: "Ядрои идоракунӣ" },
-          { color: "from-rose-500 to-red-600", label: "Вазорати маориф", desc: "Назароти давлатӣ" },
+          {
+            color: "from-blue-500 to-blue-600",
+            label: "Корбарони система",
+            desc: "Дастрасӣ ба система",
+            value: UsersCount
+          },
+          {
+            color: "from-emerald-500 to-green-600",
+            label: "Китобҳо",
+            desc: "Нашрияҳои дарсӣ",
+            value: total_books
+          },
+          {
+            color: "from-indigo-500 to-purple-600",
+            label: "Системаи марказӣ",
+            desc: "Ядрои идоракунӣ",
+            value: "V 1.0"
+          },
+          {
+            color: "from-rose-500 to-red-600",
+            label: "Вазорати маориф",
+            desc: "Назорати давлатӣ",
+            value: "Online"
+          },
         ].map((item, i) => (
-          <div key={i} className="flex items-center gap-3 p-3 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-xl border dark:border-slate-800 shadow-sm">
-            <div className={`w-3 h-3 rounded-full bg-gradient-to-r ${item.color}`}></div>
-            <div>
-              <p className="font-medium text-sm text-slate-800 dark:text-slate-200">{item.label}</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{item.desc}</p>
+          <div key={i} className="flex items-center justify-between gap-3 p-3 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+            <div className="flex items-center gap-3">
+              <div className={`w-3 h-3 min-w-[12px] rounded-full bg-gradient-to-r ${item.color}`}></div>
+              <div className="overflow-hidden">
+                <p className="font-bold text-[13px] text-slate-800 dark:text-slate-200 truncate">
+                  {item.label}
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+            <div className="text-right pl-2">
+              <p className={`font-black text-[13px] ${item.value === 'Online' ? 'text-green-500' : 'text-slate-900 dark:text-white'}`}>
+                {item.value}
+              </p>
             </div>
           </div>
         ))}

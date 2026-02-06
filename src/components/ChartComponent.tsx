@@ -3,23 +3,25 @@
 import React, { useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useGetDistrictsQuery, useGetRegionsQuery } from '@/src/api/api';
+import { LayoutDashboard, MapPin, School } from 'lucide-react';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const MyBarChart = () => {
     const [selectedRegionId, setSelectedRegionId] = useState<number>(1);
-
     const { data: regions } = useGetRegionsQuery();
     const { data: districtsData, isLoading } = useGetDistrictsQuery(selectedRegionId);
 
     const chartData = useMemo(() => {
         const data = districtsData as any;
         const items = Array.isArray(data) ? [...data] : [...(data?.items || [])];
-        items.sort((a: any, b: any) => b.schools_count - a.schools_count);
+        const sortedItems = items
+            .filter((d: any) => d.schools_count > 0)
+            .sort((a: any, b: any) => b.schools_count - a.schools_count);
 
         return {
-            names: items.map((d: any) => d.name),
-            counts: items.map((d: any) => d.schools_count)
+            names: sortedItems.map((d: any) => d.name),
+            counts: sortedItems.map((d: any) => d.schools_count)
         };
     }, [districtsData]);
 
@@ -27,91 +29,121 @@ const MyBarChart = () => {
         chart: {
             type: 'bar',
             toolbar: { show: false },
-            fontFamily: 'Inter, sans-serif',
-            background: 'transparent',
-            // Ранги умумии текстҳо (xaxis ва ғайра) акнун ба ҷои сафед, хокистарии мулоим аст
-            foreColor: '#64748b', 
-        },
-        // Мо 'theme.mode'-ро хомӯш мекунем ё 'light' мемонем, то худамон рангҳоро идора кунем
-        theme: {
-            mode: 'light', 
+            fontFamily: 'Plus Jakarta Sans, sans-serif',
+            animations: {
+                enabled: true,
+                easing: 'easeinout',
+                speed: 800,
+            }
         },
         plotOptions: {
             bar: {
-                borderRadius: 6,
+                borderRadius: 8,
                 horizontal: true,
-                barHeight: '60%',
+                barHeight: '55%',
                 distributed: true,
+                borderRadiusApplication: 'end',
+                dataLabels: { position: 'top' },
             }
         },
-        colors: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#F43F5E'],
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shade: 'dark',
+                type: "horizontal",
+                shadeIntensity: 0.5,
+                gradientToColors: undefined,
+                inverseColors: true,
+                opacityFrom: 0.9,
+                opacityTo: 1,
+                stops: [0, 100]
+            }
+        },
+        colors: ['#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899', '#f43f5e'],
         dataLabels: {
             enabled: true,
-            textAnchor: 'start',
+            offsetX: -15,
             style: {
                 fontSize: '12px',
-                fontWeight: 700,
-                colors: ['#fff'] // Рақами дохили сутунҳо ҳамеша сафед мемонад (зеро сутунҳо рангаанд)
+                fontWeight: 600,
+                colors: ["#fff"] 
             },
-            formatter: (val: any) => `${val}`,
-            offsetX: 5,
-            dropShadow: { enabled: true }
-        },
-        xaxis: {
-            categories: chartData.names,
-            axisBorder: { show: false },
-            axisTicks: { show: false },
-            labels: {
-                style: { 
-                    colors: '#64748b', // Ранги ададҳои поёни график
-                    fontSize: '12px' 
-                }
-            },
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    // ИН ҶОИ АСОСӢ: Ранги номи ноҳияҳоро 'inherit' ё ранги ториктар мемонем
-                    // то ки дар ҳарду ҳолат (сафед ва dark) бо ёрии foreColor-и ApexCharts кор кунад.
-                    colors: '#475569' 
-                }
-            }
+            formatter: (val: any) => val,
         },
         grid: {
-            // Ранги сетка акнун хеле хира аст, ки дар сафед ҳам халал нарасонад
-            borderColor: '#e2e8f0', 
+            borderColor: 'rgba(148, 163, 184, 0.1)',
             strokeDashArray: 4,
             xaxis: { lines: { show: true } },
             yaxis: { lines: { show: false } }
         },
-        tooltip: {
-            theme: 'light', // Tooltip-ро light кардам, то дар ҳарду режим бехато намояд
-            y: {
-                formatter: (val: number) => `${val} адад мактаб`
+        xaxis: {
+            categories: chartData.names,
+            labels: {
+                style: { colors: '#94a3b8', fontSize: '12px' }
+            },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        yaxis: {
+            labels: {
+                style: {
+                    colors: '#64748b',
+                    fontSize: '13px',
+                    fontWeight: 600
+                }
             }
         },
-        legend: { show: false }
+        tooltip: {
+            theme: 'dark',
+            custom: function({ series, seriesIndex, dataPointIndex, w }: any) {
+                return `
+                <div className="bg-slate-900 text-white p-2 rounded-lg border border-slate-700 shadow-xl">
+                    <div className="flex items-center gap-2 mb-1">
+                        <span className="w-2 h-2 rounded-full" style="background-color: ${w.config.colors[dataPointIndex]}"></span>
+                        <span className="font-bold text-sm">${w.globals.labels[dataPointIndex]}</span>
+                    </div>
+                    <div className="text-xs text-slate-300">
+                        Шумораи мактабҳо: <span className="text-white font-bold">${series[seriesIndex][dataPointIndex]}</span>
+                    </div>
+                </div>
+                `;
+            }
+        }
     };
 
     return (
-        <div className="bg-white dark:bg-[#1a1a1a] p-5 rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm transition-all hover:shadow-md">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                <div>
-                    <h2 className="text-lg font-bold text-gray-800 dark:text-slate-100 tracking-tight">Мактабҳо аз рӯи ноҳияҳо</h2>
-                    <p className="text-xs text-gray-500 dark:text-slate-400 uppercase font-semibold">Омори умумии муассисаҳо</p>
+        <div className="relative overflow-hidden bg-white dark:bg-[#111111] p-6 rounded-[24px] border border-slate-100 dark:border-slate-800/50 transition-all  hover:shadow-blue-500/5">
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
+
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div className="flex items-center gap-4">
+                    <div className="p-3 bg-blue-50 dark:bg-blue-500/10 rounded-2xl">
+                        <School className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-2 tracking-tight">
+                            Таҳлили минтақавӣ
+                        </h2>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
+                                Миқдори муассисаҳо дар ноҳияҳо
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-2 bg-gray-50 dark:bg-slate-800/50 p-1 px-3 rounded-lg border border-gray-200 dark:border-slate-700">
-                    <span className="text-[10px] font-bold text-gray-400 uppercase dark:text-slate-500">Минтақа:</span>
+                <div className="relative group min-w-[180px]">
+                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <MapPin className="w-4 h-4 text-blue-500" />
+                    </div>
                     <select
                         value={selectedRegionId}
                         onChange={(e) => setSelectedRegionId(Number(e.target.value))}
-                        className="bg-transparent border-none text-sm font-bold text-gray-700 dark:text-slate-200 focus:ring-0 outline-none cursor-pointer"
+                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none cursor-pointer"
                     >
                         {regions?.map((region: any) => (
-                            <option key={region.id} value={region.id} className="text-gray-900">
+                            <option key={region.id} value={region.id} className="dark:bg-slate-900">
                                 {region.name}
                             </option>
                         ))}
@@ -119,20 +151,28 @@ const MyBarChart = () => {
                 </div>
             </div>
 
-            <div className="min-h-[300px] flex items-center justify-center">
+            <div className="min-h-[350px] w-full relative">
                 {isLoading ? (
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                ) : chartData.names.length > 0 ? (
-                    <div className="w-full">
-                        <Chart
-                            options={chartOptions}
-                            series={[{ name: 'Миқдори мактабҳо', data: chartData.counts }]}
-                            type="bar"
-                            height={320}
-                        />
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                        <div className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
+                        <span className="text-sm font-medium text-slate-400">Дар ҳоли боргузорӣ...</span>
                     </div>
+                ) : chartData.names.length > 0 ? (
+                    <Chart
+                        options={chartOptions}
+                        series={[{ name: 'Мактабҳо', data: chartData.counts }]}
+                        type="bar"
+                        height={350}
+                    />
                 ) : (
-                    <p className="text-gray-400 dark:text-slate-500 text-sm italic">Маълумот дар ин минтақа ёфт нашуд</p>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                        <div className="w-16 h-16 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-4">
+                            <LayoutDashboard className="w-8 h-8 text-slate-300" />
+                        </div>
+                        <p className="text-slate-400 dark:text-slate-500 text-sm font-medium">
+                            Дар ин минтақа ягон маълумот ёфт нашуд
+                        </p>
+                    </div>
                 )}
             </div>
         </div>

@@ -107,7 +107,7 @@ export default function RentalsPage() {
     }, 0) || 0;
 
     return (
-        <div className="md:px-4 space-y-6 bg-[#f8fafc] dark:bg-black">
+        <div className="px-4 space-y-6 bg-[#f8fafc] dark:bg-black">
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Иҷораи китобҳо</h1>

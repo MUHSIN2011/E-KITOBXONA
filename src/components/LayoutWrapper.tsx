@@ -1,12 +1,12 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpenText, LogOut, Menu, PanelRightClose, PanelLeftClose, Search, Settings } from "lucide-react";
+import { BookOpenText, LogOut, Menu, PanelRightClose, PanelLeftClose, Search, Settings, BellDot, X, BookCheck, Info, ArrowRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import AsideNavbar from "@/src/components/AsideNavbar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Menubar, MenubarContent, MenubarGroup, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
@@ -31,12 +31,14 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false); // Ҳолат барои зангӯла
 
     const isLoginPage = pathname === "/";
     const isRegisterPage = pathname === "/register";
 
     useEffect(() => {
         setIsSheetOpen(false);
+        setIsNotificationOpen(false);
     }, [pathname]);
 
     useEffect(() => {
@@ -67,6 +69,27 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         router.push('/');
     };
 
+    const ministryBooks = [
+        {
+            id: 1,
+            title: "Физика",
+            grade: 9,
+            quantity: 150,
+            sender: "Раёсати маорифи ш. Душанбе",
+            status: "pending",
+            date: "2026-02-05"
+        },
+        {
+            id: 2,
+            title: "Адабиёти тоҷик",
+            grade: 11,
+            quantity: 80,
+            sender: "Вазорати маориф",
+            status: "shipped",
+            date: "2026-02-03"
+        }
+    ];
+
     if (isLoading && !isLoginPage && !isRegisterPage) {
         return (
             <div className="flex h-screen items-center justify-center bg-white dark:bg-black">
@@ -79,6 +102,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <div className="flex min-h-screen w-full overflow-hidden">
             {!isLoginPage && !isRegisterPage && (
                 <>
+                    {/* Mobile Menu Sheet */}
                     <div className="lg:hidden fixed top-3.5 left-4 z-50">
                         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                             <SheetTrigger asChild>
@@ -165,7 +189,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
             <main className={`flex-1 min-h-screen bg-slate-50 dark:bg-black transition-all duration-300 ease-in-out ${!isLoginPage && !isRegisterPage ? (isSidebarOpen ? "lg:ml-64" : "ml-0") : ""}`}>
                 {!isLoginPage && !isRegisterPage && (
-                    <header className={`fixed top-0 right-0 z-20 h-16 bg-white/80 dark:bg-[#0f1115]/80 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64" : "left-0"}`}>
+                    <header className={`fixed md:w-auto  w-full top-0 right-0 z-20 h-16 bg-white/80 dark:bg-[#0f1115]/80 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64" : "left-0"}`}>
                         <div className="flex items-center gap-4">
                             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden lg:flex items-center justify-center size-9 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-500">
                                 {isSidebarOpen ? <PanelRightClose size={20} /> : <PanelLeftClose size={20} />}
@@ -179,20 +203,80 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-3">
-                            <AnimatedThemeToggler />
-                            <div className="relative hidden sm:block">
+                        <div className="flex items-center gap-2">
+                            <AnimatedThemeToggler className=" cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all" />
+
+                            <Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
+                                <SheetTrigger asChild>
+                                    <div className="relative cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
+                                        <BellDot size={20} className="text-slate-600 dark:text-slate-400" />
+                                        <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                        </span>
+                                    </div>
+                                </SheetTrigger>
+                                <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-white dark:bg-[#0f1115] border-l-slate-200 dark:border-l-slate-800">
+                                    <div className="flex flex-col h-full">
+                                        <SheetHeader className="p-6 border-b border-slate-100 dark:border-slate-800">
+                                            <SheetTitle className="text-xl font-black flex items-center gap-2">
+                                                <BellDot className="text-blue-600" size={20} /> Огоҳиномаҳо
+                                            </SheetTitle>
+                                            <SheetDescription>Китобҳои равоншуда аз Маориф ва Сатҳи Миллӣ</SheetDescription>
+                                        </SheetHeader>
+
+                                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                            {ministryBooks.map((book) => (
+                                                <div key={book.id} className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-blue-300 dark:hover:border-blue-900 transition-all group">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                            <BookCheck size={20} />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <div className="flex justify-between items-start">
+                                                                <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-none">{book.title}</h4>
+                                                                <span className="text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded uppercase">
+                                                                    {book.grade} синф
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-xs text-slate-500 mt-2 flex items-center gap-1 font-medium">
+                                                                <Info size={12} /> Миқдор: <span className="font-bold text-slate-700 dark:text-slate-300">{book.quantity} дона</span>
+                                                            </p>
+                                                            <div className="mt-4 flex items-center justify-between border-t border-slate-200/50 dark:border-slate-800 pt-3">
+                                                                <div className="text-[10px] text-slate-400 italic truncate max-w-[120px]">
+                                                                    Аз: {book.sender}
+                                                                </div>
+                                                                <Button variant="ghost" size="sm" className="h-7 text-xs font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 gap-1 p-0">
+                                                                    Қабул кардан <ArrowRight size={14} />
+                                                                </Button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <footer className="p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800">
+                                            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6">
+                                                Ҳамаи огоҳиномаҳо
+                                            </Button>
+                                        </footer>
+                                    </div>
+                                </SheetContent>
+                            </Sheet>
+
+                            <div className="relative hidden sm:block focus:cursor-wait">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                                 <Input
                                     placeholder="Ҷустуҷӯ..."
-                                    className="pl-9 h-9 w-48 md:w-64 bg-slate-100/50 dark:bg-slate-900/50 border-transparent focus:bg-white dark:focus:bg-slate-900 rounded-lg text-sm transition-all"
+                                    className="pl-9 h-9 w-48 md:w-64 focus:cursor-wait bg-slate-100/50 dark:bg-slate-900/50 border-transparent focus:bg-white dark:focus:bg-slate-900 rounded-lg text-sm transition-all"
                                 />
                             </div>
                         </div>
                     </header>
                 )}
 
-                <div className={`w-full ${!isLoginPage && !isRegisterPage ? "pt-20 px-4 md:px-8 pb-8" : "h-full flex items-center justify-center"}`}>
+                <div className={`w-full ${!isLoginPage && !isRegisterPage ? "pt-20  md:px-8 pb-8" : "h-full flex items-center justify-center"}`}>
                     <div className="max-w-7xl mx-auto w-full">
                         {children}
                     </div>

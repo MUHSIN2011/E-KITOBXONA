@@ -150,6 +150,7 @@ export default function LoginPage() {
               {isLoading ? "Дар ҳоли воридшавӣ..." : "Ворид шудан"}
             </Button>
           </form>
+          
 
           <p className="text-center mt-8 text-sm text-muted-foreground">
             Ҳисоб надоред?{" "}

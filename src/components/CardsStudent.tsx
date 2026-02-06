@@ -13,10 +13,10 @@ interface CardProps {
 
 function CardsStudent({ NameRole, cnt, Icons, className, description }: CardProps) {
     return (
-        <div className={`flex  gap-5 items-center  ${className}  bg-white border rounded-sm py-5 px-5`}>
+        <div className={`flex  gap-5 items-center  ${className}  bg-white dark:bg-[#1a1a1a] border rounded-sm py-5 px-5`}>
             <aside>
                 {Icons && (
-                    <div className="bg-[#e6edf8]  text-[#0950c3] p-2 rounded-xl">
+                    <div className="bg-[#e6edf8] dark:bg-black  text-[#0950c3] p-2 rounded-xl">
                         {Icons}
                     </div>
                 )}

@@ -1,5 +1,5 @@
 'use client'
-import { useCloseAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery } from '@/src/api/api'
+import { useCloseAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetUsersCountQuery } from '@/src/api/api'
 import Card from '../../components/Card'
 import { BookOpen, Building2, CalendarDays, GraduationCap, Lock, MapPin, School } from 'lucide-react'
 import MyBarChart from '@/src/components/ChartComponent'
@@ -17,10 +17,11 @@ import ProtectedRoute from '@/src/components/ProtectedRoute'
 function Page() {
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
     const [closeYear, { isLoading: isClosing }] = useCloseAcademicYearMutation();
+    const { data: usersData, isLoading: isGetUsers } = useGetUsersCountQuery();
     const { data: getyears } = useGetActiveYearQuery();
     const activeYearId = getyears?.id;
     const { data: overview } = useGetReportsOverviewQuery(getyears?.id);
-    console.log(getyears);
+    console.log(usersData?.total_users);
 
     useEffect(() => {
         AOS.init({
@@ -113,7 +114,7 @@ function Page() {
                         </div>
                     </div>
                 </section>
-                <DashboardFlow />
+                <DashboardFlow UsersCount={usersData?.total_users} total_books={overview?.total_books.toString()}/>
 
                 <section className='my-8 grid gap-5 grid-cols-1 lg:grid-cols-3'>
                     <div className="lg:col-span-2" data-aos="fade-up" data-aos-delay="300">

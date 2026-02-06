@@ -195,7 +195,7 @@ function StudentsPage() {
             </div>
 
             <Sheet open={!!idx} onOpenChange={() => setIdx(null)}>
-                <SheetContent className="sm:max-w-[500px] overflow-y-auto px-0"> {/* px-0 барои он ки Header пурра ранг гирад */}
+                <SheetContent className="sm:max-w-[500px] overflow-y-auto px-0">
                     <SheetHeader className="px-6 pb-6 pt-2 bg-gradient-to-r from-blue-50 to-white border-b">
                         <div className="flex justify-between items-start pt-4">
                             <SheetTitle className="text-2xl font-bold flex items-center gap-3 text-slate-800">
@@ -343,7 +343,6 @@ function StudentsPage() {
                             />
                         </div>
 
-                        {/* Блоки Синф ва Соли таваллуд */}
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <Label htmlFor="class_name" className="text-sm font-semibold text-slate-700">Синф</Label>
@@ -411,7 +410,7 @@ function StudentsPage() {
                             Бекор кардан
                         </Button>
                         <Button
-                            disabled={isUpdating} // Ҳангоми боргузорӣ тугмаро ғайрифаъол мекунем
+                            disabled={isUpdating}
                             className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-8 shadow-lg shadow-blue-200"
                             onClick={handleUpdate}
                         >
@@ -421,13 +420,13 @@ function StudentsPage() {
                 </DialogContent>
             </Dialog>
 
-            <section className='py-5 px-3 bg-white rounded-xl border shadow-sm'>
+            <section className='py-5 px-3 bg-white dark:bg-[#1a1a1a] rounded-xl border shadow-sm'>
                 <h1 className='text-xl font-bold'>Рӯйхати хонандагон</h1>
                 <p className='text-muted-foreground text-sm mb-4'>Ҳамаи хонандагони бақайдгирифташуда</p>
 
                 <div className='grid grid-cols-1 md:grid-cols-5 gap-3 mb-4'>
                     <input
-                        className='md:col-span-4 rounded-xl px-4 py-2 border bg-[#f9fafb] focus:ring-2 focus:ring-blue-500 outline-none transition-all'
+                        className='md:col-span-4 rounded-xl px-4 py-2 border focus:cursor-progress  bg-[#f9fafb] dark:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 outline-none transition-all'
                         placeholder='Ҷустуҷӯи хонандагон...'
                         type="search"
                         value={search}
@@ -436,7 +435,7 @@ function StudentsPage() {
                     <div className="relative md:col-span-1">
                         <Funnel className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
                         <Select>
-                            <SelectTrigger className="w-full bg-[#f9fafb] pl-10 h-10 rounded-xl border-gray-200">
+                            <SelectTrigger className="w-full bg-[#f9fafb] cursor-pointer dark:bg-[#1a1a1a] dark:border-gray-500 pl-10 h-10 rounded-xl border-gray-200">
                                 <SelectValue placeholder="Синф" />
                             </SelectTrigger>
                             <SelectContent>
@@ -451,7 +450,7 @@ function StudentsPage() {
                 <div className="overflow-x-auto md:max-w-full max-w-84 border rounded-lg">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 border-b">
+                            <tr className="bg-gray-50 dark:bg-[#121212] border-b">
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500">Ному насаб</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500">Синф</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 text-center">Иҷораҳо</th>
@@ -482,23 +481,23 @@ function StudentsPage() {
                     </table>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 mt-4 border-t bg-gray-50/50 rounded-b-xl">
-                    <div className="text-sm text-gray-600">
-                        Нишон дода шудааст: <span className="font-bold text-gray-900">{startItem}-{endItem}</span> аз <span className="font-bold text-gray-900">{totalItems}</span>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 mt-4 border-t bg-gray-50/50 dark:bg-[#131212] rounded-b-xl">
+                    <div className="text-sm text-gray-600 dark:text-gray-300">
+                        Нишон дода шудааст: <span className="font-bold text-gray-900 dark:text-gray-600">{startItem}-{endItem}</span> аз <span className="font-bold text-gray-900 dark:text-gray-600">{totalItems}</span>
                     </div>
 
                     <div className="flex gap-2">
                         <button
                             onClick={() => setPage((prev) => Math.max(0, prev - 1))}
                             disabled={page === 0}
-                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
+                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-[#1a1a1a] cursor-pointer hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
                         >
                             Пештара
                         </button>
                         <button
                             onClick={() => setPage((prev) => prev + 1)}
                             disabled={endItem >= totalItems}
-                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
+                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-[#1a1a1a] cursor-pointer hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
                         >
                             Баъдӣ
                         </button>

@@ -207,6 +207,20 @@ export interface ICreateTextbookRequest {
     cover_image_url?: string; // Агар илова кардан хоҳед
 }
 
+export interface IYearSummary {
+  year_id: number;
+  year_name: string;
+  is_active: boolean;
+  total_students: number;
+  total_rentals: number;
+  active_rentals: number;
+  returned_rentals: number;
+  lost_books: number;
+  damaged_books: number;
+  return_rate: number;
+  avg_books_per_student: number;
+  total_rental_income: number;
+}
 interface ISubject {
     id: number;
     name: string;
@@ -517,6 +531,26 @@ export const Todo = createApi({
                 method: 'POST',
             }),
         }),
+        GetTextbookById: builder.query<any, number>({
+            query: (id) => `textbooks/${id}`,
+            providesTags: (result, error, id) => [{ type: 'Textbooks', id }],
+        }),
+        GetCopiesById: builder.query<any, number>({
+            query: (id) => ({
+                url: `copies/${id}`,
+                method: 'GET',
+            }),
+        }),
+        getUsersCount: builder.query<{ total_users: number }, void>({
+            query: () => ({
+                url: '/auth/stats/users-count',
+                method: 'GET',
+            }),
+        }),
+        getAcademicYearsSummary: builder.query<IYearSummary[], void>({
+            query: () => `academic-years/enhanced/summary/all`,
+            providesTags: ['Todo'],
+        }),
     }),
 });
 
@@ -554,5 +588,9 @@ export const {
     useGetYearStatisticsQuery,
     useCloseAcademicYearMutation,
     useGetSubjectsQuery,
-    useCreateDamageReportMutation
+    useCreateDamageReportMutation,
+    useGetTextbookByIdQuery,
+    useGetCopiesByIdQuery,
+    useGetUsersCountQuery,
+    useGetAcademicYearsSummaryQuery
 } = Todo;
