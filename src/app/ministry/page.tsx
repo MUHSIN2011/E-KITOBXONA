@@ -29,13 +29,13 @@ export default function MinistryPage() {
     const [formData, setFormData] = useState({ name: "", region_id: "", district_id: "" })
     const [selectedRegionId, setSelectedRegionId] = useState<string>("")
     const [selectedDistrictId, setSelectedDistrictId] = useState<string>("")
+    const [activeTab, setActiveTab] = useState("regions");
 
     // API Queries
     const { data: regions } = useGetRegionsQuery()
     const { data: districts } = useGetDistrictsQuery(Number(selectedRegionId), { skip: !selectedRegionId })
     const { data: schools } = useGetSchoolsByDistrictQuery(Number(selectedDistrictId), { skip: !selectedDistrictId })
 
-    // API Mutations
     const [addRegion] = useAddRegionMutation()
     const [addDistrict] = useAddDistrictMutation()
     const [addSchool] = useAddSchoolMutation()
@@ -86,6 +86,16 @@ export default function MinistryPage() {
         } catch (err) { console.error(err) }
     }
 
+    const handleRegionClick = (regionId: string) => {
+        setSelectedRegionId(regionId);
+        setActiveTab("districts"); 
+    };
+
+
+    const handleDistrictClick = (districtId: string) => {
+        setSelectedDistrictId(districtId);
+        setActiveTab("schools"); 
+    };
 
     return (
         <div className="p-4 md:p-8 space-y-6 bg-[#f8f9fa] min-h-screen font-sans">
@@ -106,7 +116,7 @@ export default function MinistryPage() {
 
                         {step === 1 && (
                             <div className="grid gap-3 py-6">
-                                <Button variant="outline" onClick={() => { setAddType('region'); setStep(2); }} className="h-16 justify-between px-6 rounded-2xl border-gray-100 hover:border-[#0950c3] hover:bg-blue-50/50 group">
+                                <Button variant="outline" onClick={() => { setAddType('region'); setStep(2); }} className="h-16 justify-between  px-6 rounded-2xl border-gray-100 hover:border-[#0950c3] hover:bg-blue-50/50 group">
                                     <div className="flex items-center gap-4"><div className="p-2 bg-blue-50 rounded-lg group-hover:bg-white"><Landmark className="w-5 h-5 text-blue-600" /></div> Вилоят</div>
                                     <ChevronRight className="w-4 h-4 text-gray-400" />
                                 </Button>
@@ -155,7 +165,7 @@ export default function MinistryPage() {
                 </Dialog>
             </div>
 
-            <Tabs defaultValue="regions" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="bg-white border-none rounded-2xl h-14 p-1.5 shadow-sm inline-flex w-full md:w-auto">
                     <TabsTrigger value="regions" className="rounded-xl px-8 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Вилоятҳо</TabsTrigger>
                     <TabsTrigger value="districts" className="rounded-xl px-8 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Ноҳияҳо</TabsTrigger>
@@ -165,7 +175,7 @@ export default function MinistryPage() {
                 <TabsContent value="regions" className="mt-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {regions?.map((reg: any) => (
-                            <Card key={reg.id} className="rounded-[24px] border-none shadow-sm group hover:ring-2 ring-blue-100 transition-all">
+                            <Card onClick={() => handleRegionClick(reg.id.toString())} key={reg.id} className="rounded-[24px] border-none shadow-sm group hover:ring-2 ring-blue-100 transition-all">
                                 <CardContent className="p-6 flex justify-between items-center">
                                     <div className="flex items-center gap-4">
                                         <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
@@ -219,7 +229,7 @@ export default function MinistryPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {districts?.map((dist: any) => (
-                            <Card key={dist.id} className="rounded-[24px] border-none shadow-sm group hover:ring-2 ring-orange-100 transition-all">
+                            <Card onClick={() => handleDistrictClick(dist.id.toString())} key={dist.id} className="rounded-[24px] border-none shadow-sm group hover:ring-2 ring-orange-100 transition-all">
                                 <CardContent className="p-5 flex justify-between items-center">
                                     <div className="flex items-center gap-4">
                                         <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600"><MapPin className="w-5 h-5" /></div>

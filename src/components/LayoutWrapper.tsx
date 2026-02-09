@@ -92,7 +92,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
     if (isLoading && !isLoginPage && !isRegisterPage) {
         return (
-            <div className="flex h-screen items-center justify-center bg-white dark:bg-black">
+            <div className="flex h-[85vh] items-center justify-center bg-white dark:bg-black">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             </div>
         );
@@ -102,7 +102,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         <div className="flex min-h-screen w-full overflow-hidden">
             {!isLoginPage && !isRegisterPage && (
                 <>
-                    {/* Mobile Menu Sheet */}
                     <div className="lg:hidden fixed top-3.5 left-4 z-50">
                         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                             <SheetTrigger asChild>
@@ -205,65 +204,101 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
                         <div className="flex items-center gap-2">
                             <AnimatedThemeToggler className=" cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all" />
+                            {
+                                user?.role === "ministry" && (
+                                    < Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
+                                        <SheetTrigger asChild>
+                                            <div className="relative cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
+                                                <BellDot size={20} className="text-slate-600 dark:text-slate-400" />
+                                                <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                                </span>
+                                            </div>
+                                        </SheetTrigger>
+                                        <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-white dark:bg-[#0f1115] border-l-slate-200 dark:border-l-slate-800">
+                                            <div className="flex flex-col h-full">
+                                                <SheetHeader className="p-6 border-b border-slate-100 dark:border-slate-800">
+                                                    <SheetTitle className="text-xl font-black flex items-center gap-2">
+                                                        <BellDot className="text-blue-600" size={20} /> Огоҳиномаҳо
+                                                    </SheetTitle>
+                                                    <SheetDescription>Китобҳои равоншуда аз Маориф ва Сатҳи Миллӣ</SheetDescription>
+                                                </SheetHeader>
 
-                            <Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
-                                <SheetTrigger asChild>
-                                    <div className="relative cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
-                                        <BellDot size={20} className="text-slate-600 dark:text-slate-400" />
-                                        <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-                                        </span>
-                                    </div>
-                                </SheetTrigger>
-                                <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-white dark:bg-[#0f1115] border-l-slate-200 dark:border-l-slate-800">
-                                    <div className="flex flex-col h-full">
-                                        <SheetHeader className="p-6 border-b border-slate-100 dark:border-slate-800">
-                                            <SheetTitle className="text-xl font-black flex items-center gap-2">
-                                                <BellDot className="text-blue-600" size={20} /> Огоҳиномаҳо
-                                            </SheetTitle>
-                                            <SheetDescription>Китобҳои равоншуда аз Маориф ва Сатҳи Миллӣ</SheetDescription>
-                                        </SheetHeader>
+                                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                                </div>
 
-                                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                                            {ministryBooks.map((book) => (
-                                                <div key={book.id} className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-blue-300 dark:hover:border-blue-900 transition-all group">
-                                                    <div className="flex items-start gap-4">
-                                                        <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                                            <BookCheck size={20} />
-                                                        </div>
-                                                        <div className="flex-1">
-                                                            <div className="flex justify-between items-start">
-                                                                <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-none">{book.title}</h4>
-                                                                <span className="text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded uppercase">
-                                                                    {book.grade} синф
-                                                                </span>
+                                                <footer className="p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800">
+                                                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6">
+                                                        Ҳамаи огоҳиномаҳо
+                                                    </Button>
+                                                </footer>
+                                            </div>
+                                        </SheetContent>
+                                    </Sheet>
+                                )
+                            }
+                            {user?.role === "school" && (
+                                < Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
+                                    <SheetTrigger asChild>
+                                        <div className="relative cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
+                                            <BellDot size={20} className="text-slate-600 dark:text-slate-400" />
+                                            <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
+                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                                            </span>
+                                        </div>
+                                    </SheetTrigger>
+                                    <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-white dark:bg-[#0f1115] border-l-slate-200 dark:border-l-slate-800">
+                                        <div className="flex flex-col h-full">
+                                            <SheetHeader className="p-6 border-b border-slate-100 dark:border-slate-800">
+                                                <SheetTitle className="text-xl font-black flex items-center gap-2">
+                                                    <BellDot className="text-blue-600" size={20} /> Огоҳиномаҳо
+                                                </SheetTitle>
+                                                <SheetDescription>Китобҳои равоншуда аз Маориф ва Сатҳи Миллӣ</SheetDescription>
+                                            </SheetHeader>
+
+                                            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                                                {ministryBooks.map((book) => (
+                                                    <div key={book.id} className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-blue-300 dark:hover:border-blue-900 transition-all group">
+                                                        <div className="flex items-start gap-4">
+                                                            <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                                <BookCheck size={20} />
                                                             </div>
-                                                            <p className="text-xs text-slate-500 mt-2 flex items-center gap-1 font-medium">
-                                                                <Info size={12} /> Миқдор: <span className="font-bold text-slate-700 dark:text-slate-300">{book.quantity} дона</span>
-                                                            </p>
-                                                            <div className="mt-4 flex items-center justify-between border-t border-slate-200/50 dark:border-slate-800 pt-3">
-                                                                <div className="text-[10px] text-slate-400 italic truncate max-w-[120px]">
-                                                                    Аз: {book.sender}
+                                                            <div className="flex-1">
+                                                                <div className="flex justify-between items-start">
+                                                                    <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-none">{book.title}</h4>
+                                                                    <span className="text-[10px] font-bold bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 px-2 py-0.5 rounded uppercase">
+                                                                        {book.grade} синф
+                                                                    </span>
                                                                 </div>
-                                                                <Button variant="ghost" size="sm" className="h-7 text-xs font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 gap-1 p-0">
-                                                                    Қабул кардан <ArrowRight size={14} />
-                                                                </Button>
+                                                                <p className="text-xs text-slate-500 mt-2 flex items-center gap-1 font-medium">
+                                                                    <Info size={12} /> Миқдор: <span className="font-bold text-slate-700 dark:text-slate-300">{book.quantity} дона</span>
+                                                                </p>
+                                                                <div className="mt-4 flex items-center justify-between border-t border-slate-200/50 dark:border-slate-800 pt-3">
+                                                                    <div className="text-[10px] text-slate-400 italic truncate max-w-[120px]">
+                                                                        Аз: {book.sender}
+                                                                    </div>
+                                                                    <Button variant="ghost" size="sm" className="h-7 text-xs font-bold text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/20 gap-1 p-0">
+                                                                        Қабул кардан <ArrowRight size={14} />
+                                                                    </Button>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                ))}
+                                            </div>
 
-                                        <footer className="p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800">
-                                            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6">
-                                                Ҳамаи огоҳиномаҳо
-                                            </Button>
-                                        </footer>
-                                    </div>
-                                </SheetContent>
-                            </Sheet>
+                                            <footer className="p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800">
+                                                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6">
+                                                    Ҳамаи огоҳиномаҳо
+                                                </Button>
+                                            </footer>
+                                        </div>
+                                    </SheetContent>
+                                </Sheet>
+                            )
+                            }
 
                             <div className="relative hidden sm:block focus:cursor-wait">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
@@ -282,6 +317,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                     </div>
                 </div>
             </main>
-        </div>
+        </div >
     );
 }

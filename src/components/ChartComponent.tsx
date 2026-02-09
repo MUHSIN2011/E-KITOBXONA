@@ -1,14 +1,34 @@
 "use client";
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useGetDistrictsQuery, useGetRegionsQuery } from '@/src/api/api';
 import { LayoutDashboard, MapPin, School } from 'lucide-react';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
+
 const MyBarChart = () => {
-    const [selectedRegionId, setSelectedRegionId] = useState<number>(1);
+    const [user, setUser] = useState<any>(null);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
+    const isRegionUser = user?.role === 'region';
+    const initialRegionId = isRegionUser ? Number(user?.region_id) : 1;
+
+    const [selectedRegionId, setSelectedRegionId] = useState<number>(initialRegionId);
+
+    useEffect(() => {
+        if (isRegionUser && user?.region_id) {
+            setSelectedRegionId(Number(user.region_id));
+        }
+    }, [isRegionUser, user]);
+
     const { data: regions } = useGetRegionsQuery();
     const { data: districtsData, isLoading } = useGetDistrictsQuery(selectedRegionId);
 
@@ -52,7 +72,6 @@ const MyBarChart = () => {
                 shade: 'dark',
                 type: "horizontal",
                 shadeIntensity: 0.5,
-                gradientToColors: undefined,
                 inverseColors: true,
                 opacityFrom: 0.9,
                 opacityTo: 1,
@@ -66,7 +85,7 @@ const MyBarChart = () => {
             style: {
                 fontSize: '12px',
                 fontWeight: 600,
-                colors: ["#fff"] 
+                colors: ["#fff"]
             },
             formatter: (val: any) => val,
         },
@@ -95,15 +114,15 @@ const MyBarChart = () => {
         },
         tooltip: {
             theme: 'dark',
-            custom: function({ series, seriesIndex, dataPointIndex, w }: any) {
+            custom: function ({ series, seriesIndex, dataPointIndex, w }: any) {
                 return `
-                <div className="bg-slate-900 text-white p-2 rounded-lg border border-slate-700 shadow-xl">
-                    <div className="flex items-center gap-2 mb-1">
-                        <span className="w-2 h-2 rounded-full" style="background-color: ${w.config.colors[dataPointIndex]}"></span>
-                        <span className="font-bold text-sm">${w.globals.labels[dataPointIndex]}</span>
+                <div style="background: #0f172a; color: #fff; padding: 8px; border-radius: 8px; border: 1px solid #334155;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background-color: ${w.config.colors[dataPointIndex]}"></span>
+                        <span style="font-weight: bold; font-size: 14px;">${w.globals.labels[dataPointIndex]}</span>
                     </div>
-                    <div className="text-xs text-slate-300">
-                        Шумораи мактабҳо: <span className="text-white font-bold">${series[seriesIndex][dataPointIndex]}</span>
+                    <div style="font-size: 12px; color: #cbd5e1;">
+                        Шумораи мактабҳо: <span style="color: #fff; font-weight: bold;">${series[seriesIndex][dataPointIndex]}</span>
                     </div>
                 </div>
                 `;
@@ -112,7 +131,7 @@ const MyBarChart = () => {
     };
 
     return (
-        <div className="relative overflow-hidden bg-white dark:bg-[#111111] p-6 rounded-[24px] border border-slate-100 dark:border-slate-800/50 transition-all  hover:shadow-blue-500/5">
+        <div className="relative overflow-hidden bg-white dark:bg-[#111111] p-6 rounded-[24px] border border-slate-100 dark:border-slate-800/50 transition-all hover:shadow-blue-500/5">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
 
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
@@ -134,20 +153,31 @@ const MyBarChart = () => {
                 </div>
 
                 <div className="relative group min-w-[180px]">
-                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                        <MapPin className="w-4 h-4 text-blue-500" />
-                    </div>
-                    <select
-                        value={selectedRegionId}
-                        onChange={(e) => setSelectedRegionId(Number(e.target.value))}
-                        className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none cursor-pointer"
-                    >
-                        {regions?.map((region: any) => (
-                            <option key={region.id} value={region.id} className="dark:bg-slate-900">
-                                {region.name}
-                            </option>
-                        ))}
-                    </select>
+                    {!isRegionUser ? (
+                        <>
+                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                <MapPin className="w-4 h-4 text-blue-500" />
+                            </div>
+                            <select
+                                value={selectedRegionId}
+                                onChange={(e) => setSelectedRegionId(Number(e.target.value))}
+                                className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all appearance-none cursor-pointer"
+                            >
+                                {regions?.map((region: any) => (
+                                    <option key={region.id} value={region.id} className="dark:bg-slate-900">
+                                        {region.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </>
+                    ) : (
+                        <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-xl">
+                            <MapPin className="w-4 h-4 text-blue-500" />
+                            <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                {regions?.find((r: any) => r.id === selectedRegionId)?.name || "Вилояти ман"}
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
 

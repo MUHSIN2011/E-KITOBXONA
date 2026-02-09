@@ -21,6 +21,8 @@ function Page() {
     const { data: getyears } = useGetActiveYearQuery();
     const activeYearId = getyears?.id;
     const { data: overview } = useGetReportsOverviewQuery(getyears?.id);
+    console.log(overview);
+
     console.log(usersData?.total_users);
 
     useEffect(() => {
@@ -98,6 +100,7 @@ function Page() {
                         </div>
                         <div data-aos="fade-right" data-aos-delay="300">
                             <Card
+                                path='/ministry'
                                 NameRole={'Ҳамагӣ мактабҳо'}
                                 cnt={overview?.total_schools.toString() || '0'}
                                 Icons={<School />}
@@ -114,7 +117,7 @@ function Page() {
                         </div>
                     </div>
                 </section>
-                <DashboardFlow UsersCount={usersData?.total_users} total_books={overview?.total_books.toString()}/>
+                <DashboardFlow UsersCount={usersData?.total_users} total_books={overview?.total_books.toString()} />
 
                 <section className='my-8 grid gap-5 grid-cols-1 lg:grid-cols-3'>
                     <div className="lg:col-span-2" data-aos="fade-up" data-aos-delay="300">

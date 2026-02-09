@@ -208,18 +208,18 @@ export interface ICreateTextbookRequest {
 }
 
 export interface IYearSummary {
-  year_id: number;
-  year_name: string;
-  is_active: boolean;
-  total_students: number;
-  total_rentals: number;
-  active_rentals: number;
-  returned_rentals: number;
-  lost_books: number;
-  damaged_books: number;
-  return_rate: number;
-  avg_books_per_student: number;
-  total_rental_income: number;
+    year_id: number;
+    year_name: string;
+    is_active: boolean;
+    total_students: number;
+    total_rentals: number;
+    active_rentals: number;
+    returned_rentals: number;
+    lost_books: number;
+    damaged_books: number;
+    return_rate: number;
+    avg_books_per_student: number;
+    total_rental_income: number;
 }
 interface ISubject {
     id: number;
@@ -366,15 +366,17 @@ export const Todo = createApi({
             providesTags: ['Todo'],
         }),
         GetBooksSchool: builder.query<IGetbooksSchoolResponse, {
+            textbook_id?: number,
             subject?: string,
             condition?: string,
             status?: string,
             skip: number,
             limit: number
         }>({
-            query: ({ subject, condition, status, skip, limit }) => ({
+            query: ({ textbook_id, subject, condition, status, skip, limit }) => ({
                 url: `copies/`,
                 params: {
+                    textbook_id,
                     subject: subject !== 'all' ? subject : undefined,
                     condition: condition !== 'all' ? condition : undefined,
                     status_filter: status !== 'all' ? status : undefined,
@@ -405,9 +407,9 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['Textbooks'],
         }),
-        addTextbookCopies: builder.mutation<any, { textbook_id: number, school_id: number, quantity: number, condition?: string }>({
+        addSupplies: builder.mutation<any, { textbook_id: number, school_id: number, quantity: number, condition?: string }>({
             query: (payload) => ({
-                url: 'copies/',
+                url: 'supplies/',
                 method: 'POST',
                 body: payload,
             }),
@@ -567,7 +569,7 @@ export const {
     useGetBooksSchoolQuery,
     useGetReportsOverviewQuery,
     useCreateTextbookMutation,
-    useAddTextbookCopiesMutation,
+    useAddSuppliesMutation,
     useGetDistrictsQuery,
     useGetSchoolsByDistrictQuery,
     useGetOverviewQuery,

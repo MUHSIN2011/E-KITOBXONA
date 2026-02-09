@@ -28,7 +28,6 @@ function AsideNavbar() {
         }
     }, []);
 
-    // Функсия барои муайян кардани стили линк
     const getLinkStyle = (href: string) => {
         const isActive = pathname === href;
         return `px-4 py-2 flex gap-3 rounded-md cursor-pointer transition-colors ${isActive
@@ -72,6 +71,35 @@ function AsideNavbar() {
                 <>
                     <Link href="/dashboard-region">
                         <div className={getLinkStyle("/dashboard")}>
+                            <Gauge className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">Дашборд</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/books">
+                        <div className={getLinkStyle("/books")}>
+                            <SquareLibrary className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">Китобҳо</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/schools">
+                        <div className={getLinkStyle("/schools")}>
+                            <School className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">Мактабҳо</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/ministry">
+                        <div className={getLinkStyle("/ministry")}>
+                            <Landmark className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">Минтақаҳо</TextAnimate>
+                        </div>
+                    </Link>
+                </>
+            )}
+
+            {role === 'district' && (
+                <>
+                    <Link href="/dashboard-district">
+                        <div className={getLinkStyle("/dashboard-district")}>
                             <Gauge className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">Дашборд</TextAnimate>
                         </div>
