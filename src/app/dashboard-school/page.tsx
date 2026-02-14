@@ -21,7 +21,7 @@ function Page() {
     const { data: students } = useGetStudentsQuery({ skip: 0, limit: 1 })
 
     const { data: budget } = useGetSchoolBudgetQuery(
-        { schoolId: me?.school_id, yearId: 1 },
+        { schoolId: me?.school_id, yearId: 3 },
         { skip: !me?.school_id }
     )
 

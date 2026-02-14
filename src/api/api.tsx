@@ -277,7 +277,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -553,6 +553,22 @@ export const Todo = createApi({
             query: () => `academic-years/enhanced/summary/all`,
             providesTags: ['Todo'],
         }),
+        getPendingBooksBySchool: builder.query<any, number>({
+            query: (school_id) => `supplies/stats/pending-by-school?to_school_id=${school_id}`,
+            providesTags: ['Supplies'],
+        }),
+        acceptBookItem: builder.mutation<any, { item_id: number; inventory_number: string }>({
+            query: ({ item_id, inventory_number }) => ({
+                url: `supplies/items/${item_id}/accept/`,
+                method: 'POST',
+                body: { inventory_number },
+            }),
+            invalidatesTags: ['Supplies', 'Copies'],
+        }),
+        getSupplyById: builder.query({
+            query: (id) => `/supplies/${id}`,
+            providesTags: ['Supplies'],
+        }),
     }),
 });
 
@@ -594,5 +610,8 @@ export const {
     useGetTextbookByIdQuery,
     useGetCopiesByIdQuery,
     useGetUsersCountQuery,
-    useGetAcademicYearsSummaryQuery
+    useGetAcademicYearsSummaryQuery,
+    useGetPendingBooksBySchoolQuery,
+    useAcceptBookItemMutation,
+    useGetSupplyByIdQuery
 } = Todo;

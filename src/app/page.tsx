@@ -62,7 +62,7 @@ export default function LoginPage() {
         alert(error.data.detail[0].msg || "Хатогӣ дар маълумот");
         toast.error(error.data.detail[0].msg || "Хатогӣ дар маълумот")
       } else {
-        toast.error("Пайвастшавӣ бо сервер имконнопазир аст")
+        toast.error("Лутфан авал ба WIFI пайваст шавед!")
       }
     }
   };
@@ -147,7 +147,7 @@ export default function LoginPage() {
               type="submit"
               className="w-full bg-blue-500 h-12 hover:bg-blue-600 rounded-xl text-base font-semibold text-white shadow-md mt-2"
             >
-              {isLoading ? "Дар ҳоли воридшавӣ..." : "Ворид шудан"}
+              {isLoading ? "Дар ҳоли воридшавӣ..." : "Даромадан"}
             </Button>
           </form>
           

@@ -5,6 +5,7 @@ import LayoutWrapper from "@/src/components/LayoutWrapper";
 import StoreProvider from "../ReduxProvider";
 import { JetBrains_Mono } from 'next/font/google'
 import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "sonner";
 
 
 const geistSans = Geist({
@@ -23,6 +24,8 @@ export const metadata: Metadata = {
 };
 
 
+
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -32,7 +35,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
 
-        className={`${geistSans.variable} ${geistMono.variable} antialiased dark:bg-black bg-gray-50`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased  bg-gray-50`}
       >
         <StoreProvider>
           <LayoutWrapper>
@@ -43,6 +46,7 @@ export default function RootLayout({
               disableTransitionOnChange
             >
               {children}
+              <Toaster position="top-center" richColors />
             </ThemeProvider>
           </LayoutWrapper>
         </StoreProvider>
