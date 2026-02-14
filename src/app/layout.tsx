@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     siteName: "E-Kitobxona",
     images: [
       {
-        url: "/favicon.ico",
+        url: "https://e-kitobxona.vercel.app/favicon.img",
         width: 1200,
         height: 630,
         alt: "Намуди зоҳирии E-Kitobxona",
