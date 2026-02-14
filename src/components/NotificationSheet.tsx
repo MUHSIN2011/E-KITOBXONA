@@ -14,7 +14,7 @@ export function NotificationSheet({ user }: { user: any }) {
     const [isNotificationOpen, setIsNotificationOpen] = React.useState(false);
 
     const { data: pendingData, isLoading: isPendingLoading } = useGetPendingBooksBySchoolQuery(
-        user?.school_id ?? 0, // Аргументи 1-ум: ID-и мактаб
+        user?.school_id ?? 0,
         {
             skip: !user?.school_id || user.role !== "school",
             refetchOnFocus: true,
@@ -50,7 +50,7 @@ export function NotificationSheet({ user }: { user: any }) {
 
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                         {isPendingLoading ? (
-                            <div className="flex h-[85vh] items-center justify-center">
+                            <div className="flex h-[80vh] items-center justify-center">
                                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                             </div>
                         ) : pendingData?.by_textbook?.length > 0 ? (
@@ -90,11 +90,11 @@ export function NotificationSheet({ user }: { user: any }) {
                                                             <div className="flex items-center gap-2 text-[10px] text-slate-400">
                                                                 <span className="flex items-center gap-1">
                                                                     <Calendar size={10} />
-                                                                    {new Date(supply.created_at).toLocaleDateString('ru-RU')}
+                                                                    {new Date(supply.created_at).toLocaleDateString('tj-TJ')}
                                                                 </span>
                                                                 <span className="flex items-center gap-1">
                                                                     <Clock size={10} />
-                                                                    {new Date(supply.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                                                                    {new Date(supply.created_at).toLocaleTimeString('tj-TJ', { hour: '2-digit', minute: '2-digit' })}
                                                                 </span>
                                                             </div>
                                                         </div>

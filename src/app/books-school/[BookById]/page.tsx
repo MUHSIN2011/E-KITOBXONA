@@ -39,7 +39,7 @@ export default function BookDetailPage() {
     <div className="min-h-screen bg-[#F3F4F6] pb-20">
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button onClick={() => router.back()} className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-all font-semibold">
+          <button onClick={() => router.back()} className="flex items-center gap-2 cursor-pointer text-gray-600 hover:text-blue-600 transition-all font-semibold">
             <span>←</span> Рӯйхати китобҳо
           </button>
           <div className="flex gap-2">
@@ -53,14 +53,15 @@ export default function BookDetailPage() {
       <div className="max-w-5xl mx-auto px-4 mt-8">
         <div className="bg-white rounded-[2rem] shadow-sm overflow-hidden border border-gray-200">
           <div className="flex flex-col md:flex-row">
-            <div className="md:w-1/3 bg-gray-50 p-6 flex items-center justify-center border-r border-gray-100">
+            <div className="md:w-1/3 bg-gray-50 flex items-center justify-center border-r border-gray-100">
               <div className="relative group">
                 <div className="relative w-full h-[400px]">
                   <img
-                    src={book.textbook?.cover_image_url || "Book cover"}
-                    alt={book.textbook?.title || "Book cover"}
+                    src={`https://student4.softclub.tj${book.textbook.cover_image_url}`}
+                    alt={book.textbook?.title}
                     // fill
-                    className="rounded-xl shadow-md object-cover"
+
+                    className=" shadow-md w-full h-full object-cover"
                   />
                 </div>
                 <div className="absolute -bottom-4 -right-4 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-lg">

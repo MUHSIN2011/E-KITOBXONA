@@ -8,7 +8,7 @@ import React from 'react'
 import { usePathname } from "next/navigation";
 
 interface DecodedToken {
-    role: 'ministry' | 'school';
+    role: 'ministry' | 'school' | 'district';
     email: string;
 }
 

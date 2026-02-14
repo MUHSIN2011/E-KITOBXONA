@@ -336,8 +336,8 @@ function Page() {
                             <div className="space-y-6">
                                 <div className="flex gap-4 items-start">
                                     <div className="w-32 h-44 bg-gray-100 rounded-lg overflow-hidden shadow-md flex-shrink-0 border">
-                                        <Image
-                                            src={bookDetail.cover_image_url || "/placeholder-book.png"}
+                                        <img
+                                            src={`https://student4.softclub.tj${bookDetail.cover_image_url}`}
                                             alt={bookDetail.title || "Муқоваи китоб"}
                                             className="w-full h-full object-cover"
                                             width={128}

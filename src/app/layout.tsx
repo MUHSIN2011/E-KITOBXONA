@@ -44,7 +44,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "E-KITOBXONA | Системаи рақамии маориф",
+    title: "E-KITOBXONA | Системаи Вазорати Маориф",
     description: "Системаи назорати китобҳои дарсии мактабӣ",
     images: ["/favicon.ico"],
   },

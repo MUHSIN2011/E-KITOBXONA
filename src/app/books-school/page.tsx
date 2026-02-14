@@ -244,7 +244,6 @@ function Page() {
                                         </thead>
                                         <tbody className="divide-y divide-gray-100">
                                             {filteredBooks.map((item: any) => {
-                                                const isNew = (new Date().getFullYear() - item.textbook.publication_year) <= 3
                                                 return (
                                                     <tr
                                                         key={item.id}
@@ -261,8 +260,8 @@ function Page() {
                                                         <td className="p-4 text-sm text-gray-700 dark:text-white">{item.textbook.grade}</td>
                                                         <td className="p-4 text-sm text-gray-700 dark:text-white">{item.textbook.publication_year}</td>
                                                         <td className="p-4">
-                                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${isNew ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
-                                                                {isNew ? 'Нав' : 'Кӯҳна'}
+                                                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${item.textbook.is_new ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
+                                                                {item.textbook.is_new ? 'Нав' : 'Кӯҳна'}
                                                             </span>
                                                         </td>
                                                         <td className="p-4">
@@ -282,7 +281,8 @@ function Page() {
                                     {filteredBooks.map((item: any) => {
                                         const imageUrl = item.textbook.cover_image_url?.startsWith('http')
                                             ? item.textbook.cover_image_url
-                                            : `https://student4.softclub.tj/api/v1/images/${item.textbook.cover_image_url}`;
+                                            : `https://student4.softclub.tj${item.textbook.cover_image_url}`;
+                                            console.log(imageUrl);
                                         return (
                                             <div key={item.id} onClick={() => router.push(`/books-school/${item.id}`)} className="bg-white  dark:bg-[#1a1a1a] dark:border-gray-950 p-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 rounded-xl border border-gray-200 shadow-sm  " >
                                                 <div
