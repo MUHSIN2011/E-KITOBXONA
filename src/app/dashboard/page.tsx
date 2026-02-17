@@ -54,7 +54,14 @@ function Page() {
     if (isLoading) return <div className="flex h-[85vh] items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     </div>
-    if (isError) return <div>Хатогӣ ҳангоми гирифтани маълумот</div>
+    if (isError) return <div className="flex justify-center flex-col items-center h-[80vh] gap-3">
+        <h1 className="text-2xl text-center text-red-500 font-semibold">Хатогӣ ҳангоми гирифтани маълумот!!</h1>
+        <p>Лутфан сайтро аз нав кушоед!</p>
+        <div className='flex gap-2 items-center border bg-blue-600 text-white rounded-sm px-3 py-1 cursor-pointer'>
+            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+            <button className=' cursor-pointer'>Нав Сози</button>
+        </div>
+    </div>
 
     return (
         <ProtectedRoute allowedRoles={["ministry"]}>

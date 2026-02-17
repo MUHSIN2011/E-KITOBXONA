@@ -59,7 +59,7 @@ export default function OrderBooksPage() {
         <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6">
             <Toaster position="top-center" />
 
-            <div className="bg-white p-6 rounded-[24px] border shadow-sm flex items-center justify-between">
+            <div className="bg-white dark:bg-[#1a1a1a] p-6 rounded-[24px] border shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <div className="p-3 bg-blue-100 rounded-xl text-blue-700">
                         <BookOpen className="w-6 h-6" />
@@ -74,10 +74,10 @@ export default function OrderBooksPage() {
             </div>
 
             <Card className="rounded-[24px]  border-none shadow-lg py-0 ">
-                <CardHeader className="bg-slate-50 border-b py-3">
+                <CardHeader className="bg-slate-50 dark:bg-[#1a1a1a] border-b pt-7">
                     <CardTitle>Пур кардани форма</CardTitle>
                 </CardHeader>
-                <CardContent className="p-6 space-y-6">
+                <CardContent className="px-6 pb-6 space-y-5">
                     <div className="space-y-2">
                         <Label className="font-semibold">Интихоби китоб</Label>
                         <Select onValueChange={(val) => setFormData({ ...formData, textbook_id: val })}>

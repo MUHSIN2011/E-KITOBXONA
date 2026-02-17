@@ -122,11 +122,11 @@ function StudentsPage() {
                     </TextAnimate>
                 </div>
                 <Dialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger className='bg-[#0950c3] hover:bg-blue-700 flex gap-2 text-white py-2 px-4 rounded-xl text-sm font-medium'>
+                    <DialogTrigger className='bg-[#0950c3]  hover:bg-blue-700 flex gap-2 text-white py-2 px-4 rounded-xl text-sm font-medium'>
                         + Иловаи хонанда
                     </DialogTrigger>
 
-                    <DialogContent className='max-h-[95vh] h-auto bg-gray-50 overflow-y-auto sm:max-w-[500px]'>
+                    <DialogContent className='max-h-[95vh] dark:bg-[#1a1a1a] h-auto bg-gray-50 overflow-y-auto sm:max-w-[500px]'>
                         <DialogHeader>
                             <DialogTitle>Илова кардани хонанда</DialogTitle>
                             <DialogDescription>Маълумоти хонандаи навро ворид кунед</DialogDescription>
@@ -167,7 +167,7 @@ function StudentsPage() {
 
                             <div className='flex flex-col gap-1'>
                                 <label className='text-sm font-medium'>Эзоҳ</label>
-                                <Textarea {...registerStudent("notes")} className='max-h-24' placeholder='Маълумоти иловагӣ...' />
+                                <Textarea {...registerStudent("notes")} className='max-h-24 md:max-w-112  max-w-77' placeholder='Маълумоти иловагӣ...' />
                             </div>
                         </form>
 
@@ -179,7 +179,7 @@ function StudentsPage() {
                                 disabled={isAdding}
                                 type="submit"
                                 form="student-form"
-                                className='bg-[#0950c3] hover:bg-[#063d95]'
+                                className='bg-[#0950c3] text-white hover:bg-[#063d95]'
                             >
                                 {isAdding ? "Дар ҳоли илова..." : "Илова кардан"}
                             </Button>
