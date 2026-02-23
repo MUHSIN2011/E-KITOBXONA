@@ -211,7 +211,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
                         <div className="flex items-center gap-2">
                             <AnimatedThemeToggler className=" cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all" />
-                            {
+                            {/* {
                                 user?.role === "ministry" && (
                                     < Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
                                         <SheetTrigger asChild>
@@ -244,7 +244,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                                         </SheetContent>
                                     </Sheet>
                                 )
-                            }
+                            } */}
                             <NotificationSheet user={user} />
 
 

@@ -7,14 +7,15 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { BookOpen, Send, Loader2 } from "lucide-react"
-import { useGetTextbooksQuery, useAddCopiesMutation, useGetMeQuery } from '@/src/api/api'
+import { useGetTextbooksQuery, useGetMeQuery, useBookRequestMutation } from '@/src/api/api'
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function OrderBooksPage() {
-    // 1. Гирифтани маълумоти корбари ҳозира (токен дар Header меравад)
     const { data: me, isLoading: isMeLoading } = useGetMeQuery()
-    const { data: textbooks, isLoading: isBooksLoading } = useGetTextbooksQuery()
-    const [addCopies, { isLoading: isSubmitting }] = useAddCopiesMutation()
+    const { data: textbooks, isLoading: isBooksLoading } = useGetTextbooksQuery('all')
+    
+    // Иваз кардани мутатсияи кӯҳна ба наваш мувофиқи талабот
+    const [BookRequest, { isLoading: isSubmitting }] = useBookRequestMutation()
 
     const [formData, setFormData] = useState({
         textbook_id: "",
@@ -37,10 +38,10 @@ export default function OrderBooksPage() {
         }
 
         try {
-            await addCopies({
+            await BookRequest({
                 textbook_id: Number(formData.textbook_id),
-                school_id: Number(schoolId),
                 quantity: Number(formData.quantity),
+                reason: '',  
                 notes: formData.notes
             }).unwrap()
 
@@ -65,7 +66,7 @@ export default function OrderBooksPage() {
                         <BookOpen className="w-6 h-6" />
                     </div>
                     <div>
-                        <h1 className="text-xl font-bold">Фармоиши китоб</h1>
+                        <h1 className="text-xl font-bold text-slate-900 dark:text-white">Фармоиши китоб</h1>
                         <p className="text-sm text-muted-foreground italic">
                             Барои: <span className="text-blue-600 font-medium">{me?.school_name || "Мактаби ман"}</span>
                         </p>
@@ -73,13 +74,13 @@ export default function OrderBooksPage() {
                 </div>
             </div>
 
-            <Card className="rounded-[24px]  border-none shadow-lg py-0 ">
+            <Card className="rounded-[24px] border-none shadow-lg py-0 ">
                 <CardHeader className="bg-slate-50 dark:bg-[#1a1a1a] border-b pt-7">
-                    <CardTitle>Пур кардани форма</CardTitle>
+                    <CardTitle className="text-slate-900 dark:text-white">Пур кардани форма</CardTitle>
                 </CardHeader>
                 <CardContent className="px-6 pb-6 space-y-5">
                     <div className="space-y-2">
-                        <Label className="font-semibold">Интихоби китоб</Label>
+                        <Label className="font-semibold text-slate-700 dark:text-slate-300">Интихоби китоб</Label>
                         <Select onValueChange={(val) => setFormData({ ...formData, textbook_id: val })}>
                             <SelectTrigger className="h-12 rounded-xl">
                                 <SelectValue placeholder="Китобро интихоб кунед" />
@@ -87,7 +88,7 @@ export default function OrderBooksPage() {
                             <SelectContent>
                                 {textbooks?.items?.map((t: any) => (
                                     <SelectItem key={t.id} value={t.id.toString()}>
-                                        {t.title} ({t.grade}-класс)
+                                        {t.title} (синфи - {t.grade})
                                     </SelectItem>
                                 ))}
                             </SelectContent>
@@ -95,7 +96,7 @@ export default function OrderBooksPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="font-semibold">Миқдори лозима</Label>
+                        <Label className="font-semibold text-slate-700 dark:text-slate-300">Миқдори лозима</Label>
                         <Input
                             type="number"
                             placeholder="Миқдорро ворид кунед"
@@ -106,7 +107,7 @@ export default function OrderBooksPage() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="font-semibold">Эзоҳ</Label>
+                        <Label className="font-semibold text-slate-700 dark:text-slate-300">Эзоҳ</Label>
                         <Input
                             placeholder="Масалан: Барои синфҳои 5-ум"
                             className="h-12 rounded-xl"
@@ -118,7 +119,7 @@ export default function OrderBooksPage() {
                     <Button
                         onClick={handleOrder}
                         disabled={isSubmitting}
-                        className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold"
+                        className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-md transition-all active:scale-[0.98]"
                     >
                         {isSubmitting ? <Loader2 className="animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
                         Тасдиқи фармоиш

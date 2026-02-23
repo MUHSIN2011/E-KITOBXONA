@@ -13,7 +13,9 @@ import {
     useGetStudentsQuery,
     useGetTextbooksQuery,
     useRentTextbookMutation,
-    useReturnBookMutation
+    useReturnBookMutation,
+    useAddDamageReportMutation,
+    useCreateCompensationMutation,
 } from '@/src/api/api';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
@@ -35,7 +37,11 @@ export default function RentalsPage() {
     const [dateTo, setDateTo] = useState<string>("");
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
 
-    // API Hooks
+    const [returnCondition, setReturnCondition] = useState("good");
+    const [damageType, setDamageType] = useState("minor");
+    const [damageDescription, setDamageDescription] = useState("");
+    const [compensationAmount, setCompensationAmount] = useState(0);
+
     const { data: rentals, isLoading: rentalsLoading, refetch: refetchRentals } = useGetRentalsQuery({
         grade: grade ? Number(grade) : undefined,
         status_filter: (status === "all" || !status) ? undefined : status,
@@ -48,8 +54,17 @@ export default function RentalsPage() {
     const { data: studentsData } = useGetStudentsQuery({ search: searchTerm, skip: 0, limit: 20 });
     const { data: booksData } = useGetTextbooksQuery(undefined);
     const [rentBook, { isLoading: isRentLoading }] = useRentTextbookMutation();
-
     const [returnBook, { isLoading: isReturnLoading }] = useReturnBookMutation();
+    const [addDamageReport] = useAddDamageReportMutation();
+    const [createCompensation] = useCreateCompensationMutation();
+
+    const resetReturnForm = () => {
+        setReturnCondition("good");
+        setDamageType("minor");
+        setDamageDescription("");
+        setCompensationAmount(0);
+        setSelectedBookToReturn(null);
+    };
 
     const handleRent = async () => {
         if (!selectedStudentId || selectedBookIds.length === 0) {
@@ -72,23 +87,54 @@ export default function RentalsPage() {
         }
     };
 
+    const handleConfirmReturn = async () => {
+        if (!selectedBookToReturn) return;
+
+        try {
+            await returnBook({
+                rental_id: selectedBookToReturn.rental_id,
+                new_condition: returnCondition,
+                notes: damageDescription || "Баргардонида шуд"
+            }).unwrap();
+
+            if (returnCondition === "damaged") {
+                toast.loading("Сабти зарар...");
+
+                const damageRes = await addDamageReport({
+                    rental_id: selectedBookToReturn.rental_id,
+                    damage_type: damageType,
+                    description: damageDescription,
+                    compensation_amount: Number(compensationAmount)
+                }).unwrap();
+
+                if (compensationAmount > 0) {
+                    await createCompensation({
+                        damage_report_id: damageRes.id,
+                        amount_due: Number(compensationAmount),
+                        due_date: new Date().toISOString().split('T')[0]
+                    }).unwrap();
+                }
+
+                toast.dismiss();
+                toast.success("Зарар ва ҷарима сабт шуд!");
+            } else {
+                toast.success("Китоб қабул шуд!");
+            }
+
+            setIsReturnModalOpen(false);
+            refetchRentals();
+            resetReturnForm();
+        } catch (error: any) {
+            console.error("API Error:", error);
+            toast.dismiss();
+            toast.error(error.data?.detail?.[0]?.msg || error.data?.detail || "Хатогӣ дар система");
+        }
+    };
+
     const toggleBookSelection = (id: number) => {
         setSelectedBookIds(prev =>
             prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
         );
-    };
-
-    const handleConfirmReturn = async () => {
-        if (!selectedBookToReturn) return;
-        try {
-            await returnBook(selectedBookToReturn.rental_id).unwrap();
-            toast.success("Китоб қабул карда шуд!");
-            setIsReturnModalOpen(false);
-            refetchRentals();
-            setSelectedStudent(null);
-        } catch (error) {
-            toast.error("Хатогӣ ҳангоми қабули китоб");
-        }
     };
 
     const openReturnDialog = (book: any) => {
@@ -129,8 +175,8 @@ export default function RentalsPage() {
 
                         <div className="grid gap-6 py-4">
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm font-medium text-gray-700  dark:text-gray-200 flex items-center gap-1">
-                                    <Userr className="h-4 w-4 text-[#0950c3] " /> Хонанда:
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-1">
+                                    <Userr className="h-4 w-4 text-[#0950c3]" /> Хонанда:
                                 </label>
                                 <Popover>
                                     <PopoverTrigger asChild>
@@ -162,7 +208,7 @@ export default function RentalsPage() {
                             </div>
 
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm font-medium text-gray-700  dark:text-gray-200 flex items-center gap-1">
+                                <label className="text-sm font-medium text-gray-700 dark:text-gray-200 flex items-center gap-1">
                                     <BookOpen className="h-4 w-4 text-[#0950c3]" /> Китобҳо:
                                 </label>
                                 <Popover>
@@ -213,7 +259,7 @@ export default function RentalsPage() {
             <div className='grid md:grid-cols-3 grid-cols-1 gap-3 my-7'>
                 <div><Card NameRole={'Иҷораҳои фаъол'} textColor='green-600' cnt={statusBooksCount.toString()} /></div>
                 <div><Card NameRole={'Вайроншуда'} textColor='red-600' cnt={'0'} /></div>
-                <div><Card NameRole={'Баргардонидашуда'}  textColor='yellow-500' cnt={statusReturnBooksCount.toString()} /></div>
+                <div><Card NameRole={'Баргардонидашуда'} textColor='yellow-500' cnt={statusReturnBooksCount.toString()} /></div>
             </div>
 
             <div className="flex flex-col gap-4 bg-white dark:bg-[#1a1a1a] p-4 rounded-2xl border shadow-sm">
@@ -261,9 +307,9 @@ export default function RentalsPage() {
                         </TableHeader>
                         <TableBody>
                             {rentalsLoading ? (
-                                <TableRow><TableCell colSpan={3} className="text-center py-10"><Loader2 className="animate-spin mx-auto" /></TableCell></TableRow>
+                                <TableRow><TableCell colSpan={4} className="text-center py-10"><Loader2 className="animate-spin mx-auto" /></TableCell></TableRow>
                             ) : rentals?.items?.map((rental: any) => (
-                                <TableRow onClick={() => setSelectedStudent(rental)} key={rental.id} className="hover:bg-gray-50/50 hover:dark:bg-blue-500/50 transition-colors cursor-pointer">
+                                <TableRow onClick={() => setSelectedStudent(rental)}  key={rental.student_id} className="hover:bg-gray-50/50 hover:dark:bg-blue-500/50 transition-colors cursor-pointer">
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-[#0950c3]"><User className="w-4 h-4" /></div>
@@ -287,6 +333,7 @@ export default function RentalsPage() {
                 </div>
             </div>
 
+            {/* Детализацияи хонанда */}
             <Sheet open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
                 <SheetContent className="sm:max-w-[550px] overflow-y-auto px-4">
                     <SheetHeader className="border-b pb-4">
@@ -308,23 +355,17 @@ export default function RentalsPage() {
                             </div>
 
                             <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <h4 className="font-bold">Китобҳои фаъол</h4>
-                                    <Button size="sm" variant="outline" className="text-red-600" >Ҳамаро гирифтан</Button>
-                                </div>
+                                <h4 className="font-bold">Китобҳои фаъол</h4>
                                 {selectedStudent.rented_books?.map((book: any, index: number) => (
-                                    <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-xl shadow-sm items-center  relative overflow-hidden bg-white dark:bg-black mb-2">
+                                    <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-xl shadow-sm items-center relative overflow-hidden bg-white dark:bg-black mb-2">
                                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600"></div>
                                         <div className="space-y-1">
                                             <p className="text-xs text-gray-400 uppercase font-semibold">Номи китоб</p>
                                             <p className="text-sm font-bold text-gray-800">{book.textbook_title}</p>
                                             <div className="flex items-center gap-2">
-                                                <p className="text-xs text-gray-400 uppercase font-semibold">Ҳолат:</p>
                                                 <span className={cn(
-                                                    "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider",
-                                                    book.status === 'active'
-                                                        ? "bg-green-100 text-green-700 border border-green-200"
-                                                        : "bg-gray-100 text-gray-600 border border-gray-200"
+                                                    "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
+                                                    book.status === 'active' ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
                                                 )}>
                                                     {book.status === 'active' ? 'Дар даст' : 'Бозгашт'}
                                                 </span>
@@ -349,19 +390,79 @@ export default function RentalsPage() {
                 </SheetContent>
             </Sheet>
 
-            {/* Мадалкаи қабули китоб */}
-            <Dialog open={isReturnModalOpen} onOpenChange={setIsReturnModalOpen}>
-                <DialogContent>
+            {/* Диалоги қабули китоб ва ҷарима */}
+            <Dialog open={isReturnModalOpen} onOpenChange={(val) => {
+                setIsReturnModalOpen(val);
+                if (!val) resetReturnForm();
+            }}>
+                <DialogContent className="sm:max-w-[450px]">
                     <DialogHeader>
-                        <DialogTitle>Тасдиқи қабул</DialogTitle>
+                        <DialogTitle>Қабули китоб</DialogTitle>
                         <DialogDescription>
-                            Оё шумо мутмаин ҳастед, ки китоби <b>{selectedBookToReturn?.textbook_title}</b>-ро қабул кардан мехоҳед?
+                            Ҳолати китоби <b>{selectedBookToReturn?.textbook_title}</b>-ро ворид кунед.
                         </DialogDescription>
                     </DialogHeader>
+
+                    <div className="grid gap-4 py-4">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium">Ҳолат:</label>
+                            <Select value={returnCondition} onValueChange={setReturnCondition}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="good">Хуб (Good)</SelectItem>
+                                    <SelectItem value="fair">Миёна (Fair)</SelectItem>
+                                    <SelectItem value="poor">Заиф (Poor)</SelectItem>
+                                    <SelectItem value="damaged">Вайрон (Damaged)</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        {returnCondition === "damaged" && (
+                            <div className="space-y-4 p-4 border border-red-200 rounded-xl bg-red-50/50 animate-in fade-in slide-in-from-top-2">
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-red-700">Намуди зарар:</label>
+                                    <Select value={damageType} onValueChange={setDamageType}>
+                                        <SelectTrigger className="bg-white">
+                                            <SelectValue />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="minor">Незначительное</SelectItem>
+                                            <SelectItem value="moderate">Среднее</SelectItem>
+                                            <SelectItem value="severe">Серьёзное</SelectItem>
+                                            <SelectItem value="total_loss">Полная потеря</SelectItem>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-red-700">Маблағи ҷарима (сомонӣ):</label>
+                                    <Input
+                                        type="number"
+                                        className="bg-white"
+                                        value={compensationAmount}
+                                        onChange={(e) => setCompensationAmount(Number(e.target.value))}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-red-700">Тавсиф:</label>
+                                    <Input
+                                        className="bg-white"
+                                        placeholder="Сабаби зарар..."
+                                        value={damageDescription}
+                                        onChange={(e) => setDamageDescription(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsReturnModalOpen(false)}>Бекор кардан</Button>
                         <Button onClick={handleConfirmReturn} disabled={isReturnLoading} className="bg-blue-600 text-white">
-                            {isReturnLoading ? <Loader2 className="animate-spin" /> : "Тасдиқ"}
+                            {isReturnLoading ? <Loader2 className="animate-spin h-4 w-4" /> : "Тасдиқ ва қабул"}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

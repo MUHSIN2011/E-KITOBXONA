@@ -16,11 +16,18 @@ import {
     useGetSchoolsByDistrictQuery,
     useGetTextbooksQuery,
     useGetBooksSchoolQuery,
-    useAddSuppliesMutation
+    useAddSuppliesMutation,
+    useFulfillBookRequestMutation
 } from '@/src/api/api'
+import { useSearchParams } from 'next/navigation'
 
+interface Region {
+    id: number;
+    name: string;
+}
 function DeliveryPage() {
-    const [selectedRegion, setSelectedRegion] = useState<string>('')
+    const searchParams = useSearchParams()
+    const [selectedRegion, setSelectedRegion] = useState<string>(searchParams.get('region_id') || '')
     const [selectedDistrict, setSelectedDistrict] = useState<string>('')
 
     const { data: regions } = useGetRegionsQuery()
@@ -38,11 +45,41 @@ function DeliveryPage() {
         notes: ''
     })
 
+    useEffect(() => {
+        const rId = searchParams.get('region_id');
+        const dId = searchParams.get('district_id');
+        const sId = searchParams.get('school_id');
+        const tId = searchParams.get('textbook_id');
+        const qty = searchParams.get('quantity');
+
+        const isValid = (val: string | null) => val && val !== 'undefined' && val !== 'null';
+
+        if (isValid(rId)) {
+            setSelectedRegion(rId as string);
+        } else {
+            setSelectedRegion('');
+        }
+
+        if (isValid(dId)) {
+            setSelectedDistrict(dId as string);
+        } else {
+            setSelectedDistrict('');
+        }
+
+        setFormData(prev => ({
+            ...prev,
+            to_school_id: isValid(sId) ? (sId as string) : '',
+            textbook_id: isValid(tId) ? (tId as string) : '',
+            total_quantity: qty ? Number(qty) : prev.total_quantity
+        }));
+
+    }, [searchParams]);
+
     const { data: copiesData } = useGetBooksSchoolQuery(
         {
             textbook_id: Number(formData.textbook_id),
-            skip: 0,     
-            limit: 1000  
+            skip: 0,
+            limit: 1000
         },
         { skip: !formData.textbook_id || formData.is_new_books }
     );
@@ -83,13 +120,16 @@ function DeliveryPage() {
             return {
                 ...prev,
                 textbook_copy_ids: newIds,
-                total_quantity: newIds.length // Миқдор автоматӣ мувофиқи нусхаҳо
+                total_quantity: newIds.length
             }
         })
     }
+    const [fulfillRequest] = useFulfillBookRequestMutation();
 
     const handleDelivery = async () => {
-        if (!isValid) return
+        if (!isValid) return;
+
+        const requestIdFromUrl = searchParams.get('request_id');
 
         const payload: any = {
             to_school_id: Number(formData.to_school_id),
@@ -98,29 +138,29 @@ function DeliveryPage() {
             condition: formData.condition,
             is_new_books: formData.is_new_books,
             notes: formData.notes
-        }
+        };
 
         if (!formData.is_new_books) {
-            payload.textbook_copy_ids = formData.textbook_copy_ids
+            payload.textbook_copy_ids = formData.textbook_copy_ids;
         }
 
         try {
-            await createSupply(payload).unwrap()
-        } catch (err) {
-            alert("Хатогӣ ҳангоми фиристодан")
-        }
-    }
+            const supplyResponse = await createSupply(payload).unwrap();
 
-    const getConditionColor = (condition: string) => {
-        switch (condition) {
-            case 'new': return 'text-green-600 bg-green-50 border-green-200'
-            case 'good': return 'text-blue-600 bg-blue-50 border-blue-200'
-            case 'fair': return 'text-amber-600 bg-amber-50 border-amber-200'
-            case 'poor': return 'text-orange-600 bg-orange-50 border-orange-200'
-            case 'damaged': return 'text-red-600 bg-red-50 border-red-200'
-            default: return ''
+            if (requestIdFromUrl && requestIdFromUrl !== 'undefined') {
+                await fulfillRequest({
+                    requestId: Number(requestIdFromUrl),
+                    supplyId: supplyResponse.id
+                }).unwrap();
+                console.log("Дархост бо муваффақият иҷро шуд!");
+            }
+
+        } catch (err) {
+            console.error(err);
+            alert("Хатогӣ ҳангоми амалиёт");
         }
-    }
+    };
+
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 md:p-8 max-w-6xl mx-auto space-y-8">
@@ -157,12 +197,18 @@ function DeliveryPage() {
                                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                                 Вилоят / Регион
                             </Label>
-                            <Select onValueChange={(v) => { setSelectedRegion(v); setSelectedDistrict(''); setFormData({ ...formData, to_school_id: '' }) }}>
-                                <SelectTrigger className="h-12 border-slate-200 focus:ring-2 focus:ring-blue-500 bg-white shadow-sm">
+                            <Select
+                                value={selectedRegion}
+                                onValueChange={(v) => {
+                                    setSelectedRegion(v);
+                                    setSelectedDistrict('');
+                                }}
+                            >
+                                <SelectTrigger>
                                     <SelectValue placeholder="Вилоятро интихоб кунед..." />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {regions?.map((r: any) => (
+                                    {regions?.map((r: Region) => (
                                         <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>
                                     ))}
                                 </SelectContent>
@@ -197,7 +243,7 @@ function DeliveryPage() {
                             </Label>
                             <Select
                                 disabled={!selectedDistrict}
-                                value={formData.to_school_id}
+                                value={formData.to_school_id || ''}
                                 onValueChange={(v) => setFormData({ ...formData, to_school_id: v })}
                             >
                                 <SelectTrigger className="h-12 border-blue-200 focus:ring-2 focus:ring-blue-500 bg-white shadow-sm">
@@ -242,7 +288,7 @@ function DeliveryPage() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-4">
                                 <Label className="text-slate-700 font-semibold flex items-center gap-2">
                                     <Book size={16} className="text-blue-500" />
@@ -280,21 +326,18 @@ function DeliveryPage() {
                                         onChange={(e) => setFormData({ ...formData, total_quantity: Math.max(1, Number(e.target.value)) })}
                                     />
                                 </div>
-                                <div className="space-y-4">
-                                    <Label className="text-slate-700 font-semibold">Ҳолат</Label>
-                                    <Select value={formData.condition} onValueChange={(v) => setFormData({ ...formData, condition: v })}>
-                                        <SelectTrigger className={`h-14 font-bold ${getConditionColor(formData.condition)}`}>
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="new">Нав (New)</SelectItem>
-                                            <SelectItem value="good">Хуб (Good)</SelectItem>
-                                            <SelectItem value="fair">Миёна (Fair)</SelectItem>
-                                            <SelectItem value="poor">Бад (Poor)</SelectItem>
-                                            <SelectItem value="damaged">Зарардида</SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <Label className="text-slate-700 font-semibold flex items-center gap-2">
+                                    <MessageSquare size={16} className="text-blue-500" />
+                                    Эзоҳ (Notes)
+                                </Label>
+                                <Input
+                                    placeholder="Маълумоти иловагӣ..."
+                                    className="h-12 border-slate-200"
+                                    value={formData.notes}
+                                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                                />
                             </div>
                         </div>
 
@@ -315,8 +358,8 @@ function DeliveryPage() {
                                                 key={copy.id}
                                                 onClick={() => handleCopyToggle(copy.id)}
                                                 className={`p-2 border rounded-lg cursor-pointer text-xs flex justify-between items-center transition-all duration-200 ${formData.textbook_copy_ids.includes(copy.id)
-                                                        ? 'bg-blue-600 text-white border-blue-700 shadow-md transform scale-[0.98]'
-                                                        : 'bg-white hover:bg-blue-50 text-slate-700 border-slate-200'
+                                                    ? 'bg-blue-600 text-white border-blue-700 shadow-md transform scale-[0.98]'
+                                                    : 'bg-white hover:bg-blue-50 text-slate-700 border-slate-200'
                                                     }`}
                                             >
                                                 <span className="truncate">№ {copy.inventory_number || copy.id}</span>
@@ -332,18 +375,6 @@ function DeliveryPage() {
                             )}
                         </AnimatePresence>
 
-                        <div className="space-y-2">
-                            <Label className="text-slate-700 font-semibold flex items-center gap-2">
-                                <MessageSquare size={16} className="text-blue-500" />
-                                Эзоҳ (Notes)
-                            </Label>
-                            <Input
-                                placeholder="Маълумоти иловагӣ..."
-                                className="h-12 border-slate-200"
-                                value={formData.notes}
-                                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            />
-                        </div>
 
                         <div className="pt-4">
                             <Button

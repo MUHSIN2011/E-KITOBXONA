@@ -226,6 +226,29 @@ interface ISubject {
     name: string;
 }
 
+export interface IBookRequest {
+    id: number;
+    school_id: number;
+    requested_by: number;
+    textbook_id: number;
+    quantity: number;
+    reason: string;
+    notes: string;
+    status: "pending" | "approved" | "rejected";
+    created_at: string;
+    updated_at: string;
+    fulfilled_supply_id: number | null;
+    rejection_comment: string | null;
+    processed_by: number | null;
+    processed_at: string | null;
+    textbook_title: string;
+    textbook_grade: number;
+    textbook_subject: string;
+    school_name: string;
+    region_id?: number;
+    district_id?: number;
+}
+
 const baseQuery = fetchBaseQuery({
     baseUrl: 'https://student4.softclub.tj/api/v1/',
     prepareHeaders: (headers) => {
@@ -277,7 +300,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -569,6 +592,74 @@ export const Todo = createApi({
             query: (id) => `/supplies/${id}`,
             providesTags: ['Supplies'],
         }),
+        createAcademicYear: builder.mutation({
+            query: (newYear) => ({
+                url: '/academic-years/',
+                method: 'POST',
+                body: newYear,
+            }),
+            invalidatesTags: ['AcademicYears'],
+        }),
+        returnBook: builder.mutation({
+            query: ({ rental_id, ...data }) => ({
+                url: `/rentals/${rental_id}/return`, // rental_id-ро ба URL мегузорем
+                method: 'POST',
+                body: data, // new_condition ва notes ба body мераванд
+            }),
+            invalidatesTags: ['Rentals'],
+        }),
+
+        addDamageReport: builder.mutation({
+            query: (data) => ({
+                url: 'damage-reports/',
+                method: 'POST',
+                body: {
+                    rental_id: data.rental_id,
+                    damage_type: data.damage_type,
+                    description: data.description || "Повреждение",
+                    compensation_amount: data.compensation_amount || 0
+                },
+            }),
+            invalidatesTags: ['Rentals'],
+        }),
+
+        createCompensation: builder.mutation({
+            query: (data) => ({
+                url: '/compensations/',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['Rentals'],
+        }),
+        bookRequest: builder.mutation({
+            query: (data) => ({
+                url: '/book-requests/',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['Rentals'],
+        }),
+        bookRequests: builder.query<IBookRequest[], void>({
+            query: () => '/book-requests/',
+            providesTags: ['BookRequests'],
+        }),
+        rejectBookRequest: builder.mutation<void, { requestId: number; comment?: string }>({
+            query: ({ requestId, comment }) => ({
+                url: `/book-requests/${requestId}/reject`,
+                method: 'POST',
+                body: { rejection_comment: comment || "Рад карда шуд" },
+            }),
+            invalidatesTags: ['BookRequests'],
+        }),
+        fulfillBookRequest: builder.mutation<void, { requestId: number; supplyId: number }>({
+            query: ({ requestId, supplyId }) => ({
+                url: `/book-requests/${requestId}/fulfill`,
+                method: 'POST',
+                params: { supply_id: supplyId },
+                body: {},
+            }),
+            invalidatesTags: ['BookRequests'],
+        })
     }),
 });
 
@@ -613,5 +704,12 @@ export const {
     useGetAcademicYearsSummaryQuery,
     useGetPendingBooksBySchoolQuery,
     useAcceptBookItemMutation,
-    useGetSupplyByIdQuery
+    useGetSupplyByIdQuery,
+    useCreateAcademicYearMutation,
+    useAddDamageReportMutation,
+    useCreateCompensationMutation,
+    useBookRequestMutation,
+    useBookRequestsQuery,
+    useRejectBookRequestMutation,
+    useFulfillBookRequestMutation
 } = Todo;

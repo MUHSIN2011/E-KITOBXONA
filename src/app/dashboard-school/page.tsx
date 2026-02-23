@@ -42,7 +42,7 @@ function Page() {
     if (isError) return <div className="flex justify-center flex-col items-center h-[80vh] gap-3">
         <h1 className="text-2xl text-center text-red-500 font-semibold">Хатогӣ ҳангоми гирифтани маълумот!!</h1>
         <p>Лутфан сайтро аз нав кушоед!</p>
-        <div className='flex gap-2 items-center border bg-blue-600 text-white rounded-sm px-3 py-1 cursor-pointer'>
+        <div onClick={() => window.location.reload()} className='flex gap-2 items-center border bg-blue-600 text-white rounded-sm px-4 py-2 cursor-pointer'>
             <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
             <button className=' cursor-pointer'>Нав Сози</button>
         </div>

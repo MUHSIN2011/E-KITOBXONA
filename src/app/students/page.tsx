@@ -171,7 +171,7 @@ function StudentsPage() {
                             </div>
                         </form>
 
-                        <DialogFooter className="gap-2 sm:gap-0">
+                        <DialogFooter className="gap-2 sm:gap-2">
                             <DialogClose asChild>
                                 <Button type="button" variant="outline">Бекор кардан</Button>
                             </DialogClose>

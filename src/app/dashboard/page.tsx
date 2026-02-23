@@ -1,5 +1,5 @@
 'use client'
-import { useCloseAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetUsersCountQuery } from '@/src/api/api'
+import { useCloseAcademicYearMutation, useCreateAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetUsersCountQuery } from '@/src/api/api'
 import Card from '../../components/Card'
 import { BookOpen, Building2, CalendarDays, GraduationCap, Lock, MapPin, School } from 'lucide-react'
 import MyBarChart from '@/src/components/ChartComponent'
@@ -13,11 +13,17 @@ import { ChartRadialLabel } from '@/components/ui/chartConfig'
 import DashboardFlow from '@/src/components/DashboardFlow'
 import { Button } from '@/components/ui/button';
 import ProtectedRoute from '@/src/components/ProtectedRoute'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import toast from 'react-hot-toast'
+import { useForm } from 'react-hook-form'
 
 function Page() {
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
     const [closeYear, { isLoading: isClosing }] = useCloseAcademicYearMutation();
     const { data: usersData, isLoading: isGetUsers } = useGetUsersCountQuery();
+    const [createYear, { isLoading: isLoadingcreateYear }] = useCreateAcademicYearMutation();
     const { data: getyears } = useGetActiveYearQuery();
     const activeYearId = getyears?.id;
     const { data: overview } = useGetReportsOverviewQuery(getyears?.id);
@@ -50,6 +56,23 @@ function Page() {
             }
         }
     }
+    const { register, handleSubmit, reset } = useForm({
+        defaultValues: {
+            name: "",
+            start_date: "2026-02-17",
+            end_date: "2026-02-17"
+        }
+    });
+
+    const onSubmit = async (data: any) => {
+        try {
+            await createYear(data).unwrap();
+            toast.success("Соли таҳсил бомуваффақият сохта шуд!");
+            reset();
+        } catch (err) {
+            toast.error("Хатогӣ ҳангоми сохтан");
+        }
+    };
 
     if (isLoading) return <div className="flex h-[85vh] items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -74,9 +97,6 @@ function Page() {
                         <p className="text-sm text-slate-500 dark:text-slate-300">Назорати умумидавлатии фондҳои китоб</p>
                     </div>
                     <div className="flex gap-3">
-                        <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
-                            Ҳисоботи PDF
-                        </Button>
                         <Button
                             onClick={handleCloseYear}
                             disabled={isClosing}
@@ -84,6 +104,40 @@ function Page() {
                         >
                             <Lock className="w-4 h-4" /> {isClosing ? "Пайваст..." : "Бастани сол"}
                         </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+                                    Иловаи соли нав
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Иловаи соли таҳсили нав</DialogTitle>
+                                </DialogHeader>
+
+                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                                    <div>
+                                        <Label className='my-2'>Номи сол</Label>
+                                        <Input {...register("name", { required: true })} placeholder="Масалан: 2026-2027" />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label className='my-2'>Санаи оғоз</Label>
+                                            <Input type="date" {...register("start_date", { required: true })} />
+                                        </div>
+                                        <div>
+                                            <Label className='my-2'>Санаи анҷом</Label>
+                                            <Input type="date" {...register("end_date", { required: true })} />
+                                        </div>
+                                    </div>
+
+                                    <Button type="submit" className="w-full hover:bg-blue-500 cursor-pointer bg-blue-600" disabled={isLoading}>
+                                        {isLoadingcreateYear ? "Дар ҳоли илова..." : "Захира кардан"}
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </div>
                 <section data-aos="fade-up">
