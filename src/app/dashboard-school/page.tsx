@@ -19,17 +19,24 @@ function Page() {
 
     const { data: students } = useGetStudentsQuery({ skip: 0, limit: 1 })
 
-    const { data: items, isLoading: isItemsLoading } = useGetReportsOverviewQuery(currentYearId, {
+    const { data: items } = useGetReportsOverviewQuery(currentYearId, {
         skip: !currentYearId
     });
+
+    useEffect(() => {
+        if (items) {
+            console.log("Маълумоти сол омад:", items);
+            console.log("ID-и аниқ:", items);
+        }
+    }, [items]);
 
     const { data: budget, isLoading: isBudgetLoading } = useGetSchoolBudgetQuery(
         {
             schoolId: me?.school_id as number,
-            yearId: items?.id as number,
+            yearId: items?.academic_year_id as number,
         },
         {
-            skip: !me?.school_id || !items?.id
+            skip: !me?.school_id || !items?.academic_year_id
         }
     );
 
