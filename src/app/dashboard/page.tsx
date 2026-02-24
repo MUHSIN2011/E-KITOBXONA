@@ -139,7 +139,7 @@ function Page() {
                             </DialogContent>
                         </Dialog>
                     </div>
-                </div>
+                </div>  
                 <section data-aos="fade-up">
                     <div className="grid grid-cols-1 mb-8 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         <div data-aos="fade-right" data-aos-delay="100">

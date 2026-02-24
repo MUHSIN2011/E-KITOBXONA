@@ -417,6 +417,7 @@ export const Todo = createApi({
             lost_books: number;
             damaged_books: number;
             scope: string;
+            id: number;
             total_districts: number;
         }, number | void>({
             query: (yearId) => `reports/overview?academic_year_id=${yearId}`,

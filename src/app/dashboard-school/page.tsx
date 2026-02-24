@@ -16,14 +16,22 @@ function Page() {
     const { data: me } = useGetMeQuery()
     const { data: activeYear } = useGetActiveYearQuery()
     const currentYearId = activeYear?.id
-    const { data: items } = useGetReportsOverviewQuery(currentYearId, { skip: !currentYearId })
 
     const { data: students } = useGetStudentsQuery({ skip: 0, limit: 1 })
 
-    const { data: budget } = useGetSchoolBudgetQuery(
-        { schoolId: me?.school_id, yearId: 3 },
-        { skip: !me?.school_id }
-    )
+    const { data: items, isLoading: isItemsLoading } = useGetReportsOverviewQuery(currentYearId, {
+        skip: !currentYearId
+    });
+
+    const { data: budget, isLoading: isBudgetLoading } = useGetSchoolBudgetQuery(
+        {
+            schoolId: me?.school_id as number,
+            yearId: items?.id as number,
+        },
+        {
+            skip: !me?.school_id || !items?.id
+        }
+    );
 
     useEffect(() => {
         AOS.init({
