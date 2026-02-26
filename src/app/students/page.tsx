@@ -1,7 +1,7 @@
 "use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TextAnimate } from '@/components/ui/text-animate'
-import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useUpdateStudentMutation } from '@/src/api/api'
+import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useDeleteStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useUpdateStudentMutation } from '@/src/api/api'
 import CardsStudent from '@/src/components/CardsStudent'
 import { Book, BookOpen, Calendar, DollarSign, FileText, Funnel, Hash, Phone, User, Users } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -19,10 +19,12 @@ import { Textarea } from '@/components/ui/textarea'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { Button } from '@/components/ui/button'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { jwtDecode } from 'jwt-decode'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Label } from '@/components/ui/label'
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+
 
 function StudentsPage() {
     const [page, setPage] = useState(0);
@@ -42,7 +44,7 @@ function StudentsPage() {
         idx as number,
         { skip: !idx }
     )
-    console.log(studentbyid);
+    const [deleteStudent, { isLoading: isDeleting }] = useDeleteStudentMutation();
 
     const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
 
@@ -66,7 +68,7 @@ function StudentsPage() {
         }
     }, [studentbyid]);
 
-    if (isLoading) return <div className="flex h-[85vh] items-center justify-center">
+    if (isLoading) return <div className="flex h-[84vh] items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     </div>
 
@@ -94,7 +96,6 @@ function StudentsPage() {
         }
     };
 
-    console.log(students)
 
     const handleUpdate = async () => {
         try {
@@ -118,6 +119,7 @@ function StudentsPage() {
 
     return (
         <main className="p-4 space-y-6">
+            <Toaster />
             <div className='flex justify-between items-center'>
                 <div>
                     <TextAnimate className='text-2xl font-bold' animation="slideUp" by="word">
@@ -202,7 +204,7 @@ function StudentsPage() {
                                         {...registerStudent("class_name", {
                                             required: "Синфро ворид кунед",
                                             validate: (value) => {
-                                                const classRegex = /^[1-9][0-1]? [a-zа-я]$/i;
+                                                const classRegex = /^[1-9][0-1]?[a-zа-я]$/i;
 
                                                 const grade = parseInt(value);
                                                 const hasLetter = /[a-zA-Zа-яА-Я]/.test(value.slice(-1));
@@ -232,10 +234,10 @@ function StudentsPage() {
                                         required: "Соли таваллудро ворид кунед",
                                         validate: (value: string | number) => {
                                             const year = parseInt(value as string);
-                                    if (isNaN(year) || year < 2000 || year > 2020) {
+                                            if (isNaN(year) || year < 2000 || year > 2020) {
                                                 return "Соли таваллуд бояд аз 2000 то 2020 бошад";
                                             }
-                                    return true;
+                                            return true;
                                         }
                                     })} type="number" placeholder='2011' />
                                     {studentErrors.birth_year && (
@@ -314,6 +316,7 @@ function StudentsPage() {
                 <CardsStudent Icons={<DollarSign className="text-red-500" />} NameRole='Бо ҷуброн' cnt={'2'} />
             </div>
 
+
             <Sheet open={!!idx} onOpenChange={() => setIdx(null)}>
                 <SheetContent className="sm:max-w-[500px] overflow-y-auto px-0">
                     <SheetHeader className="px-6 pb-6 pt-2 bg-gradient-to-r from-blue-50 to-white border-b">
@@ -390,7 +393,7 @@ function StudentsPage() {
                                     <FileText className="w-3.5 h-3.5" />
                                     <p className="text-[11px] uppercase font-bold tracking-wider">Эзоҳи иловагӣ</p>
                                 </div>
-                                <div className="p-4 bg-amber-50/50 border border-amber-100 rounded-xl">
+                                <div className="p-4 bg-blue-50/50 border border-blue-300 rounded-xl">
                                     <p className="text-sm text-slate-600 leading-relaxed italic">
                                         {studentbyid.notes || "Ягон эзоҳ илова нашудааст."}
                                     </p>
@@ -398,18 +401,44 @@ function StudentsPage() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-3 pt-6 border-t">
-                                <Button
-                                    variant="outline"
-                                    className="rounded-xl h-11 font-semibold text-slate-600 hover:bg-slate-50"
-                                    onClick={() => {
-                                        setIdx(null);
-                                        setIsEditOpen(true);
-                                    }}
-                                >
-                                    Таҳрир кардан
-                                </Button>
-                                <Button className="bg-blue-600 hover:bg-blue-700 rounded-xl h-11 font-semibold shadow-md shadow-blue-200">
-                                    Додани китоб
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="rounded-xl h-11 cursor-pointer font-semibold text-slate-600 hover:bg-slate-50"
+                                        >
+                                            хориҷ кардан
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Оё шумо мутмаин ҳастед?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Ин амал хонандаро аз мактаб комилан нест мекунад!
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter className="gap-2">
+                                            <AlertDialogCancel className="rounded-xl border-slate-200">
+                                                Бекор кардан
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className="rounded-xl bg-red-600 hover:bg-red-700 text-white"
+                                                onClick={() => {
+                                                    setIdx(null);
+                                                    deleteStudent({ student_id: studentbyid.id });
+                                                    toast.success("Хонанда нест карда шуд!");
+                                                }}
+                                            >
+                                                Нест кардан
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                                <Button onClick={() => {
+                                    setIdx(null);
+                                    setIsEditOpen(true);
+                                }} className="bg-blue-600 hover:bg-blue-700 rounded-xl h-11 font-semibold shadow-md shadow-blue-200">
+                                    Тағйир додан
                                 </Button>
                             </div>
                         </div>

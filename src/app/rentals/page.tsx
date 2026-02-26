@@ -18,6 +18,7 @@ import {
     useCreateCompensationMutation,
     useGetReportsOverviewQuery,
     useGetActiveYearQuery,
+    useGetBooksSchoolQuery,
 } from '@/src/api/api';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
@@ -54,7 +55,10 @@ export default function RentalsPage() {
     });
 
     const { data: studentsData } = useGetStudentsQuery({ search: searchTerm, skip: 0, limit: 20 });
-    const { data: booksData } = useGetTextbooksQuery(undefined);
+    const { data: booksSchool } = useGetBooksSchoolQuery({
+        skip: 0,
+        limit: 20
+    });
     const [rentBook, { isLoading: isRentLoading }] = useRentTextbookMutation();
     const [returnBook, { isLoading: isReturnLoading }] = useReturnBookMutation();
     const [addDamageReport] = useAddDamageReportMutation();
@@ -127,9 +131,17 @@ export default function RentalsPage() {
             refetchRentals();
             resetReturnForm();
         } catch (error: any) {
-            console.error("API Error:", error);
+            console.log("Full API Error Details:", JSON.stringify(error, null, 2));
+
             toast.dismiss();
-            toast.error(error.data?.detail?.[0]?.msg || error.data?.detail || "Хатогӣ дар система");
+
+            const errorMessage =
+                error.data?.detail?.[0]?.msg ||
+                error.data?.detail ||
+                error.message ||
+                "Хатогӣ дар система";
+
+            toast.error(errorMessage);
         }
     };
 
@@ -221,22 +233,51 @@ export default function RentalsPage() {
                                     </PopoverTrigger>
                                     <PopoverContent className="w-[450px] p-0 shadow-lg border-none rounded-2xl" align="start">
                                         <Command>
-                                            <CommandInput placeholder="Ҷустуҷӯи китоб..." />
+                                            <CommandInput placeholder="Ҷустуҷӯи китоб ё рақами инвентарӣ..." />
                                             <CommandGroup className="max-h-60 overflow-y-auto p-2">
-                                                {booksData?.items?.map((book) => {
-                                                    const isSelected = selectedBookIds.includes(book.id);
+                                                {booksSchool?.items?.map((item) => {
+                                                    const book = item.textbook;
+                                                    const isSelected = selectedBookIds.includes(item.id);
+
+                                                    // Ин сатр барои ҷустуҷӯ истифода мешавад
+                                                    const searchLabel = `${book?.title} ${item.inventory_number}`.toLowerCase();
+
                                                     return (
-                                                        <CommandItem key={book.id} onSelect={() => toggleBookSelection(book.id)} className={cn("flex items-center justify-between p-3 rounded-xl cursor-pointer mb-1", isSelected ? "bg-blue-50" : "")}>
+                                                        <CommandItem
+                                                            key={item.id}
+                                                            value={searchLabel} // Акнун поиск ҳам ном ва ҳам рақамро мебинад
+                                                            onSelect={() => toggleBookSelection(item.id)}
+                                                            className={cn(
+                                                                "flex items-center justify-between p-3 rounded-xl cursor-pointer mb-1",
+                                                                isSelected ? "bg-blue-50" : ""
+                                                            )}
+                                                        >
                                                             <div className="flex items-center gap-3">
-                                                                <div className={cn("w-5 h-5 border rounded flex items-center justify-center transition-all", isSelected ? "bg-[#0950c3] border-[#0950c3]" : "border-gray-300")}>
+                                                                <div className={cn(
+                                                                    "w-5 h-5 border rounded flex items-center justify-center transition-all",
+                                                                    isSelected ? "bg-[#0950c3] border-[#0950c3]" : "border-gray-300"
+                                                                )}>
                                                                     {isSelected && <Check className="h-3.5 w-3.5 text-white" />}
                                                                 </div>
                                                                 <div className="flex flex-col">
-                                                                    <span className="font-semibold text-gray-900 dark:text-white">{book.title}</span>
-                                                                    <span className="text-[11px] text-gray-500 dark:text-gray-300">Муаллиф: {book.author} | Дастрас: {book.available_copies}</span>
+                                                                    <span className="font-semibold text-gray-900 dark:text-white">
+                                                                        {book?.title || "Номи китоб нест"}
+                                                                    </span>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="text-[11px] text-gray-500">
+                                                                            Муаллиф: {book?.author}
+                                                                        </span>
+                                                                        <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-1.5 rounded">
+                                                                            №{item.inventory_number}
+                                                                        </span>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <Badge variant="outline" className="text-[10px]">Синфи {book.grade}</Badge>
+                                                            <div className="flex flex-col items-end gap-1">
+                                                                <Badge variant="outline" className="text-[10px]">
+                                                                    Синфи {book?.grade}
+                                                                </Badge>
+                                                            </div>
                                                         </CommandItem>
                                                     );
                                                 })}
@@ -249,7 +290,7 @@ export default function RentalsPage() {
 
                         <DialogFooter className="gap-3 pt-4 border-t">
                             <Button variant="outline" onClick={() => setOpen(false)} className="rounded-xl flex-1">Бекор кардан</Button>
-                            <Button onClick={handleRent} disabled={isRentLoading} className="bg-[#0950c3] dark:hover:bg-[#0950c3b0] text-white rounded-xl flex-1">
+                            <Button onClick={handleRent} disabled={isRentLoading} className="bg-[#0950c3] dark:hover:bg-[#0950c3b0] hover:bg-[#0950c3b0] text-white rounded-xl flex-1">
                                 {isRentLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Тасдиқ кардан"}
                             </Button>
                         </DialogFooter>
@@ -258,7 +299,7 @@ export default function RentalsPage() {
             </div>
 
             <div className='grid md:grid-cols-3 grid-cols-1 gap-3 my-7'>
-                <div><Card NameRole={'Дар склад'} textColor='green-600'  cnt={items?.total_books?.toString() || '0'}/></div>
+                <div><Card NameRole={'Дар склад'} textColor='green-600' cnt={items?.total_books?.toString() || '0'} /></div>
                 <div><Card NameRole={'Дар Ичора'} textColor='yellow-500' cnt={items?.rented_books?.toString() || '0'} /></div>
                 <div><Card NameRole={'Гумшуда'} textColor='red-600' cnt={items?.lost_books?.toString() || '0'} /></div>
             </div>
@@ -390,79 +431,102 @@ export default function RentalsPage() {
                 </SheetContent>
             </Sheet>
 
-            {/* Диалоги қабули китоб ва ҷарима */}
             <Dialog open={isReturnModalOpen} onOpenChange={(val) => {
                 setIsReturnModalOpen(val);
                 if (!val) resetReturnForm();
             }}>
-                <DialogContent className="sm:max-w-[450px]">
-                    <DialogHeader>
-                        <DialogTitle>Қабули китоб</DialogTitle>
-                        <DialogDescription>
-                            Ҳолати китоби <b>{selectedBookToReturn?.textbook_title}</b>-ро ворид кунед.
+                <DialogContent className="sm:max-w-[460px] p-0 overflow-hidden border-none shadow-lg">
+                    {/* Сарлавҳа бо заминаи сабук */}
+                    <DialogHeader className="p-6 pb-0">
+                        <DialogTitle className="text-xl font-bold text-slate-800 tracking-tight">
+                            Қабули китоб
+                        </DialogTitle>
+                        <DialogDescription className="text-slate-500 pt-2">
+                            Ҳолати китоби <span className="font-semibold text-slate-700 underline decoration-blue-200">
+                                {selectedBookToReturn?.textbook_title}
+                            </span>-ро ворид кунед.
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="grid gap-4 py-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">Ҳолат:</label>
+                    <div className="p-6 space-y-6">
+                        <div className="space-y-3">
+                            <p className="text-sm font-semibold text-slate-600 ml-1">Ҳолати умумӣ:</p>
                             <Select value={returnCondition} onValueChange={setReturnCondition}>
-                                <SelectTrigger>
-                                    <SelectValue />
+                                <SelectTrigger className="h-11 w-full border-slate-200 focus:ring-slate-400">
+                                    <SelectValue placeholder="Интихоб кунед" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="good">Хуб (Good)</SelectItem>
-                                    <SelectItem value="fair">Миёна (Fair)</SelectItem>
-                                    <SelectItem value="poor">Заиф (Poor)</SelectItem>
-                                    <SelectItem value="damaged">Вайрон (Damaged)</SelectItem>
+                                    <SelectItem value="good">✨ Хуб (Good)</SelectItem>
+                                    <SelectItem value="fair">👍 Миёна (Fair)</SelectItem>
+                                    <SelectItem value="poor">⚠️ Заиф (Poor)</SelectItem>
+                                    <SelectItem value="damaged">❌ Вайрон (Damaged)</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
+                        {/* Сексияи зарар бо дизайни тоза ва мулоим */}
                         {returnCondition === "damaged" && (
-                            <div className="space-y-4 p-4 border border-red-200 rounded-xl bg-red-50/50 animate-in fade-in slide-in-from-top-2">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-red-700">Намуди зарар:</label>
-                                    <Select value={damageType} onValueChange={setDamageType}>
-                                        <SelectTrigger className="bg-white">
-                                            <SelectValue />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="minor">Незначительное</SelectItem>
-                                            <SelectItem value="moderate">Среднее</SelectItem>
-                                            <SelectItem value="severe">Серьёзное</SelectItem>
-                                            <SelectItem value="total_loss">Полная потеря</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                            <div className="space-y-4 p-4 rounded-xl border border-slate-200 bg-slate-50/50 animate-in fade-in zoom-in-95 duration-200">
+                                <div className="flex items-center gap-2 mb-1">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Тафсилоти зарар</span>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-red-700">Маблағи ҷарима (сомонӣ):</label>
-                                    <Input
-                                        type="number"
-                                        className="bg-white"
-                                        value={compensationAmount}
-                                        onChange={(e) => setCompensationAmount(Number(e.target.value))}
-                                    />
-                                </div>
+                                <div className="grid gap-4">
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-slate-600 ml-1">Намуди зарар:</label>
+                                        <Select value={damageType} onValueChange={setDamageType}>
+                                            <SelectTrigger className="h-9 bg-white border-slate-200">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="minor">Кам (Minor)</SelectItem>
+                                                <SelectItem value="moderate">Миёна (Moderate)</SelectItem>
+                                                <SelectItem value="severe">Ҷиддӣ (Severe)</SelectItem>
+                                                <SelectItem value="total_loss">Корношоям (Total loss)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-sm font-medium text-red-700">Тавсиф:</label>
-                                    <Input
-                                        className="bg-white"
-                                        placeholder="Сабаби зарар..."
-                                        value={damageDescription}
-                                        onChange={(e) => setDamageDescription(e.target.value)}
-                                    />
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-slate-600 ml-1">Маблағи ҷарима (сомонӣ):</label>
+                                        <Input
+                                            type="number"
+                                            className="h-9 bg-white border-slate-200 focus-visible:ring-slate-400"
+                                            value={compensationAmount}
+                                            onChange={(e) => setCompensationAmount(Number(e.target.value))}
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-medium text-slate-600 ml-1">Тавсиф:</label>
+                                        <Input
+                                            className="h-9 bg-white border-slate-200 focus-visible:ring-slate-400"
+                                            placeholder="Сабаби зарарро шарҳ диҳед..."
+                                            value={damageDescription}
+                                            onChange={(e) => setDamageDescription(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsReturnModalOpen(false)}>Бекор кардан</Button>
-                        <Button onClick={handleConfirmReturn} disabled={isReturnLoading} className="bg-blue-600 text-white">
-                            {isReturnLoading ? <Loader2 className="animate-spin h-4 w-4" /> : "Тасдиқ ва қабул"}
+                    <DialogFooter className="p-6 pt-2 bg-slate-50/50 gap-2 sm:gap-0">
+                        <Button
+                            variant="ghost"
+                            onClick={() => setIsReturnModalOpen(false)}
+                            className="text-slate-500 hover:bg-slate-200"
+                        >
+                            Бекор кардан
+                        </Button>
+                        <Button
+                            onClick={handleConfirmReturn}
+                            disabled={isReturnLoading}
+                            className="bg-slate-900 hover:bg-slate-800 text-white px-6 shadow-md transition-all active:scale-95"
+                        >
+                            {isReturnLoading ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : null}
+                            Тасдиқ ва қабул
                         </Button>
                     </DialogFooter>
                 </DialogContent>

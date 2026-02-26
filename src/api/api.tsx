@@ -662,7 +662,16 @@ export const Todo = createApi({
                 body: {},
             }),
             invalidatesTags: ['BookRequests'],
-        })
+        }),
+        deleteStudent: builder.mutation<void, {student_id: number}>({
+            query: (student_id) => ({
+                url: `/students/${student_id}`,
+                method: 'DELETE',
+                body: {},
+            }),
+            invalidatesTags: ['Students'],
+        }),
+        
     }),
 });
 
@@ -714,5 +723,6 @@ export const {
     useBookRequestMutation,
     useBookRequestsQuery,
     useRejectBookRequestMutation,
-    useFulfillBookRequestMutation
+    useFulfillBookRequestMutation,
+    useDeleteStudentMutation
 } = Todo;

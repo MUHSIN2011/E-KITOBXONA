@@ -46,9 +46,13 @@ export default function SupplyDetails() {
     } catch (err: any) {
       const errorMessage = err.data?.detail || "Хатогӣ рӯй дод";
 
-      if (errorMessage === "Копия уже обработана") {
+      if (errorMessage === `Инвентарный номер ${inventoryNumber} уже существует`) {
         toast.error("Ин китоб аллакай қабул шудааст!");
-      } else {
+      } 
+      else if (errorMessage === "Копия уже обработана ") {
+        toast.error("Ин китоб аллакай қабул шудааст!");
+      } 
+      else {
         toast.error(String(errorMessage));
       }
 
