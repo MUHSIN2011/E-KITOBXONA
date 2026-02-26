@@ -30,9 +30,9 @@ function DeliveryPage() {
     const [selectedRegion, setSelectedRegion] = useState<string>(searchParams.get('region_id') || '')
     const [selectedDistrict, setSelectedDistrict] = useState<string>('')
 
-    const { data: regions } = useGetRegionsQuery()
-    const { data: districts } = useGetDistrictsQuery(Number(selectedRegion), { skip: !selectedRegion })
-    const { data: schools } = useGetSchoolsByDistrictQuery(Number(selectedDistrict), { skip: !selectedDistrict })
+    const { data: regions, isLoading: regionsLoading } = useGetRegionsQuery()
+    const { data: districts, isLoading: districtsLoading } = useGetDistrictsQuery(Number(selectedRegion), { skip: !selectedRegion })
+    const { data: schools, isLoading: schoolsLoading } = useGetSchoolsByDistrictQuery(Number(selectedDistrict), { skip: !selectedDistrict })
     const { data: textbooks } = useGetTextbooksQuery('all')
 
     const [formData, setFormData] = useState({
@@ -208,9 +208,25 @@ function DeliveryPage() {
                                     <SelectValue placeholder="Вилоятро интихоб кунед..." />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {regions?.map((r: Region) => (
-                                        <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>
-                                    ))}
+                                    {regionsLoading ? (
+                                        <SelectContent>
+                                            <SelectItem
+                                                value="loading-test"
+                                                disabled
+                                                className="w-full flex justify-center items-center py-3"
+                                            >
+                                                <div className="flex items-center justify-center w-full min-w-[150px]">
+                                                    <div className="animate-spin rounded-full  h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
+                                                </div>
+                                            </SelectItem>
+
+                                            <SelectItem value="1">Loading...</SelectItem>
+                                        </SelectContent>
+                                    ) : (
+                                        regions?.map((r: Region) => (
+                                            <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>
+                                        ))
+                                    )}
                                 </SelectContent>
                             </Select>
                         </div>

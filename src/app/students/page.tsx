@@ -52,10 +52,14 @@ function StudentsPage() {
         search: search
     });
 
+
     const totalItems = students?.total || 0;
     const startItem = page * limit + 1;
     const endItem = Math.min((page + 1) * limit, totalItems);
     const [editData, setEditData] = useState<any>(null);
+    const studentsWithActiveBooks = students?.items?.filter(
+        (student) => (student.active_rentals_count || 0) > 0
+    ).length || 0;
     useEffect(() => {
         if (studentbyid) {
             setEditData(studentbyid);
@@ -89,6 +93,8 @@ function StudentsPage() {
             toast.error("Хатогӣ ҳангоми иловакунӣ!");
         }
     };
+
+    console.log(students)
 
     const handleUpdate = async () => {
         try {
@@ -136,11 +142,49 @@ function StudentsPage() {
                             <div className='grid md:grid-cols-2 grid-cols-1 gap-4'>
                                 <div className='flex flex-col gap-1'>
                                     <Label className='text-sm font-medium'>Насаб *</Label>
-                                    <Input {...registerStudent("last_name", { required: true })} placeholder='Раҳимов' />
+                                    <Input {...registerStudent("last_name", {
+                                        required: "Насаби хонандаро ворид кунед",
+                                        validate: (value) => {
+                                            if (value.trim() === "") {
+                                                return "Насаб ворид кунед";
+                                            }
+                                            else if (value.length < 2) {
+                                                return "Насаб бояд ҳадди аққал 2 ҳарф боло бошад";
+                                            }
+                                            else if (value.charAt(0) !== value.charAt(0).toUpperCase()) {
+                                                return "Насаб бояд авалош ба харфт калон бошад";
+                                            }
+                                            return true;
+                                        }
+                                    })} {...registerStudent("last_name", { required: true })} placeholder='Раҳимов' />
+                                    {
+                                        studentErrors.last_name && (
+                                            <span className="text-xs text-red-500">{studentErrors.last_name.message}</span>
+                                        )
+                                    }
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     <label className='text-sm font-medium'>Ном *</label>
-                                    <Input {...registerStudent("first_name", { required: true })} placeholder='Али' />
+                                    <Input {...registerStudent("first_name", {
+                                        required: "Номи хонандаро ворид кунед",
+                                        validate: (value) => {
+                                            if (value.trim() === "") {
+                                                return "Номро ворид кунед";
+                                            }
+                                            else if (value.length < 2) {
+                                                return "Ном бояд ҳадди аққал 2 ҳарф боло бошад";
+                                            }
+                                            else if (value.charAt(0) !== value.charAt(0).toUpperCase()) {
+                                                return "Ном бояд авалош ба харфт калон бошад";
+                                            }
+                                            return true;
+                                        }
+                                    })} placeholder='Али' />
+                                    {
+                                        studentErrors.first_name && (
+                                            <span className="text-xs text-red-500">{studentErrors.first_name.message}</span>
+                                        )
+                                    }
                                 </div>
                             </div>
 
@@ -152,17 +196,89 @@ function StudentsPage() {
                             <div className='grid grid-cols-2 gap-4'>
                                 <div className='flex flex-col gap-1'>
                                     <label className='text-sm font-medium'>Синф *</label>
-                                    <Input {...registerStudent("class_name", { required: true })} placeholder='10A' />
+                                    <Input
+                                        placeholder="10A"
+                                        maxLength={3}
+                                        {...registerStudent("class_name", {
+                                            required: "Синфро ворид кунед",
+                                            validate: (value) => {
+                                                const classRegex = /^[1-9][0-1]? [a-zа-я]$/i;
+
+                                                const grade = parseInt(value);
+                                                const hasLetter = /[a-zA-Zа-яА-Я]/.test(value.slice(-1));
+
+                                                if (isNaN(grade) || grade < 1 || grade > 11) {
+                                                    return "Синф бояд байни 1 ва 11 бошад";
+                                                }
+
+                                                if (!hasLetter) {
+                                                    return "Синфро пурра нависед (масалан: 10А)";
+                                                }
+                                                if (!classRegex.test(value)) {
+                                                    return "Харфашро бо харфи майда нависонед!";
+                                                }
+
+                                                return true;
+                                            }
+                                        })}
+                                    />
+                                    {studentErrors.class_name && (
+                                        <span className="text-xs text-red-500">{studentErrors.class_name.message}</span>
+                                    )}
                                 </div>
                                 <div className='flex flex-col gap-1'>
                                     <label className='text-sm font-medium'>Соли таваллуд *</label>
-                                    <Input {...registerStudent("birth_year", { required: true })} type="number" placeholder='2011' />
+                                    <Input {...registerStudent("birth_year", {
+                                        required: "Соли таваллудро ворид кунед",
+                                        validate: (value: string | number) => {
+                                            const year = parseInt(value as string);
+                                    if (isNaN(year) || year < 2000 || year > 2020) {
+                                                return "Соли таваллуд бояд аз 2000 то 2020 бошад";
+                                            }
+                                    return true;
+                                        }
+                                    })} type="number" placeholder='2011' />
+                                    {studentErrors.birth_year && (
+                                        <span className="text-xs text-red-500">{studentErrors.birth_year.message}</span>
+                                    )}
                                 </div>
                             </div>
 
                             <div className='flex flex-col gap-1'>
                                 <label className='text-sm font-medium'>Телефони волидайн *</label>
-                                <Input {...registerStudent("parent_phone", { required: true })} defaultValue={'+992'} placeholder='+992914049999' />
+                                <Input
+                                    {...registerStudent("parent_phone", {
+                                        required: "Телефони волидайнро ворид кунед",
+                                        validate: (value) => {
+                                            const phoneRegex = /^\+992\d{9}$/;
+
+                                            if (!value.startsWith("+992")) {
+                                                return "Рақам бояд бо +992 оғоз шавад";
+                                            }
+
+                                            if (value.length !== 13) {
+                                                return "Рақам бояд маҳз 13 аломат бошад (масалан: +992900112233)";
+                                            }
+
+                                            if (!phoneRegex.test(value)) {
+                                                return "Формати рақам нодуруст аст";
+                                            }
+
+                                            return true;
+                                        }
+                                    })}
+                                    defaultValue="+992"
+                                    maxLength={13}
+                                    placeholder="+992914049999"
+                                    onChange={(e) => {
+                                        if (!e.target.value.startsWith("+992")) {
+                                            e.target.value = "+992";
+                                        }
+                                    }}
+                                />
+                                {studentErrors.parent_phone && (
+                                    <span className="text-xs text-red-500">{studentErrors.parent_phone.message}</span>
+                                )}
                             </div>
 
                             <div className='flex flex-col gap-1'>
@@ -190,7 +306,11 @@ function StudentsPage() {
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
                 <CardsStudent Icons={<Users className="text-blue-500" />} NameRole='Ҳамагӣ хонандагон' cnt={totalItems.toString()} />
-                <CardsStudent Icons={<Book className="text-green-500" />} NameRole='Иҷораҳои фаъол' cnt={'27'} />
+                <CardsStudent
+                    Icons={<Book className="text-green-500" />}
+                    NameRole='Иҷораҳои фаъол'
+                    cnt={studentsWithActiveBooks.toString()}
+                />
                 <CardsStudent Icons={<DollarSign className="text-red-500" />} NameRole='Бо ҷуброн' cnt={'2'} />
             </div>
 

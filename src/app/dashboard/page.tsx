@@ -1,5 +1,5 @@
 'use client'
-import { useCloseAcademicYearMutation, useCreateAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetUsersCountQuery } from '@/src/api/api'
+import { useCloseAcademicYearMutation, useCreateAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetTextbooksQuery, useGetUsersCountQuery } from '@/src/api/api'
 import Card from '../../components/Card'
 import { BookOpen, Building2, CalendarDays, GraduationCap, Lock, MapPin, School } from 'lucide-react'
 import MyBarChart from '@/src/components/ChartComponent'
@@ -24,6 +24,7 @@ function Page() {
     const [closeYear, { isLoading: isClosing }] = useCloseAcademicYearMutation();
     const { data: usersData, isLoading: isGetUsers } = useGetUsersCountQuery();
     const [createYear, { isLoading: isLoadingcreateYear }] = useCreateAcademicYearMutation();
+    const { data: books, isFetching, isLoading: booksLoading } = useGetTextbooksQuery();
     const { data: getyears } = useGetActiveYearQuery();
     const activeYearId = getyears?.id;
     const { data: overview } = useGetReportsOverviewQuery(getyears?.id);
@@ -154,9 +155,9 @@ function Page() {
                         <div data-aos="fade-right" data-aos-delay="200">
                             <Card
                                 NameRole={'Ҳамагӣ китобҳо'}
-                                cnt={overview?.total_books.toString() || '0'}
+                                cnt={books?.total.toString() || '0'}
                                 Icons={<BookOpen />}
-                                description={`Дар ${regions?.length.toString() || '0'} вилоят`}
+                                description={`Дар Вазорати Маориф`}
                             />
                         </div>
                         <div data-aos="fade-right" data-aos-delay="300">

@@ -16,6 +16,8 @@ import {
     useReturnBookMutation,
     useAddDamageReportMutation,
     useCreateCompensationMutation,
+    useGetReportsOverviewQuery,
+    useGetActiveYearQuery,
 } from '@/src/api/api';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
@@ -141,16 +143,15 @@ export default function RentalsPage() {
         setSelectedBookToReturn(book);
         setIsReturnModalOpen(true);
     };
+    const { data: activeYear } = useGetActiveYearQuery()
+    const currentYearId = activeYear?.id
 
-    const statusBooksCount = rentals?.items?.reduce((acc, student) => {
-        const activeInStudent = student.rented_books?.filter(b => b.status === 'active').length || 0;
-        return acc + activeInStudent;
-    }, 0) || 0;
+    const { data: items } = useGetReportsOverviewQuery(currentYearId, {
+        skip: !currentYearId
+    });
 
-    const statusReturnBooksCount = rentals?.items?.reduce((acc, student) => {
-        const returnedInStudent = student.rented_books?.filter(b => b.status === 'returned').length || 0;
-        return acc + returnedInStudent;
-    }, 0) || 0;
+    console.log('alo', items);
+
 
     return (
         <div className="px-4 space-y-6 bg-[#f8fafc] dark:bg-black">
@@ -257,9 +258,9 @@ export default function RentalsPage() {
             </div>
 
             <div className='grid md:grid-cols-3 grid-cols-1 gap-3 my-7'>
-                <div><Card NameRole={'Иҷораҳои фаъол'} textColor='green-600' cnt={statusBooksCount.toString()} /></div>
-                <div><Card NameRole={'Вайроншуда'} textColor='red-600' cnt={'0'} /></div>
-                <div><Card NameRole={'Баргардонидашуда'} textColor='yellow-500' cnt={statusReturnBooksCount.toString()} /></div>
+                <div><Card NameRole={'Дар склад'} textColor='green-600'  cnt={items?.total_books?.toString() || '0'}/></div>
+                <div><Card NameRole={'Дар Ичора'} textColor='yellow-500' cnt={items?.rented_books?.toString() || '0'} /></div>
+                <div><Card NameRole={'Гумшуда'} textColor='red-600' cnt={items?.lost_books?.toString() || '0'} /></div>
             </div>
 
             <div className="flex flex-col gap-4 bg-white dark:bg-[#1a1a1a] p-4 rounded-2xl border shadow-sm">
@@ -286,8 +287,8 @@ export default function RentalsPage() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">Ҳама</SelectItem>
-                            <SelectItem value="active">Дар даст</SelectItem>
-                            <SelectItem value="returned">Баргардонидашуда</SelectItem>
+                            <SelectItem value="active">Дар ичора</SelectItem>
+                            <SelectItem value="returned">Дар склад</SelectItem>
                         </SelectContent>
                     </Select>
 
@@ -309,7 +310,7 @@ export default function RentalsPage() {
                             {rentalsLoading ? (
                                 <TableRow><TableCell colSpan={4} className="text-center py-10"><Loader2 className="animate-spin mx-auto" /></TableCell></TableRow>
                             ) : rentals?.items?.map((rental: any) => (
-                                <TableRow onClick={() => setSelectedStudent(rental)}  key={rental.student_id} className="hover:bg-gray-50/50 hover:dark:bg-blue-500/50 transition-colors cursor-pointer">
+                                <TableRow onClick={() => setSelectedStudent(rental)} key={rental.student_id} className="hover:bg-gray-50/50 hover:dark:bg-blue-500/50 transition-colors cursor-pointer">
                                     <TableCell>
                                         <div className="flex items-center gap-3">
                                             <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-[#0950c3]"><User className="w-4 h-4" /></div>
@@ -333,7 +334,6 @@ export default function RentalsPage() {
                 </div>
             </div>
 
-            {/* Детализацияи хонанда */}
             <Sheet open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
                 <SheetContent className="sm:max-w-[550px] overflow-y-auto px-4">
                     <SheetHeader className="border-b pb-4">

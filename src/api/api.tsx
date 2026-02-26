@@ -300,7 +300,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests','overview'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -358,7 +358,7 @@ export const Todo = createApi({
                 method: 'GET',
                 params: params,
             }),
-            providesTags: ['Rentals'],
+            providesTags: ['Rentals','overview'],
         }),
         RentTextbook: builder.mutation<any, {
             student_id: number,
@@ -422,7 +422,7 @@ export const Todo = createApi({
             total_districts: number;
         }, number | void>({
             query: (yearId) => `reports/overview?academic_year_id=${yearId}`,
-            providesTags: ['Todo'],
+            providesTags: ['overview'],
         }),
         createTextbook: builder.mutation<IGetTextbooks[], ICreateTextbookRequest>({
             query: (newBook) => ({
@@ -450,6 +450,7 @@ export const Todo = createApi({
         }),
         getOverview: builder.query<any, { academic_year_id: number }>({
             query: ({ academic_year_id }) => `reports/overview?academic_year_id=${academic_year_id}`,
+            providesTags: ['overview'],
         }),
         getMe: builder.query<any, void>({
             query: () => 'auth/me',
@@ -604,11 +605,11 @@ export const Todo = createApi({
         }),
         returnBook: builder.mutation({
             query: ({ rental_id, ...data }) => ({
-                url: `/rentals/${rental_id}/return`, // rental_id-ро ба URL мегузорем
+                url: `/rentals/${rental_id}/return`,
                 method: 'POST',
-                body: data, // new_condition ва notes ба body мераванд
+                body: data,
             }),
-            invalidatesTags: ['Rentals'],
+            invalidatesTags: ['Rentals', 'Students','overview'],
         }),
 
         addDamageReport: builder.mutation({

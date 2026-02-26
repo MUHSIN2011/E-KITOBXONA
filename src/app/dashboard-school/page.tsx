@@ -1,7 +1,7 @@
 'use client'
 import { useGetActiveYearQuery, useGetMeQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetSchoolBudgetQuery, useGetStudentsQuery } from '@/src/api/api'
 import Card from '../../components/Card'
-import { Book, BookUser, GraduationCap, School } from 'lucide-react'
+import { Book, BookUser, BookX, BookXIcon, GraduationCap, School } from 'lucide-react'
 import React, { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -17,11 +17,11 @@ function Page() {
     const { data: activeYear } = useGetActiveYearQuery()
     const currentYearId = activeYear?.id
 
-    const { data: students } = useGetStudentsQuery({ skip: 0, limit: 1 })
-
+    
     const { data: items } = useGetReportsOverviewQuery(currentYearId, {
         skip: !currentYearId
     });
+    const { data: students } = useGetStudentsQuery({ skip: 0, limit: 1 })
 
     useEffect(() => {
         if (items) {
@@ -80,16 +80,16 @@ function Page() {
                         data-aos="fade-up" data-aos-delay="200"
                         NameRole='Дар иҷора'
                         cnt={items?.rented_books?.toString() || '0'}
-                        Icons={<BookUser className="text-orange-600" />}
+                        Icons={<BookUser className="text-orange-400" />}
                         description='Дар дасти хонандагон'
                     />
                     <Card
                         path='/books-school'
                         data-aos="fade-up" data-aos-delay="300"
-                        NameRole='Ҳамагӣ мактабҳо'
-                        cnt={regions?.length.toString() || '0'}
-                        Icons={<School className="text-green-600" />}
-                        description='Дар ноҳия/вилоят'
+                        NameRole='Гумшуда/Зарардида'
+                        cnt={items?.lost_books?.toString() || '0'}
+                        Icons={<BookXIcon className="text-red-600" />}
+                        description='Гумшуда ё зарардида'
                     />
                     <Card
                         data-aos="fade-up" data-aos-delay="400"

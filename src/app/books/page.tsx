@@ -40,12 +40,12 @@ import toast, { Toaster } from 'react-hot-toast'
 
 function Page() {
     const [subject, setSubject] = useState<string>("all");
-    console.log(subject);
-
+    
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+    
     const { data: books, isFetching, isLoading: booksLoading } = useGetTextbooksQuery(subject);
     console.log(books);
+    
 
     const { data: subjectsData } = useGetSubjectsQuery();
     const [createTextbook, { isLoading: isCreating }] = useCreateTextbookMutation();
@@ -245,17 +245,17 @@ function Page() {
                 </Dialog>
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mb-8'>
+            <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
                 <Card
                     NameRole='Ҳамагӣ китобҳо'
                     cnt={books?.total?.toLocaleString() || "0"}
                     className="text-green-600"
                 />
-                <Card
-                    NameRole='Дар база мавҷуд'
+                {/* <Card
+                    NameRole='Дар китобхона 4 вилоят'
                     cnt={books?.items?.reduce((acc, book) => acc + (book.available_copies || 0), 0).toLocaleString() || "0"}
                     className="text-blue-600"
-                />
+                /> */}
                 <Card
                     NameRole='Иҷорашуда'
                     cnt={books?.items?.reduce((acc, book) => acc + (book.rented_copies || 0), 0).toLocaleString() || "0"}
