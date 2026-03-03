@@ -112,10 +112,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <Label htmlFor="password" className="text-sm font-medium">Рамз</Label>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-blue-500 hover:text-blue-600"
-                >Рамзро фаромӯш кардед?</Link>
+
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -150,14 +147,12 @@ export default function LoginPage() {
               {isLoading ? "Дар ҳоли воридшавӣ..." : "Даромадан"}
             </Button>
           </form>
-          
-
-          <p className="text-center mt-8 text-sm text-muted-foreground">
-            Ҳисоб надоред?{" "}
-            <Link href='/register' className="text-blue-500 hover:text-blue-600 font-bold">
-              Бақайдгирӣ
-            </Link>
-          </p>
+          <div className="mt-4 text-center">
+            <Link
+              href="/forgot-password"
+              className="text-xs text-blue-500  hover:text-blue-600"
+            >Рамзро фаромӯш кардед?</Link>
+          </div>
         </div>
       </div>
     </div>

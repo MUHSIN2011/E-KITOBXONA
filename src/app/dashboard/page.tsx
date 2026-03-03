@@ -16,7 +16,7 @@ import ProtectedRoute from '@/src/components/ProtectedRoute'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 
 function Page() {
@@ -50,8 +50,8 @@ function Page() {
 
         if (window.confirm("Оё шумо мутмаин ҳастед, ки мехоҳед соли таҳсилро бандед? Ин амал баргардонда намешавад!")) {
             try {
-                await closeYear(activeYearId).unwrap();
-                alert("Соли таҳсил бо муваффақият баста шуд.");
+                // await closeYear(activeYearId).unwrap();
+                toast.success("Соли таҳсил бо муваффақият баста шуд.");
             } catch (error) {
                 alert("Хатогӣ ҳангоми бастан.");
             }
@@ -81,15 +81,16 @@ function Page() {
     if (isError) return <div className="flex justify-center flex-col items-center h-[80vh] gap-3">
         <h1 className="text-2xl text-center text-red-500 font-semibold">Хатогӣ ҳангоми гирифтани маълумот!!</h1>
         <p>Лутфан сайтро аз нав кушоед!</p>
-        <div className='flex gap-2 items-center border bg-blue-600 text-white rounded-sm px-3 py-1 cursor-pointer'>
+        <div onClick={() => window.location.reload()} className='flex gap-2 items-center border bg-blue-600 text-white rounded-sm px-3 py-1 cursor-pointer'>
             <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
-            <button className=' cursor-pointer'>Нав Сози</button>
+            <button  className=' cursor-pointer'>Нав Сози</button>
         </div>
     </div>
 
     return (
         <ProtectedRoute allowedRoles={["ministry"]}>
-            <div className="px-4 py-3">
+            <div className="px-3 py-3">
+                <Toaster />
                 <div className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white dark:bg-[#1a1a1a] p-4 rounded-2xl border border-blue-100 dark:border-0 shadow-sm gap-4" data-aos="fade-down">
                     <div>
                         <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
@@ -190,15 +191,6 @@ function Page() {
                     </div>
                 </section>
 
-                <section
-                    className='border rounded-xl p-3 my-5 bg-white dark:bg-[#1a1a1a]'
-                // data-aos="fade-up"
-                // data-aos-delay="100"
-                >
-                    <h1 className='text-2xl font-semibold '>Вазъият аз рӯи вилоятҳо</h1>
-                    <p className='text-foreground text-sm mb-3'>Нишондиҳандаҳои асосии ҳар як вилоят</p>
-                    <RegionsTable />
-                </section>
 
                 <section
                     className='border rounded-xl p-3  bg-white dark:bg-[#1a1a1a]'

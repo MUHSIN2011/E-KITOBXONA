@@ -37,6 +37,7 @@ export interface IGetTextbooks {
     available_copies: number;
     rented_copies: number;
     updated_at: string
+    is_new: boolean
 }
 
 interface IGetTextbooksResponse {
@@ -300,7 +301,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests','overview'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -358,7 +359,7 @@ export const Todo = createApi({
                 method: 'GET',
                 params: params,
             }),
-            providesTags: ['Rentals','overview'],
+            providesTags: ['Rentals', 'overview'],
         }),
         RentTextbook: builder.mutation<any, {
             student_id: number,
@@ -609,7 +610,7 @@ export const Todo = createApi({
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['Rentals', 'Students','overview'],
+            invalidatesTags: ['Rentals', 'Students', 'overview'],
         }),
 
         addDamageReport: builder.mutation({
@@ -663,7 +664,7 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['BookRequests'],
         }),
-        deleteStudent: builder.mutation<void, {student_id: number}>({
+        deleteStudent: builder.mutation<void, { student_id: number }>({
             query: (student_id) => ({
                 url: `/students/${student_id}`,
                 method: 'DELETE',
@@ -671,7 +672,28 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['Students'],
         }),
-        
+        CreateSubjects: builder.mutation<void, { name: string }>({
+            query: ({ name }) => ({
+                url: `/subjects/`,
+                method: 'POST',
+                body: { name },
+            }),
+            invalidatesTags: ['Subjects'],
+        }),
+        MyBookRequests: builder.query<void, void>({
+            query: () => '/book-requests/my',
+            providesTags: ['BookRequests'],
+        }),
+        CancelBookRequests: builder.mutation<void, { request_id: string; reason: string }>({
+            query: ({ request_id, reason }) => ({
+                url: `/book-requests/${request_id}/cancel`,
+                method: 'POST',
+                body: { reason },
+            }),
+            invalidatesTags: ['BookRequests'],
+        }),
+
+
     }),
 });
 
@@ -724,5 +746,8 @@ export const {
     useBookRequestsQuery,
     useRejectBookRequestMutation,
     useFulfillBookRequestMutation,
-    useDeleteStudentMutation
+    useDeleteStudentMutation,
+    useCreateSubjectsMutation,
+    useMyBookRequestsQuery,
+    useCancelBookRequestsMutation
 } = Todo;

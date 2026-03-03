@@ -1,16 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { Bell, BookCheck, Info, Calendar, ArrowRightCircle, Clock, XCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { Bell, BookCheck, Info, Calendar, ArrowRightCircle, Clock, XCircle, CheckCircle2, Loader2, CircleX, Check, MessageCircleX } from "lucide-react";
 import {
     Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useRejectBookRequestMutation, useBookRequestsQuery, useGetPendingBooksBySchoolQuery } from '@/src/api/api';
+import { useRejectBookRequestMutation, useBookRequestsQuery, useGetPendingBooksBySchoolQuery, useMyBookRequestsQuery, useCancelBookRequestsMutation } from '@/src/api/api';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
 
 export function NotificationSheet({ user }: { user: any }) {
     const router = useRouter();
@@ -24,16 +26,23 @@ export function NotificationSheet({ user }: { user: any }) {
         }
     );
 
-    const { data: bookRequestsData, isLoading: isLoadingRequests } = useBookRequestsQuery();
-    const [rejectBookRequest, { isLoading: isRejecting }] = useRejectBookRequestMutation();
-    console.log(user);
     const IsMinistry = user?.role === "ministry";
     const IsSchool = user?.role === "school";
+    const { data: myBookRequests = [], isLoading: isLoadingMyRequests } = useMyBookRequestsQuery(undefined, {
+        skip: !IsSchool,
+    });
+
+    const { data: bookRequestsData, isLoading: isLoadingAllRequests } = useBookRequestsQuery(undefined, {
+        skip: !IsMinistry,
+    });
+    const [rejectBookRequest, { isLoading: isRejecting }] = useRejectBookRequestMutation();
+    const [cancelBookRequests, { isLoading: iscancelBookRequests }] = useCancelBookRequestsMutation();
 
 
     const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
     const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
     const [rejectionReason, setRejectionReason] = useState("");
+    const [Reason, setReason] = useState("");
 
     const handleOpenRejectDialog = (e: React.MouseEvent, requestId: number) => {
         e.stopPropagation();
@@ -41,13 +50,32 @@ export function NotificationSheet({ user }: { user: any }) {
         setIsRejectDialogOpen(true);
     };
 
+    const schoolRequests = (myBookRequests || [])?.map((req: any) => ({
+        ...req,
+        type: 'PERSONAL_REQUEST',
+        timestamp: new Date(req.created_at).getTime()
+    }));
+
+    // 2. Ҳамаи партияҳои китобҳои тасдиқнашударо (supplies) ба формат омода мекунем
+    const pendingSupplies = pendingData?.by_textbook?.flatMap((textbook: any) =>
+        textbook.supplies.map((supply: any) => ({
+            ...supply,
+            textbook_title: textbook.textbook_title,
+            type: 'SUPPLY', // агар лозим бошад
+            timestamp: new Date(supply.created_at).getTime()
+        }))
+    ) || [];
+
+    // 3. Ҳардуро муттаҳид мекунем ва аз навтарин ба кӯҳнатарин сорт мекунем
+    const allNotifications = [...schoolRequests, ...pendingSupplies].sort((a, b) => b.timestamp - a.timestamp);
+
     return (
         <>
             <Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
                 <SheetTrigger asChild>
                     <div className="relative cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
                         <Bell size={20} className="text-slate-600 dark:text-slate-400" />
-                        {IsSchool ? pendingData?.total_pending_items > 0 && (
+                        {IsSchool && pendingData?.items?.some((item: any) => item.status === "pending") ? (
                             <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
@@ -78,7 +106,7 @@ export function NotificationSheet({ user }: { user: any }) {
 
                         <div className="flex-1 overflow-y-auto p-4 space-y-4">
                             {IsMinistry ? (
-                                isRejecting ? (
+                                isRejecting && pendingData?.items?.some((item: any) => item.status === "pending") ? (
                                     <div className="flex h-[80vh] items-center justify-center">
                                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                                     </div>
@@ -90,7 +118,7 @@ export function NotificationSheet({ user }: { user: any }) {
                                         >
                                             <div className="absolute top-4 right-4 flex gap-2 z-10">
                                                 {
-                                                    request.status !== 'fulfilled' && request.status !== 'rejected' && (
+                                                    request.status !== 'fulfilled' && request.status !== 'rejected' && request.status !== 'cancelled' && (
                                                         <button
                                                             onClick={() => {
                                                                 setIsNotificationOpen(false);
@@ -104,7 +132,7 @@ export function NotificationSheet({ user }: { user: any }) {
                                                     )
                                                 }
 
-                                                {request.status !== 'fulfilled' && request.status !== 'rejected' && (
+                                                {request.status !== 'fulfilled' && request.status !== 'rejected' && request.status !== 'cancelled' && (
                                                     <button
                                                         onClick={() => {
                                                             setSelectedRequestId(request.id);
@@ -165,72 +193,143 @@ export function NotificationSheet({ user }: { user: any }) {
                                     <div className="text-center py-10 text-slate-500 text-sm">Дархостҳои нави китоб нестанд</div>
                                 )
                             ) : IsSchool ? (
-                                isPendingLoading ? (
+                                isPendingLoading || isLoadingMyRequests ? (
                                     <div className="flex h-[80vh] items-center justify-center">
                                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                                     </div>
-                                ) : pendingData?.by_textbook?.length > 0 ? (
-                                    pendingData.by_textbook.map((item: any) => (
-                                        <div key={item.textbook_id} className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-blue-300 dark:hover:border-blue-900 transition-all group">
-                                            <div className="flex items-start gap-4">
-                                                <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
-                                                    <BookCheck size={20} />
+                                ) : allNotifications.length > 0 ? (
+                                    allNotifications.map((notif, index) => (
+                                        <div key={index} className="mb-3">
+                                            {notif.type === 'PERSONAL_REQUEST' ? (
+                                                <div className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-blue-300 transition-all">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="p-2.5 bg-amber-100 text-amber-600 rounded-xl">
+                                                            <Clock size={20} />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <h4 className="font-bold text-sm">Шумо китоб дархост кардед</h4>
+                                                            <p className="text-xs text-slate-500">{notif.textbook_title} — {notif.quantity} дона</p>
+                                                            <span className="text-[10px] mt-2 block opacity-60">
+                                                                {new Date(notif.created_at).toLocaleString('tj-TJ')}
+                                                            </span>
+                                                        </div>
+
+
+                                                        <div
+                                                            className={`flex items-center justify-center p-1 rounded-full ${notif.status === 'pending'
+                                                                ? 'bg-amber-100 text-amber-600'
+                                                                : notif.status === 'fulfilled'
+                                                                    ? 'bg-green-100 text-green-600'
+                                                                    : 'bg-red-100 text-red-600 p-1.5'
+                                                                }`}
+                                                        >
+                                                            {notif.status === 'pending' ? (
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger asChild>
+                                                                        <div className="cursor-pointer hover:text-red-500 transition-colors">
+                                                                            <CircleX size={25} />
+                                                                        </div>
+                                                                    </AlertDialogTrigger>
+
+                                                                    <AlertDialogContent className="rounded-[24px]">
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>
+                                                                                Рад кардани дархости ''{notif.textbook_title}'' - {notif.quantity} дона
+                                                                            </AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                Лутфан гуед ки барои чи дархостро рад карданиед?
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+
+                                                                        <Input
+                                                                            value={Reason}
+                                                                            onChange={(e) => setReason(e.target.value)}
+                                                                            placeholder="Сабаб ?"
+                                                                            className="rounded-xl"
+                                                                        />
+
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel className="rounded-xl">Кафо</AlertDialogCancel>
+                                                                            <AlertDialogAction
+                                                                                onClick={() => cancelBookRequests({ request_id: notif.id, reason: Reason })}
+                                                                                className="rounded-xl bg-red-500 hover:bg-red-600 border-none text-white"
+                                                                                disabled={iscancelBookRequests}
+                                                                                type="submit"
+                                                                            >
+                                                                                Рад кардан
+                                                                            </AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            ) : notif.status === 'cancelled' ? (
+                                                                <MessageCircleX size={25} />
+                                                            ) : (
+                                                                <CheckCircle2 size={25} />
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
+                                            ) : (
+                                                <div key={index} className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-blue-300 dark:hover:border-blue-900 transition-all group">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
+                                                            <BookCheck size={20} />
+                                                        </div>
 
-                                                <div className="flex-1 w-full">
-                                                    <div className="flex justify-between items-start mb-2">
-                                                        <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-none">
-                                                            {item.textbook_title}
-                                                        </h4>
-                                                        <span className="text-[10px] font-bold bg-amber-100 text-amber-600 px-2 py-0.5 rounded uppercase shrink-0">
-                                                            Интизорӣ
-                                                        </span>
-                                                    </div>
+                                                        <div className="flex-1 w-full">
+                                                            <div className="flex justify-between items-start mb-2">
+                                                                <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-none">
+                                                                    {notif.textbook_title}
+                                                                </h4>
+                                                                <span className="text-[10px] font-bold bg-amber-100 text-amber-600 px-2 py-0.5 rounded uppercase shrink-0">
+                                                                    Интизорӣ
+                                                                </span>
+                                                            </div>
 
-                                                    <div className="space-y-1">
-                                                        <p className="text-xs text-slate-500 flex items-center gap-1 font-medium">
-                                                            <Info size={12} /> Ҳамагӣ: <span className="font-bold text-slate-700 dark:text-slate-300">{item.pending_items} дона</span>
-                                                        </p>
-                                                        <p className="text-[11px] text-blue-600 font-semibold italic">
-                                                            — {item.supplies?.length} бор равон карда шуд
-                                                        </p>
-                                                    </div>
+                                                            <div className="space-y-1">
+                                                                <p className="text-xs text-slate-500 flex items-center gap-1 font-medium">
+                                                                    <Info size={12} /> Ҳамагӣ: <span className="font-bold text-slate-700 dark:text-slate-300">{notif.pending_items} дона</span>
+                                                                </p>
+                                                                <p className="text-[11px] text-blue-600 font-semibold italic">
+                                                                    — 1 бор равон карда шуд
+                                                                </p>
+                                                            </div>
 
-                                                    <div className="mt-4 space-y-2 border-t border-slate-200/50 dark:border-slate-800 pt-3">
-                                                        {item.supplies?.map((supply: any) => (
-                                                            <div key={supply.supply_id} className="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm">
-                                                                <div className="flex flex-col">
-                                                                    <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
-                                                                        Партияи №{supply.supply_id}
-                                                                    </span>
-                                                                    <div className="flex items-center gap-2 text-[10px] text-slate-400">
-                                                                        <span className="flex items-center gap-1">
-                                                                            <Calendar size={10} />
-                                                                            {new Date(supply.created_at).toLocaleDateString('tj-TJ')}
+                                                            <div className="mt-4 space-y-2 border-t border-slate-200/50 dark:border-slate-800 pt-3">
+                                                                <div key={notif.supply_id} className="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm">
+                                                                    <div className="flex flex-col">
+                                                                        <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
+                                                                            Партияи №{notif.supply_id}
                                                                         </span>
-                                                                        <span className="flex items-center gap-1">
-                                                                            <Clock size={10} />
-                                                                            {new Date(supply.created_at).toLocaleTimeString('tj-TJ', { hour: '2-digit', minute: '2-digit' })}
-                                                                        </span>
+                                                                        <div className="flex items-center gap-2 text-[10px] text-slate-400">
+                                                                            <span className="flex items-center gap-1">
+                                                                                <Calendar size={10} />
+                                                                                {new Date(notif.created_at).toLocaleDateString('tj-TJ')}
+                                                                            </span>
+                                                                            <span className="flex items-center gap-1">
+                                                                                <Clock size={10} />
+                                                                                {new Date(notif.created_at).toLocaleTimeString('tj-TJ', { hour: '2-digit', minute: '2-digit' })}
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="flex items-center gap-3">
+                                                                        <span className="text-[11px] font-bold text-blue-600">{notif.pending_items} дона</span>
+                                                                        <Button
+                                                                            onClick={() => {
+                                                                                setIsNotificationOpen(false);
+                                                                                router.push(`/supplies/${notif.supply_id}`);
+                                                                            }}
+                                                                            variant="ghost" size="icon" className="h-8 w-8 text-blue-500 rounded-full"
+                                                                        >
+                                                                            <ArrowRightCircle size={18} />
+                                                                        </Button>
                                                                     </div>
                                                                 </div>
-                                                                <div className="flex items-center gap-3">
-                                                                    <span className="text-[11px] font-bold text-blue-600">{supply.pending_items} дона</span>
-                                                                    <Button
-                                                                        onClick={() => {
-                                                                            setIsNotificationOpen(false);
-                                                                            router.push(`/supplies/${supply.supply_id}`);
-                                                                        }}
-                                                                        variant="ghost" size="icon" className="h-8 w-8 text-blue-500 rounded-full"
-                                                                    >
-                                                                        <ArrowRightCircle size={18} />
-                                                                    </Button>
-                                                                </div>
                                                             </div>
-                                                        ))}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     ))
                                 ) : (
@@ -240,19 +339,18 @@ export function NotificationSheet({ user }: { user: any }) {
                                 <div className="flex h-[75vh] items-center justify-center">
                                     <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                                 </div>
-                            )
-                            }
+                            )}
                         </div>
                     </div>
                 </SheetContent>
-            </Sheet>
+            </Sheet >
 
             <Dialog
                 open={isRejectDialogOpen}
                 onOpenChange={(open) => {
                     setIsRejectDialogOpen(open);
                     if (!open) {
-                        setRejectionReason(""); // Вақте ки пӯшида мешавад, сабабро тоза кун
+                        setRejectionReason("");
                         setSelectedRequestId(null);
                     }
                 }}

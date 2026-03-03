@@ -9,12 +9,14 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 const MyLineChart = () => {
   const { data: summary, isLoading } = useGetAcademicYearsSummaryQuery();
+  console.log("summary", summary);
+
 
   const chartData = useMemo(() => {
     if (!summary) return { labels: [], rentals: [], returnRates: [] };
-    
+
     const sorted = [...summary].sort((a, b) => a.year_id - b.year_id);
-    
+
     return {
       labels: sorted.map(s => s.year_name),
       rentals: sorted.map(s => s.total_rentals),
@@ -44,7 +46,7 @@ const MyLineChart = () => {
         stops: [0, 90, 100]
       }
     },
-    colors: ['#3b82f6', '#10B981'], 
+    colors: ['#3b82f6', '#10B981'],
     labels: chartData.labels,
     markers: { size: 5, hover: { size: 7 } },
     yaxis: [
@@ -83,7 +85,7 @@ const MyLineChart = () => {
   if (isLoading) return <div className="h-[350px] flex items-center justify-center animate-pulse bg-slate-50 dark:bg-slate-900/50 rounded-3xl">Боргузорӣ...</div>;
 
   return (
-    <div className="w-full bg-white dark:bg-[#111111] p-6 rounded-[32px] border border-slate-100 dark:border-slate-800/50 shadow-sm">
+    <div className="w-full overflow-hidden bg-white dark:bg-[#111111] p-2 rounded-[15px] border border-slate-100 dark:border-slate-800/50 shadow-sm">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
@@ -91,7 +93,7 @@ const MyLineChart = () => {
           </h3>
           <p className="text-sm text-slate-500 font-medium">Динамикаи рушди фонди китоб</p>
         </div>
-        
+
         <div className="flex gap-3">
           <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-500/10 px-3 py-2 rounded-2xl">
             <BookOpen className="w-4 h-4 text-blue-600" />
@@ -104,8 +106,8 @@ const MyLineChart = () => {
         </div>
       </div>
 
-      <Chart options={options} series={series} height={320} />
-      
+      <Chart options={options} series={series} height={320} type="line" width="99%" />
+
       {summary && summary.length > 0 && (
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40">
@@ -117,13 +119,13 @@ const MyLineChart = () => {
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Миёнаи китоб/хонанда</p>
             <p className="text-lg font-bold text-slate-800 dark:text-white">
-              {summary[summary.length-1].avg_books_per_student} адад
+              {summary[summary.length - 1].avg_books_per_student} адад
             </p>
           </div>
           <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
             <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">Ҳолати сол</p>
             <p className="text-lg font-bold text-blue-600">
-              {summary[summary.length-1].is_active ? "Фаъол" : "Пӯшида"}
+              {summary[0]?.year_name}
             </p>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { CircleUser, Database, School, BookOpen, Landmark, Users, BarChart3, Clo
 import { AnimatedBeam } from "@/components/ui/animated-beam";
 import { motion } from "framer-motion";
 
-export default function DashboardFlow({UsersCount, total_books, BooksCount, RegionsCount}: any) {
+export default function DashboardFlow({ UsersCount, total_books, BooksCount, RegionsCount }: any) {
   const containerRef = useRef<HTMLDivElement>(null);
   const div1Ref = useRef<HTMLDivElement>(null);
   const div2Ref = useRef<HTMLDivElement>(null);
@@ -166,7 +166,7 @@ export default function DashboardFlow({UsersCount, total_books, BooksCount, Regi
         </div>
       </div>
 
-      <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
         {[
           {
             color: "from-blue-500 to-blue-600",

@@ -80,6 +80,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         router.push('/');
     };
 
+
     const handleAccept = async () => {
         if (!invNumber) return toast.error("Рақами инвентариро ворид кунед");
 
@@ -106,7 +107,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     }
 
     return (
-        <div className="flex min-h-screen w-full overflow-hidden">
+        <div className="flex min-h-screen w-full ">
             {!isLoginPage && !isRegisterPage && (
                 <>
                     <div className="lg:hidden fixed top-3.5 left-4 z-50">

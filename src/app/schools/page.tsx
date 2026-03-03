@@ -20,6 +20,8 @@ import {
     useFulfillBookRequestMutation
 } from '@/src/api/api'
 import { useSearchParams } from 'next/navigation'
+import { toast } from 'sonner'
+import { Toaster } from 'react-hot-toast'
 
 interface Region {
     id: number;
@@ -105,7 +107,8 @@ function DeliveryPage() {
                 })
                 setSelectedRegion('')
                 setSelectedDistrict('')
-            }, 3000)
+            }, 4000)
+            toast.success("Поставка бо муваффақият эҷод шуд!")
             return () => clearTimeout(timer)
         }
     }, [isSuccess, reset])
@@ -152,20 +155,21 @@ function DeliveryPage() {
                     requestId: Number(requestIdFromUrl),
                     supplyId: supplyResponse.id
                 }).unwrap();
-                console.log("Дархост бо муваффақият иҷро шуд!");
+                toast.success("Дархост бо муваффақият иҷро шуд!")
             }
 
         } catch (err) {
             console.error(err);
-            alert("Хатогӣ ҳангоми амалиёт");
+            toast.error("Хатогӣ ҳангоми амалиёт");
         }
     };
 
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 p-4 md:p-8 max-w-6xl mx-auto space-y-8">
+        <div className="min-h-screen  p-4 md:p-3 max-w-6xl mx-auto space-y-8">
+            <Toaster />
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4">
-                <div className="inline-flex items-center justify-center gap-4 bg-white/80 backdrop-blur-sm px-8 py-4 rounded-2xl shadow-lg border border-blue-100">
+                <div className="inline-flex items-center justify-center gap-4 bg-white/80 dark:bg-[#1a1a1a] dark:border-[#1a1a1a] backdrop-blur-sm px-8 py-4 rounded-2xl shadow-lg border border-blue-100">
                     <div className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full shadow-lg">
                         <Truck className="text-white" size={32} />
                     </div>
@@ -179,8 +183,8 @@ function DeliveryPage() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                <Card className="border border-blue-100 py-0 shadow-xl overflow-hidden bg-white/90 backdrop-blur-md">
-                    <CardHeader className="bg-gradient-to-r from-slate-900 to-blue-900 text-white p-6">
+                <Card className="border border-blue-100 dark:bg-[#1a1a1a]  py-0 shadow-xl overflow-hidden dark:border-none bg-white/90 backdrop-blur-md">
+                    <CardHeader className="bg-gradient-to-r from-slate-900 to-blue-900 dark:to-blue-600 text-white p-6">
                         <CardTitle className="text-xl font-bold flex items-center gap-3">
                             <div className="p-2 bg-white/20 rounded-lg">
                                 <MapPin size={20} className="text-blue-300" />
@@ -193,7 +197,7 @@ function DeliveryPage() {
                     </CardHeader>
                     <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="space-y-3">
-                            <Label className="text-slate-700 font-semibold flex items-center gap-2">
+                            <Label className="text-slate-700 dark:text-white/80 font-semibold flex items-center gap-2">
                                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                                 Вилоят / Регион
                             </Label>
@@ -204,7 +208,7 @@ function DeliveryPage() {
                                     setSelectedDistrict('');
                                 }}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className=' dark:border-gray-600'>
                                     <SelectValue placeholder="Вилоятро интихоб кунед..." />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -232,8 +236,8 @@ function DeliveryPage() {
                         </div>
 
                         <div className="space-y-3">
-                            <Label className="text-slate-700 font-semibold flex items-center gap-2">
-                                <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                            <Label className="text-slate-700  dark:text-white/70 font-semibold flex items-center gap-2">
+                                <div className="w-2 h-2 bg-indigo-500  rounded-full"></div>
                                 Шаҳр / Ноҳия
                             </Label>
                             <Select
@@ -241,7 +245,7 @@ function DeliveryPage() {
                                 value={selectedDistrict}
                                 onValueChange={(v) => { setSelectedDistrict(v); setFormData({ ...formData, to_school_id: '' }) }}
                             >
-                                <SelectTrigger className="h-12 border-slate-200 focus:ring-2 focus:ring-blue-500 bg-white shadow-sm">
+                                <SelectTrigger className="h-12 border-slate-200 focus:ring-2  dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
                                     <SelectValue placeholder="Ноҳияро интихоб кунед..." />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -253,7 +257,7 @@ function DeliveryPage() {
                         </div>
 
                         <div className="space-y-3">
-                            <Label className="text-slate-700 font-semibold flex items-center gap-2 text-blue-600">
+                            <Label className=" font-semibold flex items-center gap-2 text-blue-800">
                                 <School size={16} />
                                 Мактаби таълимӣ
                             </Label>
@@ -262,7 +266,7 @@ function DeliveryPage() {
                                 value={formData.to_school_id || ''}
                                 onValueChange={(v) => setFormData({ ...formData, to_school_id: v })}
                             >
-                                <SelectTrigger className="h-12 border-blue-200 focus:ring-2 focus:ring-blue-500 bg-white shadow-sm">
+                                <SelectTrigger className="h-12 border-blue-200 focus:ring-2  dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
                                     <SelectValue placeholder="Мактабро интихоб кунед..." />
                                 </SelectTrigger>
                                 <SelectContent className="max-h-[300px]">
@@ -277,7 +281,7 @@ function DeliveryPage() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-                <Card className="border border-blue-100 py-0 shadow-xl overflow-hidden bg-white/90 backdrop-blur-md">
+                <Card className="border border-blue-100 py-0 shadow-xl overflow-hidden bg-white/90 dark:bg-[#1a1a1a] dark:border-[#1a1a1a] backdrop-blur-md">
                     <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
                         <CardTitle className="text-xl font-bold flex items-center gap-3">
                             <div className="p-2 bg-white/20 rounded-lg">
@@ -290,28 +294,28 @@ function DeliveryPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
-                        <div className="flex items-center justify-between p-4 bg-blue-50/50 rounded-xl border border-blue-100">
+                        <div className="flex items-center justify-between p-4 bg-blue-50/50 rounded-xl border dark:bg-blue-700 dark:border-[#1a1a1a] border-blue-100">
                             <div className="space-y-1">
-                                <Label className="text-base font-bold text-slate-800">Навъи китобҳо</Label>
-                                <p className="text-sm text-slate-500">
+                                <Label className="text-base font-bold dark:text-white text-slate-800">Навъи китобҳо</Label>
+                                <p className="text-sm text-slate-500 dark:text-white/70">
                                     {formData.is_new_books ? "Китобҳои нав (ворид кардани инвентар аз тарафи мактаб)" : "Китобҳои кӯҳна (бо инвентари мавҷуда)"}
                                 </p>
                             </div>
-                            <div className="flex items-center gap-3 bg-white p-2 rounded-lg shadow-sm border">
-                                <span className={`text-xs font-bold ${!formData.is_new_books ? 'text-blue-600' : 'text-slate-400'}`}>КӮҲНА</span>
+                            <div className="flex items-center gap-3 bg-white dark:bg-[#1a1a1a]/40 p-2 rounded-lg shadow-sm border">
+                                <span className={`text-xs font-bold ${!formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>КӮҲНА</span>
                                 <Switch checked={formData.is_new_books} onCheckedChange={(v) => setFormData({ ...formData, is_new_books: v, textbook_copy_ids: [] })} />
-                                <span className={`text-xs font-bold ${formData.is_new_books ? 'text-blue-600' : 'text-slate-400'}`}>НАВ</span>
+                                <span className={`text-xs font-bold ${formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>НАВ</span>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-4">
-                                <Label className="text-slate-700 font-semibold flex items-center gap-2">
+                                <Label className="text-slate-700  dark:text-white font-semibold flex items-center gap-2">
                                     <Book size={16} className="text-blue-500" />
                                     Номи китоби дарсӣ
                                 </Label>
                                 <Select value={formData.textbook_id} onValueChange={(v) => setFormData({ ...formData, textbook_id: v, textbook_copy_ids: [] })}>
-                                    <SelectTrigger className="min-h-[60px] h-auto border-slate-200 bg-white shadow-sm">
+                                    <SelectTrigger className="min-h-[60px] h-auto border-slate-200 dark:border-gray-600 bg-white shadow-sm">
                                         <SelectValue placeholder="Китобро интихоб кунед..." />
                                     </SelectTrigger>
                                     <SelectContent className="max-h-[400px]">
@@ -329,7 +333,7 @@ function DeliveryPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-4">
-                                    <Label className="text-slate-700 font-semibold flex items-center gap-2">
+                                    <Label className="text-slate-700   dark:text-white font-semibold flex items-center gap-2">
                                         <Hash size={16} className="text-blue-500" />
                                         Миқдор
                                     </Label>
@@ -337,20 +341,20 @@ function DeliveryPage() {
                                         type="number"
                                         disabled={!formData.is_new_books}
                                         min="1"
-                                        className="h-14 text-lg font-bold border-slate-200"
+                                        className="h-14 text-lg font-bold  dark:border-gray-600 border-slate-200"
                                         value={formData.total_quantity}
                                         onChange={(e) => setFormData({ ...formData, total_quantity: Math.max(1, Number(e.target.value)) })}
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-slate-700 font-semibold flex items-center gap-2">
+                                <Label className="text-slate-700   dark:text-white font-semibold flex items-center gap-2">
                                     <MessageSquare size={16} className="text-blue-500" />
                                     Эзоҳ (Notes)
                                 </Label>
                                 <Input
                                     placeholder="Маълумоти иловагӣ..."
-                                    className="h-12 border-slate-200"
+                                    className="h-12 border-slate-200  dark:border-gray-600"
                                     value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 />
@@ -400,15 +404,6 @@ function DeliveryPage() {
                             >
                                 {isPosting ? <Loader2 className="animate-spin mr-2" /> : <span>ТАСДИҚИ ИНТИҚОЛ</span>}
                             </Button>
-
-                            <AnimatePresence>
-                                {isSuccess && (
-                                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="mt-4 flex items-center gap-3 text-green-700 bg-green-50 p-4 rounded-xl border border-green-200 justify-center font-bold">
-                                        <CheckCircle2 size={24} />
-                                        Поставка бо муваффақият эҷод шуд!
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
                         </div>
                     </CardContent>
                 </Card>

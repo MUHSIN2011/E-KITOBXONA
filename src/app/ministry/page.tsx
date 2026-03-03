@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
@@ -31,7 +31,6 @@ export default function MinistryPage() {
     const [selectedDistrictId, setSelectedDistrictId] = useState<string>("")
     const [activeTab, setActiveTab] = useState("regions");
 
-    // API Queries
     const { data: regions } = useGetRegionsQuery()
     const { data: districts } = useGetDistrictsQuery(Number(selectedRegionId), { skip: !selectedRegionId })
     const { data: schools } = useGetSchoolsByDistrictQuery(Number(selectedDistrictId), { skip: !selectedDistrictId })
@@ -45,6 +44,10 @@ export default function MinistryPage() {
     const [deleteSchool] = useDeleteSchoolMutation()
     const [updateRegion] = useUpdateRegionMutation()
     const [deleteRegion] = useDeleteRegionMutation()
+    const [userRole, setUserRole] = useState<'ministry' | 'region' | 'district' | 'school'>('ministry');
+    const [userTargetId, setUserTargetId] = useState<string | null>(null);
+
+
 
     const resetForm = () => {
         setStep(1); setAddType(null); setIsEditMode(false); setEditId(null);
@@ -66,6 +69,13 @@ export default function MinistryPage() {
     }
 
     const handleSubmit = async () => {
+        let finalData = { ...formData };
+        if (userRole === 'region' && addType === 'district') {
+            finalData.region_id = userTargetId!;
+        }
+        if (userRole === 'district' && addType === 'school') {
+            finalData.district_id = userTargetId!;
+        }
         try {
             if (isEditMode && editId) {
                 if (addType === 'district') {
@@ -88,23 +98,39 @@ export default function MinistryPage() {
 
     const handleRegionClick = (regionId: string) => {
         setSelectedRegionId(regionId);
-        setActiveTab("districts"); 
+        setActiveTab("districts");
     };
 
 
     const handleDistrictClick = (districtId: string) => {
         setSelectedDistrictId(districtId);
-        setActiveTab("schools"); 
+        setActiveTab("schools");
     };
+    useEffect(() => {
+        const role = localStorage.getItem('role') as any;
+        const targetId = localStorage.getItem('targetId');
+
+        if (role) setUserRole(role);
+        if (targetId) setUserTargetId(targetId);
+
+        if (role === 'region' && targetId) {
+            setSelectedRegionId(targetId);
+            setActiveTab("districts");
+        }
+        if (role === 'district' && targetId) {
+            setSelectedDistrictId(targetId);
+            setActiveTab("schools");
+        }
+    }, []);
 
     return (
         <div className="p-4 md:p-8 space-y-6 bg-[#f8f9fa] min-h-screen font-sans">
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-gray-900">Вазорати Маориф</h1>
+                <h1 className="md:text-2xl text-xl  font-bold text-gray-900">Вазорати Маориф</h1>
                 <Dialog open={isOpen} onOpenChange={(val) => { if (!val) resetForm(); setIsOpen(val); }}>
                     <DialogTrigger asChild>
-                        <Button className="bg-[#0950c3] rounded-xl h-11 px-6 hover:bg-[#0741a1] transition-all">
-                            <Plus className="w-5 h-5 mr-2" /> Иловаи нав
+                        <Button className="bg-[#0950c3] rounded-xl md:h-11  h-10 md:px-6 px-3 md:text-base text-sm text-white hover:bg-[#0741a1] transition-all">
+                            <Plus className="md:w-5 md:h-5 w-3 h-3 mr-2" /> Иловаи нав
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] rounded-[24px] p-6">
@@ -116,14 +142,19 @@ export default function MinistryPage() {
 
                         {step === 1 && (
                             <div className="grid gap-3 py-6">
-                                <Button variant="outline" onClick={() => { setAddType('region'); setStep(2); }} className="h-16 justify-between  px-6 rounded-2xl border-gray-100 hover:border-[#0950c3] hover:bg-blue-50/50 group">
-                                    <div className="flex items-center gap-4"><div className="p-2 bg-blue-50 rounded-lg group-hover:bg-white"><Landmark className="w-5 h-5 text-blue-600" /></div> Вилоят</div>
-                                    <ChevronRight className="w-4 h-4 text-gray-400" />
-                                </Button>
-                                <Button variant="outline" onClick={() => { setAddType('district'); setStep(2); }} className="h-16 justify-between px-6 rounded-2xl border-gray-100 hover:border-orange-500 hover:bg-orange-50/50 group">
-                                    <div className="flex items-center gap-4"><div className="p-2 bg-orange-50 rounded-lg group-hover:bg-white"><MapPin className="w-5 h-5 text-orange-600" /></div> Ноҳия</div>
-                                    <ChevronRight className="w-4 h-4 text-gray-400" />
-                                </Button>
+                                {userRole === 'ministry' && (
+                                    <Button variant="outline" onClick={() => { setAddType('region'); setStep(2); }} className="h-16 justify-between  px-6 rounded-2xl border-gray-100 hover:border-[#0950c3] hover:bg-blue-50/50 group">
+                                        <div className="flex items-center gap-4"><div className="p-2 bg-blue-50 rounded-lg group-hover:bg-white"><Landmark className="w-5 h-5 text-blue-600" /></div> Вилоят</div>
+                                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                                    </Button>
+                                )}
+
+                                {(userRole === 'ministry' || userRole === 'region') && (
+                                    <Button variant="outline" onClick={() => { setAddType('district'); setStep(2); }} className="h-16 justify-between px-6 rounded-2xl border-gray-100 hover:border-orange-500 hover:bg-orange-50/50 group">
+                                        <div className="flex items-center gap-4"><div className="p-2 bg-orange-50 rounded-lg group-hover:bg-white"><MapPin className="w-5 h-5 text-orange-600" /></div> Ноҳия</div>
+                                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                                    </Button>
+                                )}
                                 <Button variant="outline" onClick={() => { setAddType('school'); setStep(2); }} className="h-16 justify-between px-6 rounded-2xl border-gray-100 hover:border-green-500 hover:bg-green-50/50 group">
                                     <div className="flex items-center gap-4"><div className="p-2 bg-green-50 rounded-lg group-hover:bg-white"><School className="w-5 h-5 text-green-600" /></div> Мактаб</div>
                                     <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -167,16 +198,20 @@ export default function MinistryPage() {
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="bg-white border-none rounded-2xl h-14 p-1.5 shadow-sm inline-flex w-full md:w-auto">
-                    <TabsTrigger value="regions" className="rounded-xl px-8 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Вилоятҳо</TabsTrigger>
-                    <TabsTrigger value="districts" className="rounded-xl px-8 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Ноҳияҳо</TabsTrigger>
-                    <TabsTrigger value="schools" className="rounded-xl px-8 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Мактабҳо</TabsTrigger>
+                    {userRole === 'ministry' && (
+                        <TabsTrigger value="regions" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Вилоятҳо</TabsTrigger>
+                    )}
+                    {(userRole === 'ministry' || userRole === 'region') && (
+                        <TabsTrigger value="districts" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Ноҳияҳо</TabsTrigger>
+                    )}
+                    <TabsTrigger value="schools" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Мактабҳо</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="regions" className="mt-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {regions?.map((reg: any) => (
                             <Card onClick={() => handleRegionClick(reg.id.toString())} key={reg.id} className="rounded-[24px] border-none shadow-sm group hover:ring-2 ring-blue-100 transition-all">
-                                <CardContent className="p-6 flex justify-between items-center">
+                                <CardContent className="md:p-6 p-4 flex justify-between items-center">
                                     <div className="flex items-center gap-4">
                                         <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
                                             <Landmark className="w-6 h-6" />
@@ -187,24 +222,27 @@ export default function MinistryPage() {
                                         </div>
                                     </div>
 
-                                    {/* ТУГМАҲОИ НАВ: */}
                                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                         <Button
                                             variant="ghost"
                                             size="icon"
-                                            onClick={() => openEditModal('region', reg)}
+                                            onClick={(e) => { e.stopPropagation(); openEditModal('region', reg) }}
                                             className="text-blue-500 hover:bg-blue-50 rounded-xl"
                                         >
                                             <Edit2 className="w-4 h-4" />
                                         </Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => deleteRegion(reg.id)}
-                                            className="text-red-400 hover:bg-red-50 rounded-xl"
-                                        >
-                                            <Trash2 className="w-4 h-4" />
-                                        </Button>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent className="rounded-[24px]">
+                                                <AlertDialogHeader><AlertDialogTitle>Боварӣ доред?</AlertDialogTitle><AlertDialogDescription>'{reg.name}' вилоятамонро нест мекунед?</AlertDialogDescription></AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">Кафо</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteRegion(reg.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">Нест кардан</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
                                 </CardContent>
                             </Card>
@@ -212,7 +250,6 @@ export default function MinistryPage() {
                     </div>
                 </TabsContent>
 
-                {/* Districts Tab */}
                 <TabsContent value="districts" className="mt-8 space-y-6">
                     <Card className="rounded-[24px] border-none shadow-sm p-6 bg-white">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -236,16 +273,16 @@ export default function MinistryPage() {
                                         <h4 className="font-bold">{dist.name}</h4>
                                     </div>
                                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button variant="ghost" size="icon" onClick={() => openEditModal('district', dist)} className="text-blue-500 hover:bg-blue-50 rounded-xl"><Edit2 className="w-4 h-4" /></Button>
+                                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); openEditModal('district', dist) }} className="text-blue-500 hover:bg-blue-50 rounded-xl"><Edit2 className="w-4 h-4" /></Button>
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                                                <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
                                             </AlertDialogTrigger>
                                             <AlertDialogContent className="rounded-[24px]">
                                                 <AlertDialogHeader><AlertDialogTitle>Боварӣ доред?</AlertDialogTitle><AlertDialogDescription>Ноҳияи "{dist.name}" нест мешавад.</AlertDialogDescription></AlertDialogHeader>
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel className="rounded-xl">Инкор</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => deleteDistrict(dist.id)} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">Нест кардан</AlertDialogAction>
+                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">Кафо</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteDistrict(dist.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">Нест кардан</AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
                                         </AlertDialog>
@@ -256,7 +293,6 @@ export default function MinistryPage() {
                     </div>
                 </TabsContent>
 
-                {/* Schools Tab */}
                 <TabsContent value="schools" className="mt-8 space-y-6">
                     <Card className="rounded-[24px] border-none shadow-sm p-6 bg-white">
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
@@ -294,7 +330,7 @@ export default function MinistryPage() {
                                             <AlertDialogContent className="rounded-[24px]">
                                                 <AlertDialogHeader><AlertDialogTitle>Боварӣ доред?</AlertDialogTitle><AlertDialogDescription>Мактаби "{school.name}" нест мешавад.</AlertDialogDescription></AlertDialogHeader>
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel className="rounded-xl">Инкор</AlertDialogCancel>
+                                                    <AlertDialogCancel className="rounded-xl">Кафо</AlertDialogCancel>
                                                     <AlertDialogAction onClick={() => deleteSchool(school.id)} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">Нест кардан</AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
