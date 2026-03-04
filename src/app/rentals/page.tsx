@@ -22,7 +22,7 @@ import {
 } from '@/src/api/api';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Card from '@/src/components/Card';
 import { Sheet, SheetContent, SheetTitle, SheetHeader } from '@/components/ui/sheet';
@@ -59,6 +59,8 @@ export default function RentalsPage() {
         skip: 0,
         limit: 20
     });
+    console.log("lll", booksSchool);
+
     const [rentBook, { isLoading: isRentLoading }] = useRentTextbookMutation();
     const [returnBook, { isLoading: isReturnLoading }] = useReturnBookMutation();
     const [addDamageReport] = useAddDamageReportMutation();
@@ -164,9 +166,14 @@ export default function RentalsPage() {
 
     console.log('alo', items);
 
+    const availableBooks = booksSchool?.items?.filter(book =>
+        book.status !== "rented" && book.status !== "lost"
+    );
+
 
     return (
         <div className="px-4 space-y-6 bg-[#f8fafc] dark:bg-black">
+            <Toaster />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Иҷораи китобҳо</h1>
@@ -235,7 +242,7 @@ export default function RentalsPage() {
                                         <Command>
                                             <CommandInput placeholder="Ҷустуҷӯи китоб ё рақами инвентарӣ..." />
                                             <CommandGroup className="max-h-60 overflow-y-auto p-2">
-                                                {booksSchool?.items?.map((item) => {
+                                                {availableBooks?.map((item) => {
                                                     const book = item.textbook;
                                                     const isSelected = selectedBookIds.includes(item.id);
 
