@@ -80,7 +80,7 @@ export default function RentalsPage() {
         try {
             await rentBook({
                 student_id: selectedStudentId,
-                textbook_ids: selectedBookIds,
+                copy_ids: selectedBookIds,
                 notes: "Иҷораи нав"
             }).unwrap();
             setOpen(false);

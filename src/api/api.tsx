@@ -363,7 +363,7 @@ export const Todo = createApi({
         }),
         RentTextbook: builder.mutation<any, {
             student_id: number,
-            textbook_ids: number[],
+            copy_ids: number[],
             notes?: string
         }>({
             query: (payload) => ({
