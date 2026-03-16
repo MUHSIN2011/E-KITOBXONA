@@ -11,15 +11,16 @@ interface CardProps {
     className?: string;
     path?: string;
     textColor?: string;
+    DarkTextColor?: string;
 }
 
 
-function Card({ NameRole, cnt, Icons, className, description, path,textColor }: CardProps) {
+function Card({ NameRole, cnt, Icons, className, description, path, textColor, DarkTextColor }: CardProps) {
     const router = useRouter()
     return (
         <div onClick={() => path && router.push(path)} className={`flex justify-between cursor-pointer  ${className}  bg-white dark:bg-[#1a1a1a] border rounded-sm py-5 px-5`}>
             <aside className="flex flex-col">
-                <NumberTicker  className={`text-4xl font-bold text-${textColor}`} value={cnt ?? 0} />
+                <NumberTicker className={`text-4xl font-bold text-${textColor} dark:${DarkTextColor}`} value={cnt ?? 0} />
                 {/* <TextAnimate animation="slideUp" by="word" className="text-3xl  font-bold">{`${cnt}`}</TextAnimate> */}
                 <TextAnimate className="  text-foreground text-sm " animation="slideUp" by="word">
                     {`${NameRole}`}

@@ -1,0 +1,190 @@
+{
+  "Navigation": {
+    "dashboard": "Дашборд",
+    "books": "Книги",
+    "students": "Учащиеся",
+    "rentals": "Аренда книг",
+    "transfer": "Трансфер",
+    "schools": "Школы",
+    "regions": "Регионы"
+  },
+  "Dashboard": {
+    "welcome": "Добро пожаловать в систему",
+    "sidebar": {
+      "home": "Главная",
+      "books": "Книги",
+      "settings": "Настройки"
+    }
+  },
+  "LoginPage": {
+    "welcome": "Добро пожаловать",
+    "buttonForLogin": "Логин",
+    "LabelEmail": "Емаил",
+    "LabelPassWord": "Пароль",
+    "LabelForgetPassWord": "Забыли пароль?",
+    "subtitle": "Пожалуйста, введите информацию для входа",
+    "systemName": "E-KITOBXONA",
+    "systemDescription": "Система управления библиотекой",
+    "emailRequired": "Email обязателен",
+    "passwordRequired": "Пароль обязателен",
+    "welcomeMessage": "Добро пожаловать!",
+    "emailOrPasswordError": "Email или пароль неверны!",
+    "dataError": "Ошибка в данных",
+    "wifiError": "Пожалуйста, сначала подключитесь к WIFI!",
+    "emailPlaceholder": "email@example.com",
+    "passwordPlaceholder": "••••••••"
+  },
+  "Dashboard": {
+    "academicYear": "Учебный год",
+    "bookFundControl": "Государственный контроль книжных фондов",
+    "closeYear": "Закрыть год",
+    "closing": "Закрытие...",
+    "addNewYear": "Добавить новый год",
+    "addAcademicYear": "Добавление нового учебного года",
+    "yearName": "Название года",
+    "yearPlaceholder": "Например: 2026-2027",
+    "startDate": "Дата начала",
+    "endDate": "Дата окончания",
+    "adding": "Добавление...",
+    "save": "Сохранить",
+    "totalRegions": "Всего областей",
+    "activeInSystem": "Активны в системе",
+    "totalBooks": "Всего книг",
+    "inMinistry": "В Министерстве образования",
+    "totalSchools": "Всего школ",
+    "totalStudents": "Всего учащихся",
+    "registered": "Зарегистрировано",
+    "returnProcess": "Процесс возврата",
+    "returnProgress": "Общий прогресс возврата книг за последние 6 месяцев",
+    "errorTitle": "Ошибка при получении данных!!",
+    "errorDescription": "Пожалуйста, перезагрузите сайт!",
+    "refreshButton": "Обновить",
+    "refreshing": "Обновление..."
+  },
+  "StudentsPage": {
+    "title": "Учащиеся",
+    "subtitle": "Управление учащимися и их арендами",
+    "addButton": "+ Добавить учащегося",
+    "dialogTitle": "Добавление учащегося",
+    "dialogDescription": "Введите данные нового учащегося",
+    "list": {
+      "title": "Список учащихся",
+      "description": "Все зарегистрированные учащиеся",
+      "searchPlaceholder": "Поиск учащихся...",
+      "filterPlaceholder": "Класс",
+      "filterAll": "Все классы",
+      "table": {
+        "name": "Имя и фамилия",
+        "class": "Класс",
+        "rentals": "Аренды",
+        "phone": "Телефон",
+        "notes": "Примечание",
+        "noNotes": "Без заметок",
+        "noData": "—"
+      },
+      "pagination": {
+        "showing": "Показано:",
+        "from": "из",
+        "prev": "Назад",
+        "next": "Вперед"
+      }
+    },
+    "stats": {
+      "totalStudents": "Всего учащихся",
+      "activeRentals": "Активные аренды",
+      "withCompensation": "С компенсацией"
+    },
+    "profile": {
+      "title": "Профиль учащегося",
+      "active": "Активный",
+      "inactive": "Неактивный",
+      "class": "Класс {className}",
+      "birthYear": "Год рождения",
+      "parentPhone": "Телефон родителя",
+      "studentId": "ID учащегося",
+      "activeRentals": "Активные аренды",
+      "activeRentalsCount": "{count} шт",
+      "notes": "Дополнительные заметки",
+      "noNotes": "Заметок не добавлено.",
+      "delete": "удалить",
+      "edit": "Изменить",
+      "deleteDialog": {
+        "title": "Вы уверены?",
+        "description": "Это действие полностью удалит учащегося из школы!",
+        "cancel": "Отмена",
+        "confirm": "Удалить"
+      },
+      "deleteSuccess": "Учащийся удален!"
+    },
+    "edit": {
+      "title": "Редактирование профиля",
+      "subtitle": "Обновите данные учащегося",
+      "labels": {
+        "lastName": "Фамилия",
+        "firstName": "Имя",
+        "middleName": "Отчество",
+        "class": "Класс",
+        "birthYear": "Год рождения",
+        "parentPhone": "Телефон родителя",
+        "notes": "Примечание",
+        "active": "Активный статус"
+      },
+      "buttons": {
+        "cancel": "Отмена",
+        "saving": "Сохранение...",
+        "save": "Сохранить"
+      }
+    },
+    "formLabels": {
+      "lastName": "Фамилия *",
+      "firstName": "Имя *",
+      "middleName": "Отчество *",
+      "class": "Класс *",
+      "birthYear": "Год рождения *",
+      "parentPhone": "Телефон родителя *",
+      "notes": "Примечание"
+    },
+    "formPlaceholders": {
+      "lastName": "Рахимов",
+      "firstName": "Али",
+      "middleName": "Ахмадович",
+      "class": "10А",
+      "birthYear": "2011",
+      "parentPhone": "+992914049999",
+      "notes": "Дополнительная информация..."
+    },
+    "formErrors": {
+      "lastNameRequired": "Введите фамилию учащегося",
+      "lastNameMinLength": "Фамилия должна содержать минимум 2 буквы",
+      "lastNameCapital": "Фамилия должна начинаться с заглавной буквы",
+      "firstNameRequired": "Введите имя учащегося",
+      "firstNameMinLength": "Имя должно содержать минимум 2 буквы",
+      "firstNameCapital": "Имя должно начинаться с заглавной буквы",
+      "classRequired": "Введите класс",
+      "classRange": "Класс должен быть от 1 до 11",
+      "classFull": "Введите полное название класса (например: 10А)",
+      "classLowercase": "Букву класса напишите заглавной!",
+      "birthYearRequired": "Введите год рождения",
+      "birthYearRange": "Год рождения должен быть от 2000 до 2020",
+      "parentPhoneRequired": "Введите телефон родителя",
+      "parentPhoneStart": "Номер должен начинаться с +992",
+      "parentPhoneLength": "Номер должен содержать ровно 13 символов (например: +992900112233)",
+      "parentPhoneFormat": "Неверный формат номера"
+    },
+    "dialogButtons": {
+      "cancel": "Отмена",
+      "adding": "Добавление...",
+      "add": "Добавить"
+    }
+  },
+  "BooksChart": {
+    "title": "Соотношение фонда",
+    "description": "Общие показатели книг",
+    "status": {
+      "available": "Доступно",
+      "rented": "Аренда",
+      "lost": "Потеряно",
+      "damaged": "Повреждено"
+    }
+  }
+}

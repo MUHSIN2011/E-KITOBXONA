@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useRejectBookRequestMutation, useBookRequestsQuery, useGetPendingBooksBySchoolQuery, useMyBookRequestsQuery, useCancelBookRequestsMutation } from '@/src/api/api';
+import { useRejectBookRequestMutation, useBookRequestsQuery, useGetPendingBooksBySchoolQuery, useMyBookRequestsQuery, useCancelBookRequestsMutation } from '@/api/api';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";

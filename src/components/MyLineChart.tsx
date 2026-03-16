@@ -3,7 +3,7 @@
 import React, { useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { TrendingUp, BookOpen, RotateCcw } from 'lucide-react';
-import { useGetAcademicYearsSummaryQuery } from '../api/api';
+import { useGetAcademicYearsSummaryQuery } from '@/api/api';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 

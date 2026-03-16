@@ -1,13 +1,13 @@
 "use client"
 import React, { useState } from 'react';
-import { useGetRegionsQuery, useGetDistrictsQuery } from '@/src/api/api';
+import { useGetRegionsQuery, useGetDistrictsQuery } from '@/api/api';
 
 interface Region {
     id: number;
     name: string;
-    schools_count?: number; 
+    schools_count?: number;
     books_count?: number;
-    repayment_percentage?: number; 
+    repayment_percentage?: number;
 }
 
 const RegionsTable: React.FC = () => {
@@ -33,7 +33,7 @@ const RegionsTable: React.FC = () => {
 
                 <div className="flex items-center gap-2">
                     <label className="text-xs font-bold text-gray-400 uppercase dark:text-slate-500">Вилоят:</label>
-                    <select 
+                    <select
                         value={selectedRegionId}
                         onChange={(e) => setSelectedRegionId(Number(e.target.value))}
                         className="p-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-sm font-bold text-gray-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all outline-none cursor-pointer"
@@ -66,7 +66,7 @@ const RegionsTable: React.FC = () => {
                             {districts?.map((district: any) => {
                                 const realSchools = district.schools_count || 0;
                                 const realBooks = (district.books_count || 0).toLocaleString();
-                                const percentage = district.repayment_percentage || Math.floor(Math.random() * 30) + 70; 
+                                const percentage = district.repayment_percentage || Math.floor(Math.random() * 30) + 70;
 
                                 const barColor = percentage > 80 ? 'bg-emerald-500' : percentage > 50 ? 'bg-blue-500' : 'bg-amber-500';
                                 const textColor = percentage > 80 ? 'text-emerald-500 dark:text-emerald-400' : percentage > 50 ? 'text-blue-500 dark:text-blue-400' : 'text-amber-500 dark:text-amber-400';

@@ -1,19 +1,17 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { BookOpenText, LogOut, Menu, PanelRightClose, PanelLeftClose, Search, Settings, BellDot, X, BookCheck, Info, ArrowRight, ArrowRightCircle, Calendar } from "lucide-react";
+import { BookOpenText, LogOut, Menu, PanelRightClose, PanelLeftClose, Search, Settings, BellDot, X, BookCheck, Info, ArrowRight, ArrowRightCircle, Calendar, Languages, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-import AsideNavbar from "@/src/components/AsideNavbar";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import AsideNavbar from "@/components/AsideNavbar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menubar, MenubarContent, MenubarGroup, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
+import { Menubar, MenubarContent,  MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
-import { useAcceptBookItemMutation, useGetPendingBooksBySchoolQuery } from "../api/api";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { toast } from "sonner";
 import { NotificationSheet } from "./NotificationSheet";
+import Image from "next/image";
 
 interface UserToken {
     full_name: string;
@@ -36,16 +34,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-    const { data: pendingData, isLoading: isPendingLoading } = useGetPendingBooksBySchoolQuery(
-        user?.school_id ?? 0,
-        { skip: !user?.school_id || user.role !== "school" }
-    );
-    const [selectedItem, setSelectedItem] = useState<{ id: number, title: string } | null>(null);
-    const [invNumber, setInvNumber] = useState("");
-    const [acceptBook, { isLoading: isAccepting }] = useAcceptBookItemMutation();
+   
+    const isLoginPage = pathname === "/" || /^\/(tj|ru|en)?$/.test(pathname);
 
-    const isLoginPage = pathname === "/";
-    const isRegisterPage = pathname === "/register";
+    const isRegisterPage = pathname.includes("/register");
+
 
     useEffect(() => {
         setIsSheetOpen(false);
@@ -68,12 +61,19 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
-        if (!token && !isLoginPage && !isRegisterPage) {
+
+        const isAuthPage = pathname === '/' ||
+            pathname.endsWith('/tj') ||
+            pathname.endsWith('/ru') ||
+            pathname.endsWith('/en') ||
+            pathname.includes('/register');
+
+        if (!token && !isAuthPage) {
             router.push('/');
         } else {
             setIsLoading(false);
         }
-    }, [pathname, isLoginPage, isRegisterPage, router]);
+    }, [pathname, router]);
 
     const Logout = () => {
         localStorage.clear();
@@ -81,21 +81,24 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     };
 
 
-    const handleAccept = async () => {
-        if (!invNumber) return toast.error("Рақами инвентариро ворид кунед");
+    const FlagTJ = "/tj.jpg"; 
+    const FlagEN = "/america.jpg"
+    const FlagRu = "/russia.jpg";
 
-        try {
-            await acceptBook({
-                item_id: selectedItem!.id,
-                inventory_number: invNumber
-            }).unwrap();
+    const languages = [
+        { code: "tj", label: "Тоҷикӣ", flag: FlagTJ },
+        { code: "ru", label: "Русский", flag: FlagRu },
+        { code: "en", label: "English", flag: FlagEN },
+    ];
 
-            toast.success("Китоб бо муваффақият қабул шуд");
-            setSelectedItem(null);
-            setInvNumber("");
-        } catch (err) {
-            toast.error("Хатогӣ ҳангоми қабул");
-        }
+    const currentLocale = pathname.split("/")[1] || "tj";
+    const currentLang = languages.find((l) => l.code === currentLocale) || languages[0];
+
+    const changeLanguage = (newLocale: string) => {
+        const segments = pathname.split("/");
+        segments[1] = newLocale;
+        const newPath = segments.join("/");
+        router.push(newPath);
     };
 
     if (isLoading && !isLoginPage && !isRegisterPage) {
@@ -211,43 +214,49 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                         </div>
 
                         <div className="flex items-center gap-2">
+                            <Menubar className="border-none bg-transparent shadow-none p-0">
+                                <MenubarMenu>
+                                    <MenubarTrigger className="cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:bg-slate-100 dark:focus:bg-slate-800 outline-none">
+                                        <div className="flex items-center gap-2">
+                                            <Image
+                                                src={currentLang.flag}
+                                                alt={currentLang.code}
+                                                width={15}
+                                                height={15}
+                                                className="rounded-sm w-4 h-4"
+                                            />
+                                            <span className="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 hidden sm:inline">
+                                                {currentLang.code}
+                                            </span>
+                                            <ChevronDown size={14} className="text-slate-400" />
+                                        </div>
+                                    </MenubarTrigger>
+
+                                    <MenubarContent className="bg-white dark:bg-[#0f1115] border-slate-200 dark:border-slate-800 min-w-[140px] p-1">
+                                        {languages.map((lang) => (
+                                            <MenubarItem
+                                                key={lang.code}
+                                                onClick={() => changeLanguage(lang.code)}
+                                                className={`flex items-center gap-3 cursor-pointer rounded-md px-3 py-2 text-sm transition-colors ${currentLocale === lang.code
+                                                    ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 font-bold"
+                                                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                                                    }`}
+                                            >
+                                                <Image
+                                                    src={lang.flag}
+                                                    alt={currentLang.code}
+                                                    width={30}
+                                                    height={68}
+                                                    className="rounded-full w-4 h-4"
+                                                />
+                                                <span>{lang.label}</span>
+                                            </MenubarItem>
+                                        ))}
+                                    </MenubarContent>
+                                </MenubarMenu>
+                            </Menubar>
                             <AnimatedThemeToggler className=" cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all" />
-                            {/* {
-                                user?.role === "ministry" && (
-                                    < Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
-                                        <SheetTrigger asChild>
-                                            <div className="relative cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
-                                                <BellDot size={20} className="text-slate-600 dark:text-slate-400" />
-                                                <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
-                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
-                                                </span>
-                                            </div>
-                                        </SheetTrigger>
-                                        <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-white dark:bg-[#0f1115] border-l-slate-200 dark:border-l-slate-800">
-                                            <div className="flex flex-col h-full">
-                                                <SheetHeader className="p-6 border-b border-slate-100 dark:border-slate-800">
-                                                    <SheetTitle className="text-xl font-black flex items-center gap-2">
-                                                        <BellDot className="text-blue-600" size={20} /> Огоҳиномаҳо
-                                                    </SheetTitle>
-                                                    <SheetDescription>Китобҳои равоншуда аз Маориф ва Сатҳи Миллӣ</SheetDescription>
-                                                </SheetHeader>
-
-                                                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                                                </div>
-
-                                                <footer className="p-4 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-slate-800">
-                                                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl py-6">
-                                                        Ҳамаи огоҳиномаҳо
-                                                    </Button>
-                                                </footer>
-                                            </div>
-                                        </SheetContent>
-                                    </Sheet>
-                                )
-                            } */}
                             <NotificationSheet user={user} />
-
 
                             <div className="relative hidden sm:block focus:cursor-wait">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />

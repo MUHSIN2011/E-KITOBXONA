@@ -1,0 +1,190 @@
+{
+  "Navigation": {
+    "dashboard": "Дашборд",
+    "books": "Китобҳо",
+    "students": "Хонандагон",
+    "rentals": "Иҷораи китобҳо",
+    "transfer": "Трансфер",
+    "schools": "Мактабҳо",
+    "regions": "Минтақаҳо"
+  },
+  "Dashboard": {
+    "welcome": "Хуш омадед ба система",
+    "sidebar": {
+      "home": "Асосӣ",
+      "books": "Китобҳо",
+      "settings": "Танзимот"
+    }
+  },
+  "LoginPage": {
+    "welcome": "Хуш омадед",
+    "buttonForLogin": "Ворид шудан",
+    "LabelEmail": "Почтаи электронӣ",
+    "LabelPassWord": "Рамз",
+    "LabelForgetPassWord": "Рамзро фаромӯш кардед?",
+    "subtitle": "Барои ворид шудан маълумотро нависед",
+    "systemName": "E-KITOBXONA",
+    "systemDescription": "Системаи идоракунии китобхона",
+    "emailRequired": "Email ҳатмист",
+    "passwordRequired": "Рамз ҳатмист",
+    "welcomeMessage": "Хуш омадед!",
+    "emailOrPasswordError": "Почта ё рамз хато аст!",
+    "dataError": "Хатогӣ дар маълумот",
+    "wifiError": "Лутфан авал ба WIFI пайваст шавед!",
+    "emailPlaceholder": "email@example.com",
+    "passwordPlaceholder": "••••••••"
+  },
+  "Dashboard": {
+    "academicYear": "Соли таҳсили",
+    "bookFundControl": "Назорати умумидавлатии фондҳои китоб",
+    "closeYear": "Бастани сол",
+    "closing": "Пайваст...",
+    "addNewYear": "Иловаи соли нав",
+    "addAcademicYear": "Иловаи соли таҳсили нав",
+    "yearName": "Номи сол",
+    "yearPlaceholder": "Масалан: 2026-2027",
+    "startDate": "Санаи оғоз",
+    "endDate": "Санаи анҷом",
+    "adding": "Дар ҳоли илова...",
+    "save": "Захира кардан",
+    "totalRegions": "Ҳамагӣ вилоятҳо",
+    "activeInSystem": "Фаъол дар система",
+    "totalBooks": "Ҳамагӣ китобҳо",
+    "inMinistry": "Дар Вазорати Маориф",
+    "totalSchools": "Ҳамагӣ мактабҳо",
+    "totalStudents": "Ҳамагӣ хонандагон",
+    "registered": "Бақайдгирифташуда",
+    "returnProcess": "Раванди бозпардохт",
+    "returnProgress": "Пешрафти умумии бозпардохти китобҳо дар 6 моҳи охир",
+    "errorTitle": "Хатогӣ ҳангоми гирифтани маълумот!!",
+    "errorDescription": "Лутфан сайтро аз нав кушоед!",
+    "refreshButton": "Навсозӣ кардан",
+    "refreshing": "Навсозӣ..."
+  },
+  "StudentsPage": {
+    "title": "Хонандагон",
+    "subtitle": "Идоракунии хонандагон ва иҷораҳои онҳо",
+    "addButton": "+ Иловаи хонанда",
+    "dialogTitle": "Илова кардани хонанда",
+    "dialogDescription": "Маълумоти хонандаи навро ворид кунед",
+    "list": {
+      "title": "Рӯйхати хонандагон",
+      "description": "Ҳамаи хонандагони бақайдгирифташуда",
+      "searchPlaceholder": "Ҷустуҷӯи хонандагон...",
+      "filterPlaceholder": "Синф",
+      "filterAll": "Ҳамаи синфҳо",
+      "table": {
+        "name": "Ному насаб",
+        "class": "Синф",
+        "rentals": "Иҷораҳо",
+        "phone": "Телефон",
+        "notes": "Эзоҳ",
+        "noNotes": "Бе эзоҳ",
+        "noData": "—"
+      },
+      "pagination": {
+        "showing": "Нишон дода шудааст:",
+        "from": "аз",
+        "prev": "Пештара",
+        "next": "Баъдӣ"
+      }
+    },
+    "stats": {
+      "totalStudents": "Ҳамагӣ хонандагон",
+      "activeRentals": "Иҷораҳои фаъол",
+      "withCompensation": "Бо ҷуброн"
+    },
+    "profile": {
+      "title": "Профили хонанда",
+      "active": "Фаъол",
+      "inactive": "Ғайрифаъол",
+      "class": "Синфи {className}",
+      "birthYear": "Соли таваллуд",
+      "parentPhone": "Телефони волидайн",
+      "studentId": "ID-и Хонанда",
+      "activeRentals": "Иҷораҳои фаъол",
+      "activeRentalsCount": "{count} адад",
+      "notes": "Эзоҳи иловагӣ",
+      "noNotes": "Ягон эзоҳ илова нашудааст.",
+      "delete": "хориҷ кардан",
+      "edit": "Тағйир додан",
+      "deleteDialog": {
+        "title": "Оё шумо мутмаин ҳастед?",
+        "description": "Ин амал хонандаро аз мактаб комилан нест мекунад!",
+        "cancel": "Бекор кардан",
+        "confirm": "Нест кардан"
+      },
+      "deleteSuccess": "Хонанда нест карда шуд!"
+    },
+    "edit": {
+      "title": "Таҳрири профил",
+      "subtitle": "Маълумоти хонандаро навсозӣ кунед",
+      "labels": {
+        "lastName": "Насаб",
+        "firstName": "Ном",
+        "middleName": "Номи падар",
+        "class": "Синф",
+        "birthYear": "Соли таваллуд",
+        "parentPhone": "Телефони волидайн",
+        "notes": "Эзоҳ",
+        "active": "Ҳолати фаъол"
+      },
+      "buttons": {
+        "cancel": "Бекор кардан",
+        "saving": "Дар ҳоли захира...",
+        "save": "Захира кардан"
+      }
+    },
+    "formLabels": {
+      "lastName": "Насаб *",
+      "firstName": "Ном *",
+      "middleName": "Номи падар *",
+      "class": "Синф *",
+      "birthYear": "Соли таваллуд *",
+      "parentPhone": "Телефони волидайн *",
+      "notes": "Эзоҳ"
+    },
+    "formPlaceholders": {
+      "lastName": "Раҳимов",
+      "firstName": "Али",
+      "middleName": "Аҳмадович",
+      "class": "10А",
+      "birthYear": "2011",
+      "parentPhone": "+992914049999",
+      "notes": "Маълумоти иловагӣ..."
+    },
+    "formErrors": {
+      "lastNameRequired": "Насаби хонандаро ворид кунед",
+      "lastNameMinLength": "Насаб бояд ҳадди аққал 2 ҳарф бошад",
+      "lastNameCapital": "Насаб бояд бо ҳарфи калон оғоз шавад",
+      "firstNameRequired": "Номи хонандаро ворид кунед",
+      "firstNameMinLength": "Ном бояд ҳадди аққал 2 ҳарф бошад",
+      "firstNameCapital": "Ном бояд бо ҳарфи калон оғоз шавад",
+      "classRequired": "Синфро ворид кунед",
+      "classRange": "Синф бояд байни 1 ва 11 бошад",
+      "classFull": "Синфро пурра нависед (масалан: 10А)",
+      "classLowercase": "Харфи синфро бо ҳарфи калон нависед!",
+      "birthYearRequired": "Соли таваллудро ворид кунед",
+      "birthYearRange": "Соли таваллуд бояд аз 2000 то 2020 бошад",
+      "parentPhoneRequired": "Телефони волидайнро ворид кунед",
+      "parentPhoneStart": "Рақам бояд бо +992 оғоз шавад",
+      "parentPhoneLength": "Рақам бояд маҳз 13 аломат бошад (масалан: +992900112233)",
+      "parentPhoneFormat": "Формати рақам нодуруст аст"
+    },
+    "dialogButtons": {
+      "cancel": "Бекор кардан",
+      "adding": "Дар ҳоли илова...",
+      "add": "Илова кардан"
+    }
+  },
+  "BooksChart": {
+    "title": "Таносуби фонд",
+    "description": "Нишондиҳандаҳои умумии китобҳо",
+    "status": {
+      "available": "Дастрас",
+      "rented": "Иҷора",
+      "lost": "Гумшуда",
+      "damaged": "Вайроншуда"
+    }
+  }
+}

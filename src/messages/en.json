@@ -1,0 +1,182 @@
+{
+  "Navigation": {
+    "dashboard": "Dashboard",
+    "books": "Books",
+    "students": "Students",
+    "rentals": "Book Rentals",
+    "transfer": "Transfer",
+    "schools": "Schools",
+    "regions": "Regions"
+  },
+  "LoginPage": {
+    "welcome": "Welcome",
+    "buttonForLogin": "Log In",
+    "LabelEmail": "Email",
+    "LabelPassWord": "Password",
+    "LabelForgetPassWord": "Forgot Password?",
+    "subtitle": "Please enter your information to login",
+    "systemName": "E-KITOBXONA",
+    "systemDescription": "Library Management System",
+    "emailRequired": "Email is required",
+    "passwordRequired": "Password is required",
+    "welcomeMessage": "Welcome!",
+    "emailOrPasswordError": "Email or password is incorrect!",
+    "dataError": "Data error",
+    "wifiError": "Please connect to WIFI first!",
+    "emailPlaceholder": "email@example.com",
+    "passwordPlaceholder": "••••••••"
+  },
+  "Dashboard": {
+    "academicYear": "Academic Year",
+    "bookFundControl": "State control of book funds",
+    "closeYear": "Close Year",
+    "closing": "Closing...",
+    "addNewYear": "Add New Year",
+    "addAcademicYear": "Add New Academic Year",
+    "yearName": "Year Name",
+    "yearPlaceholder": "Example: 2026-2027",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "adding": "Adding...",
+    "save": "Save",
+    "totalRegions": "Total Regions",
+    "activeInSystem": "Active in system",
+    "totalBooks": "Total Books",
+    "inMinistry": "In Ministry of Education",
+    "totalSchools": "Total Schools",
+    "totalStudents": "Total Students",
+    "registered": "Registered",
+    "returnProcess": "Return Process",
+    "returnProgress": "Overall book return progress in the last 6 months",
+    "errorTitle": "Error fetching data!!",
+    "errorDescription": "Please reload the site!",
+    "refreshButton": "Refresh",
+    "refreshing": "Refreshing..."
+  },
+  "StudentsPage": {
+    "title": "Students",
+    "subtitle": "Manage students and their rentals",
+    "addButton": "+ Add Student",
+    "dialogTitle": "Add Student",
+    "dialogDescription": "Enter new student information",
+    "list": {
+      "title": "Student List",
+      "description": "All registered students",
+      "searchPlaceholder": "Search students...",
+      "filterPlaceholder": "Class",
+      "filterAll": "All Classes",
+      "table": {
+        "name": "Full Name",
+        "class": "Class",
+        "rentals": "Rentals",
+        "phone": "Phone",
+        "notes": "Notes",
+        "noNotes": "No notes",
+        "noData": "—"
+      },
+      "pagination": {
+        "showing": "Showing:",
+        "from": "of",
+        "prev": "Previous",
+        "next": "Next"
+      }
+    },
+    "stats": {
+      "totalStudents": "Total Students",
+      "activeRentals": "Active Rentals",
+      "withCompensation": "With Compensation"
+    },
+    "profile": {
+      "title": "Student Profile",
+      "active": "Active",
+      "inactive": "Inactive",
+      "class": "Class {className}",
+      "birthYear": "Birth Year",
+      "parentPhone": "Parent Phone",
+      "studentId": "Student ID",
+      "activeRentals": "Active Rentals",
+      "activeRentalsCount": "{count} items",
+      "notes": "Additional Notes",
+      "noNotes": "No notes added.",
+      "delete": "delete",
+      "edit": "Edit",
+      "deleteDialog": {
+        "title": "Are you sure?",
+        "description": "This action will permanently delete the student from the school!",
+        "cancel": "Cancel",
+        "confirm": "Delete"
+      },
+      "deleteSuccess": "Student deleted successfully!"
+    },
+    "edit": {
+      "title": "Edit Profile",
+      "subtitle": "Update student information",
+      "labels": {
+        "lastName": "Last Name",
+        "firstName": "First Name",
+        "middleName": "Middle Name",
+        "class": "Class",
+        "birthYear": "Birth Year",
+        "parentPhone": "Parent Phone",
+        "notes": "Notes",
+        "active": "Active Status"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "saving": "Saving...",
+        "save": "Save"
+      }
+    },
+    "formLabels": {
+      "lastName": "Last Name *",
+      "firstName": "First Name *",
+      "middleName": "Middle Name *",
+      "class": "Class *",
+      "birthYear": "Birth Year *",
+      "parentPhone": "Parent Phone *",
+      "notes": "Notes"
+    },
+    "formPlaceholders": {
+      "lastName": "Rahimov",
+      "firstName": "Ali",
+      "middleName": "Ahmadovich",
+      "class": "10A",
+      "birthYear": "2011",
+      "parentPhone": "+992914049999",
+      "notes": "Additional information..."
+    },
+    "formErrors": {
+      "lastNameRequired": "Last name is required",
+      "lastNameMinLength": "Last name must be at least 2 characters",
+      "lastNameCapital": "Last name must start with capital letter",
+      "firstNameRequired": "First name is required",
+      "firstNameMinLength": "First name must be at least 2 characters",
+      "firstNameCapital": "First name must start with capital letter",
+      "classRequired": "Class is required",
+      "classRange": "Class must be between 1 and 11",
+      "classFull": "Enter full class name (e.g., 10A)",
+      "classLowercase": "Write the class letter in uppercase!",
+      "birthYearRequired": "Birth year is required",
+      "birthYearRange": "Birth year must be between 2000 and 2020",
+      "parentPhoneRequired": "Parent phone is required",
+      "parentPhoneStart": "Number must start with +992",
+      "parentPhoneLength": "Number must be exactly 13 characters (e.g., +992900112233)",
+      "parentPhoneFormat": "Invalid number format"
+    },
+    "dialogButtons": {
+      "cancel": "Cancel",
+      "adding": "Adding...",
+      "add": "Add"
+    }
+  },
+    "BooksChart": {
+      "title": "Fund Ratio",
+      "description": "Overall book indicators",
+      "status": {
+        "available": "Available",
+        "rented": "Rented",
+        "lost": "Lost",
+        "damaged": "Damaged"
+      }
+    }
+}

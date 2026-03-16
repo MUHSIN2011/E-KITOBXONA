@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { useGetDistrictsQuery, useGetRegionsQuery } from '@/src/api/api';
+import { useGetDistrictsQuery, useGetRegionsQuery } from '@/api/api';
 import { LayoutDashboard, MapPin, School } from 'lucide-react';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
