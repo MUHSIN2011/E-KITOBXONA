@@ -56,14 +56,17 @@ export default function LoginPage() {
         }, 500);
       }
     } catch (error: any) {
-      console.error(error);
       if (error.status === 401) {
-        toast.error(l('emailOrPasswordError'))
-      } else if (error.data?.detail) {
-        alert(error.data.detail[0].msg || l('dataError'));
-        toast.error(error.data.detail[0].msg || l('dataError'))
+        toast.error(l('emailOrPasswordError'));
+        return;
+      }
+
+      const serverMessage = error.data?.detail?.[0]?.msg || error.data?.detail || null;
+
+      if (serverMessage) {
+        toast.error(typeof serverMessage === 'string' ? serverMessage : l('dataError'));
       } else {
-        toast.error(l('wifiError'))
+        toast.error(l('wifiError'));
       }
     }
   };

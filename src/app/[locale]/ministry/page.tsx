@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import { MapPin, Landmark, Trash2, School, Search, Plus, Edit2, ChevronRight } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { useTranslations } from 'next-intl'
 
 export default function MinistryPage() {
     const [isOpen, setIsOpen] = useState(false)
@@ -25,6 +26,7 @@ export default function MinistryPage() {
     const [addType, setAddType] = useState<'region' | 'district' | 'school' | null>(null)
     const [isEditMode, setIsEditMode] = useState(false)
     const [editId, setEditId] = useState<number | null>(null)
+    const t = useTranslations('MinistryPage')
 
     const [formData, setFormData] = useState({ name: "", region_id: "", district_id: "" })
     const [selectedRegionId, setSelectedRegionId] = useState<string>("")
@@ -126,37 +128,37 @@ export default function MinistryPage() {
     return (
         <div className="p-4 md:p-8 space-y-6 bg-[#f8f9fa] min-h-screen font-sans">
             <div className="flex justify-between items-center">
-                <h1 className="md:text-2xl text-xl  font-bold text-gray-900">Вазорати Маориф</h1>
+                <h1 className="md:text-2xl text-xl font-bold text-gray-900">{t('title')}</h1>
                 <Dialog open={isOpen} onOpenChange={(val) => { if (!val) resetForm(); setIsOpen(val); }}>
                     <DialogTrigger asChild>
-                        <Button className="bg-[#0950c3] rounded-xl md:h-11  h-10 md:px-6 px-3 md:text-base text-sm text-white hover:bg-[#0741a1] transition-all">
-                            <Plus className="md:w-5 md:h-5 w-3 h-3 mr-2" /> Иловаи нав
+                        <Button className="bg-[#0950c3] rounded-xl md:h-11 h-10 md:px-6 px-3 md:text-base text-sm text-white hover:bg-[#0741a1] transition-all">
+                            <Plus className="md:w-5 md:h-5 w-3 h-3 mr-2" /> {t('addButton')}
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px] rounded-[24px] p-6">
                         <DialogHeader>
                             <DialogTitle className="text-xl font-bold text-center">
-                                {isEditMode ? "Таҳрир кардан" : (step === 1 ? "Чиро илова мекунед?" : "Маълумотро ворид кунед")}
+                                {isEditMode ? t('steps.step2.editTitle') : (step === 1 ? t('steps.step1.title') : t('steps.step2.title'))}
                             </DialogTitle>
                         </DialogHeader>
 
                         {step === 1 && (
                             <div className="grid gap-3 py-6">
                                 {userRole === 'ministry' && (
-                                    <Button variant="outline" onClick={() => { setAddType('region'); setStep(2); }} className="h-16 justify-between  px-6 rounded-2xl border-gray-100 hover:border-[#0950c3] hover:bg-blue-50/50 group">
-                                        <div className="flex items-center gap-4"><div className="p-2 bg-blue-50 rounded-lg group-hover:bg-white"><Landmark className="w-5 h-5 text-blue-600" /></div> Вилоят</div>
+                                    <Button variant="outline" onClick={() => { setAddType('region'); setStep(2); }} className="h-16 justify-between px-6 rounded-2xl border-gray-100 hover:border-[#0950c3] hover:bg-blue-50/50 group">
+                                        <div className="flex items-center gap-4"><div className="p-2 bg-blue-50 rounded-lg group-hover:bg-white"><Landmark className="w-5 h-5 text-blue-600" /></div> {t('types.region')}</div>
                                         <ChevronRight className="w-4 h-4 text-gray-400" />
                                     </Button>
                                 )}
 
                                 {(userRole === 'ministry' || userRole === 'region') && (
                                     <Button variant="outline" onClick={() => { setAddType('district'); setStep(2); }} className="h-16 justify-between px-6 rounded-2xl border-gray-100 hover:border-orange-500 hover:bg-orange-50/50 group">
-                                        <div className="flex items-center gap-4"><div className="p-2 bg-orange-50 rounded-lg group-hover:bg-white"><MapPin className="w-5 h-5 text-orange-600" /></div> Ноҳия</div>
+                                        <div className="flex items-center gap-4"><div className="p-2 bg-orange-50 rounded-lg group-hover:bg-white"><MapPin className="w-5 h-5 text-orange-600" /></div> {t('types.district')}</div>
                                         <ChevronRight className="w-4 h-4 text-gray-400" />
                                     </Button>
                                 )}
                                 <Button variant="outline" onClick={() => { setAddType('school'); setStep(2); }} className="h-16 justify-between px-6 rounded-2xl border-gray-100 hover:border-green-500 hover:bg-green-50/50 group">
-                                    <div className="flex items-center gap-4"><div className="p-2 bg-green-50 rounded-lg group-hover:bg-white"><School className="w-5 h-5 text-green-600" /></div> Мактаб</div>
+                                    <div className="flex items-center gap-4"><div className="p-2 bg-green-50 rounded-lg group-hover:bg-white"><School className="w-5 h-5 text-green-600" /></div> {t('types.school')}</div>
                                     <ChevronRight className="w-4 h-4 text-gray-400" />
                                 </Button>
                             </div>
@@ -166,29 +168,29 @@ export default function MinistryPage() {
                             <div className="space-y-5 py-4">
                                 {addType === 'district' && !isEditMode && (
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">Интихоби вилоят</Label>
+                                        <Label className="text-sm font-medium">{t('steps.step2.regionSelect.label')}</Label>
                                         <Select onValueChange={(val) => setFormData({ ...formData, region_id: val })}>
-                                            <SelectTrigger className="rounded-xl h-12 border-gray-200"><SelectValue placeholder="Вилоятро интихоб кунед" /></SelectTrigger>
+                                            <SelectTrigger className="rounded-xl h-12 border-gray-200"><SelectValue placeholder={t('steps.step2.regionSelect.placeholder')} /></SelectTrigger>
                                             <SelectContent className="rounded-xl">{regions?.map((r: any) => <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>)}</SelectContent>
                                         </Select>
                                     </div>
                                 )}
                                 {addType === 'school' && !isEditMode && (
                                     <div className="space-y-2">
-                                        <Label className="text-sm font-medium">Интихоби ноҳия</Label>
+                                        <Label className="text-sm font-medium">{t('steps.step2.districtSelect.label')}</Label>
                                         <Select onValueChange={(val) => setFormData({ ...formData, district_id: val })}>
-                                            <SelectTrigger className="rounded-xl h-12 border-gray-200"><SelectValue placeholder="Ноҳияро интихоб кунед" /></SelectTrigger>
+                                            <SelectTrigger className="rounded-xl h-12 border-gray-200"><SelectValue placeholder={t('steps.step2.districtSelect.placeholder')} /></SelectTrigger>
                                             <SelectContent className="rounded-xl">{districts?.map((d: any) => <SelectItem key={d.id} value={d.id.toString()}>{d.name}</SelectItem>)}</SelectContent>
                                         </Select>
                                     </div>
                                 )}
                                 <div className="space-y-2">
-                                    <Label className="text-sm font-medium">Номгузорӣ</Label>
-                                    <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="Номро ворид кунед..." className="rounded-xl h-12 border-gray-200 focus:ring-[#0950c3]" />
+                                    <Label className="text-sm font-medium">{t('steps.step2.name.label')}</Label>
+                                    <Input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder={t('steps.step2.name.placeholder')} className="rounded-xl h-12 border-gray-200 focus:ring-[#0950c3]" />
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <Button variant="ghost" onClick={() => isEditMode ? resetForm() : setStep(1)} className="flex-1 h-12 rounded-xl">Бозгашт</Button>
-                                    <Button onClick={handleSubmit} className="flex-[2] bg-[#0950c3] h-12 rounded-xl shadow-lg shadow-blue-200">Захира кардан</Button>
+                                    <Button variant="ghost" onClick={() => isEditMode ? resetForm() : setStep(1)} className="flex-1 h-12 rounded-xl">{t('steps.step2.buttons.back')}</Button>
+                                    <Button onClick={handleSubmit} className="flex-[2] bg-[#0950c3] h-12 rounded-xl shadow-lg shadow-blue-200">{t('steps.step2.buttons.save')}</Button>
                                 </div>
                             </div>
                         )}
@@ -199,12 +201,12 @@ export default function MinistryPage() {
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="bg-white border-none rounded-2xl h-14 p-1.5 shadow-sm inline-flex w-full md:w-auto">
                     {userRole === 'ministry' && (
-                        <TabsTrigger value="regions" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Вилоятҳо</TabsTrigger>
+                        <TabsTrigger value="regions" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">{t('tabs.regions')}</TabsTrigger>
                     )}
                     {(userRole === 'ministry' || userRole === 'region') && (
-                        <TabsTrigger value="districts" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Ноҳияҳо</TabsTrigger>
+                        <TabsTrigger value="districts" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">{t('tabs.districts')}</TabsTrigger>
                     )}
-                    <TabsTrigger value="schools" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">Мактабҳо</TabsTrigger>
+                    <TabsTrigger value="schools" className="rounded-xl md:px-8 px-4 h-full data-[state=active]:bg-[#0950c3] data-[state=active]:text-white transition-all">{t('tabs.schools')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="regions" className="mt-8">
@@ -218,7 +220,7 @@ export default function MinistryPage() {
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-lg">{reg.name}</h4>
-                                            <p className="text-xs text-gray-400">Ҷумҳурии Тоҷикистон</p>
+                                            <p className="text-xs text-gray-400">{t('search.regions.country')}</p>
                                         </div>
                                     </div>
 
@@ -236,10 +238,13 @@ export default function MinistryPage() {
                                                 <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
                                             </AlertDialogTrigger>
                                             <AlertDialogContent className="rounded-[24px]">
-                                                <AlertDialogHeader><AlertDialogTitle>Боварӣ доред?</AlertDialogTitle><AlertDialogDescription>'{reg.name}' вилоятамонро нест мекунед?</AlertDialogDescription></AlertDialogHeader>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
+                                                    <AlertDialogDescription>{t('dialogs.delete.regionDescription', { name: reg.name })}</AlertDialogDescription>
+                                                </AlertDialogHeader>
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">Кафо</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteRegion(reg.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">Нест кардан</AlertDialogAction>
+                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteRegion(reg.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
                                         </AlertDialog>
@@ -255,10 +260,15 @@ export default function MinistryPage() {
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-orange-50 rounded-xl"><Search className="text-orange-600 w-6 h-6" /></div>
-                                <div><h3 className="font-bold text-lg">Ҷустуҷӯи ноҳияҳо</h3><p className="text-sm text-gray-500">Вилоятро барои филтр интихоб кунед</p></div>
+                                <div>
+                                    <h3 className="font-bold text-lg">{t('search.districts.title')}</h3>
+                                    <p className="text-sm text-gray-500">{t('search.districts.description')}</p>
+                                </div>
                             </div>
                             <Select onValueChange={setSelectedRegionId} value={selectedRegionId}>
-                                <SelectTrigger className="w-full md:w-[320px] h-12 rounded-xl border-gray-100 bg-gray-50/50 focus:ring-orange-500"><SelectValue placeholder="Интихоби вилоят..." /></SelectTrigger>
+                                <SelectTrigger className="w-full md:w-[320px] h-12 rounded-xl border-gray-100 bg-gray-50/50 focus:ring-orange-500">
+                                    <SelectValue placeholder={t('search.districts.placeholder')} />
+                                </SelectTrigger>
                                 <SelectContent className="rounded-xl">{regions?.map((r: any) => <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>)}</SelectContent>
                             </Select>
                         </div>
@@ -279,10 +289,13 @@ export default function MinistryPage() {
                                                 <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
                                             </AlertDialogTrigger>
                                             <AlertDialogContent className="rounded-[24px]">
-                                                <AlertDialogHeader><AlertDialogTitle>Боварӣ доред?</AlertDialogTitle><AlertDialogDescription>Ноҳияи "{dist.name}" нест мешавад.</AlertDialogDescription></AlertDialogHeader>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
+                                                    <AlertDialogDescription>{t('dialogs.delete.districtDescription', { name: dist.name })}</AlertDialogDescription>
+                                                </AlertDialogHeader>
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">Кафо</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteDistrict(dist.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">Нест кардан</AlertDialogAction>
+                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteDistrict(dist.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
                                         </AlertDialog>
@@ -298,15 +311,22 @@ export default function MinistryPage() {
                         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-green-50 rounded-xl"><Search className="text-green-600 w-6 h-6" /></div>
-                                <div><h3 className="font-bold text-lg">Ҷустуҷӯи мактабҳо</h3><p className="text-sm text-gray-500">Вилоят ва ноҳияро интихоб кунед</p></div>
+                                <div>
+                                    <h3 className="font-bold text-lg">{t('search.schools.title')}</h3>
+                                    <p className="text-sm text-gray-500">{t('search.schools.description')}</p>
+                                </div>
                             </div>
                             <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                                 <Select onValueChange={setSelectedRegionId} value={selectedRegionId}>
-                                    <SelectTrigger className="w-full md:w-[200px] h-12 rounded-xl border-gray-100 bg-gray-50/50"><SelectValue placeholder="Вилоят" /></SelectTrigger>
+                                    <SelectTrigger className="w-full md:w-[200px] h-12 rounded-xl border-gray-100 bg-gray-50/50">
+                                        <SelectValue placeholder={t('search.schools.regionPlaceholder')} />
+                                    </SelectTrigger>
                                     <SelectContent className="rounded-xl">{regions?.map((r: any) => <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>)}</SelectContent>
                                 </Select>
                                 <Select onValueChange={setSelectedDistrictId} value={selectedDistrictId} disabled={!selectedRegionId}>
-                                    <SelectTrigger className="w-full md:w-[200px] h-12 rounded-xl border-gray-100 bg-gray-50/50"><SelectValue placeholder="Ноҳия" /></SelectTrigger>
+                                    <SelectTrigger className="w-full md:w-[200px] h-12 rounded-xl border-gray-100 bg-gray-50/50">
+                                        <SelectValue placeholder={t('search.schools.districtPlaceholder')} />
+                                    </SelectTrigger>
                                     <SelectContent className="rounded-xl">{districts?.map((d: any) => <SelectItem key={d.id} value={d.id.toString()}>{d.name}</SelectItem>)}</SelectContent>
                                 </Select>
                             </div>
@@ -328,10 +348,13 @@ export default function MinistryPage() {
                                                 <Button variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
                                             </AlertDialogTrigger>
                                             <AlertDialogContent className="rounded-[24px]">
-                                                <AlertDialogHeader><AlertDialogTitle>Боварӣ доред?</AlertDialogTitle><AlertDialogDescription>Мактаби "{school.name}" нест мешавад.</AlertDialogDescription></AlertDialogHeader>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
+                                                    <AlertDialogDescription>{t('dialogs.delete.schoolDescription', { name: school.name })}</AlertDialogDescription>
+                                                </AlertDialogHeader>
                                                 <AlertDialogFooter>
-                                                    <AlertDialogCancel className="rounded-xl">Кафо</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => deleteSchool(school.id)} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">Нест кардан</AlertDialogAction>
+                                                    <AlertDialogCancel className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={() => deleteSchool(school.id)} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('MinistryPage.dialogs.delete.confirm')}</AlertDialogAction>
                                                 </AlertDialogFooter>
                                             </AlertDialogContent>
                                         </AlertDialog>

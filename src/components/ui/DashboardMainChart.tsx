@@ -86,7 +86,7 @@ export function DashboardMainChart() {
         <Card className="border-none shadow-none bg-white dark:bg-[#1a1a1a]">
             <CardHeader>
                 <CardTitle>Динамикаи иҷораи китобҳо</CardTitle>
-                <CardDescription>Миқдори китобҳои додашуда дар 6 моҳи охир</CardDescription>
+                <CardDescription>Миқдори китобҳои додашуда дар 12 моҳи охир</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="h-[320px] w-full">

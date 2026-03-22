@@ -36,9 +36,11 @@ import {
 } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import toast, { Toaster } from 'react-hot-toast'
+import { useTranslations } from 'next-intl'
 
 function Page() {
     const [subject, setSubject] = useState<string>("all");
+    const t = useTranslations('BooksPage')
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isSubjectsDialogOpen, setIsSubjectsDialogOpen] = useState(false);
@@ -132,37 +134,37 @@ function Page() {
             <div className='flex md:flex-row flex-col md:gap-0 gap-6 items-center md:justify-between mb-6'>
                 <div className='flex flex-col gap-2 items-center'>
                     <TextAnimate className='md:text-2xl text-xl font-bold' animation="slideUp" by="word">
-                        Идоракунии фонди китобҳо
+                        {t('title')}
                     </TextAnimate>
                     <p className='text-muted-foreground md:w-auto w-[80%] text-center text-sm'>
-                        Назорат ва идоракунии китобҳои дарсӣ дар система
+                        {t('subtitle')}
                     </p>
                 </div>
 
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                         <Button className="gap-2 bg-blue-600 text-white hover:bg-blue-700 h-11 px-6 md:w-auto w-full shadow-lg ">
-                            <Plus className="h-5 w-5 " /> Нашри китоби нав
+                            <Plus className="h-5 w-5 " /> {t('addButton')}
                         </Button>
                     </DialogTrigger>
                     <DialogContent className=" max-h-[95vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle className="flex items-center gap-2 text-2xl">
-                                <BookOpen className="text-blue-600 " /> Иловаи китоби нав
+                                <BookOpen className="text-blue-600 " /> {t('dialog.title')}
                             </DialogTitle>
                         </DialogHeader>
 
                         <form onSubmit={onSubmitBooks(handleSubmitBooks)} className="grid gap-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
-                                    <Label>Номи китоб</Label>
-                                    <Input placeholder="Забони модарӣ" {...register("title", { required: true })} />
+                                    <Label>{t('dialog.labels.bookName')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.bookName')} {...register("title", { required: true })} />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label>Фан</Label>
+                                    <Label>{t('dialog.labels.subject')}</Label>
                                     <Select onValueChange={(v) => setValue("subject_id", v)}>
                                         <SelectTrigger className="w-full py-4 h-13 rounded-sm transition-colors">
-                                            <SelectValue placeholder="Интихоби фан" />
+                                            <SelectValue placeholder={t('dialog.placeholders.subject')} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             {subjectsData?.map((sub: any) => (
@@ -177,44 +179,43 @@ function Page() {
 
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="grid gap-2">
-                                    <Label>Синф</Label>
-                                    <Input placeholder='1' type="number" {...register("grade")} />
+                                    <Label>{t('dialog.labels.grade')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.grade')} type="number" {...register("grade")} />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label>Соли нашр</Label>
-                                    <Input placeholder='2001' type="number" {...register("publication_year")} />
+                                    <Label>{t('dialog.labels.publicationYear')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.publicationYear')} type="number" {...register("publication_year")} />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label>ISBN</Label>
-                                    <Input placeholder="978-..." {...register("isbn")} />
+                                    <Label>{t('dialog.labels.isbn')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.isbn')} {...register("isbn")} />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
-                                    <Label>Муаллиф</Label>
-                                    <Input placeholder="Абдуллозода С." {...register("author", { required: true })} />
+                                    <Label>{t('dialog.labels.author')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.author')} {...register("author", { required: true })} />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label>Ношир (Publisher)</Label>
-                                    <Input placeholder="Маориф" {...register("publisher", { required: true })} />
+                                    <Label>{t('dialog.labels.publisher')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.publisher')} {...register("publisher", { required: true })} />
                                 </div>
                             </div>
 
                             <div className="rounded-lg grid grid-cols-2 gap-4">
                                 <div className="grid gap-2">
-                                    <Label>Нархи чоп (TJS)</Label>
-                                    <Input placeholder='50' type="number" step="0.01" {...register("print_price")} className="bg-white" />
+                                    <Label>{t('dialog.labels.printPrice')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.printPrice')} type="number" step="0.01" {...register("print_price")} className="bg-white" />
                                 </div>
                                 <div className="grid gap-2">
-                                    <Label>Иҷора / сол</Label>
-                                    <Input placeholder='1' type="number" step="0.01" {...register("rent_value_per_year")} className="bg-white" />
+                                    <Label>{t('dialog.labels.rentPerYear')}</Label>
+                                    <Input placeholder={t('dialog.placeholders.rentPerYear')} type="number" step="0.01" {...register("rent_value_per_year")} className="bg-white" />
                                 </div>
-
                             </div>
 
                             <div className="grid gap-2">
-                                <Label className="text-xs font-bold uppercase text-slate-500 ml-1">Акси китоб</Label>
+                                <Label className="text-xs font-bold uppercase text-slate-500 ml-1">{t('dialog.labels.bookImage')}</Label>
                                 <label className="group relative flex flex-col items-center justify-center w-full h-[90px] border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 hover:border-blue-400 transition-all overflow-hidden">
                                     <div className="flex flex-col items-center justify-center pt-4 pb-4">
                                         <ImageIcon className="w-8 h-8 text-slate-300 group-hover:text-blue-500 transition-colors" />
@@ -225,7 +226,7 @@ function Page() {
                                                     <CheckCircle2 className="w-3 h-3" /> {fileWatcher[0].name}
                                                 </span>
                                             ) : (
-                                                "Боргузорӣ"
+                                                t('dialog.placeholders.uploadImage')
                                             )}
                                         </p>
 
@@ -246,14 +247,13 @@ function Page() {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label>Тавсиф</Label>
+                                <Label>{t('dialog.labels.description')}</Label>
                                 <Textarea className='min-h-15' {...register("description")} />
                             </div>
 
-
                             <DialogFooter>
                                 <Button type="submit" disabled={isCreating} className="w-full bg-blue-600 h-11">
-                                    {isCreating ? <Loader2 className="animate-spin" /> : "Захира кардан"}
+                                    {isCreating ? <Loader2 className="animate-spin" /> : t('dialog.buttons.saving')}
                                 </Button>
                             </DialogFooter>
                         </form>
@@ -263,24 +263,19 @@ function Page() {
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-8'>
                 <Card
-                    NameRole='Ҳамагӣ китобҳо'
+                    NameRole={t('stats.totalBooks')}
                     cnt={books?.total?.toLocaleString() || "0"}
                     className="text-green-600"
                     DarkTextColor="text-green-400"
                 />
-                {/* <Card
-                    NameRole='Дар китобхона 4 вилоят'
-                    cnt={books?.items?.reduce((acc, book) => acc + (book.available_copies || 0), 0).toLocaleString() || "0"}
-                    className="text-blue-600"
-                /> */}
                 <Card
-                    NameRole='Иҷорашуда'
+                    NameRole={t('stats.rentedBooks')}
                     cnt={books?.items?.reduce((acc, book) => acc + (book.rented_copies || 0), 0).toLocaleString() || "0"}
                     className="text-yellow-500"
                     DarkTextColor="text-yellow-400"
                 />
                 <Card
-                    NameRole='Руйхати Ҳамаи китобҳо'
+                    NameRole={t('stats.totalCopies')}
                     cnt={books?.items?.reduce((acc, book) => acc + (book.total_copies || 0), 0).toLocaleString() || "0"}
                     className="text-blue-600"
                     DarkTextColor="text-blue-400"
@@ -289,19 +284,19 @@ function Page() {
 
 
             <section
-                className='p-4 my-4 bg-white dark:bg-[#1a1a1a] rounded-2xl border  shadow-sm hover:shadow-md transition-shadow duration-300 max-w-full overflow-x-auto'
+                className='p-4 my-4 bg-white dark:bg-[#1a1a1a] rounded-2xl border shadow-sm hover:shadow-md transition-shadow duration-300 max-w-full overflow-x-auto'
                 data-aos="zoom-in"
                 data-aos-delay="100"
             >
-                <h1 className='md:text-2xl text-xl font-bold'>Хамаи китобҳои дарсӣ</h1>
-                <p className='text-muted-foreground md:w-full w-[80%]  text-sm'>Рӯйхати пурраи ҳамаи китобҳои дарсӣ дар система</p>
+                <h1 className='md:text-2xl text-xl font-bold'>{t('list.title')}</h1>
+                <p className='text-muted-foreground md:w-full w-[80%] text-sm'>{t('list.description')}</p>
 
-                <div className='grid grid-cols-1 md:grid-cols-6 my-4 gap-3 '>
-                    <div className="relative  max-w-full col-span-1 md:col-span-4" data-aos="fade-right" data-aos-delay="200">
+                <div className='grid grid-cols-1 md:grid-cols-6 my-4 gap-3'>
+                    <div className="relative max-w-full col-span-1 md:col-span-4" data-aos="fade-right" data-aos-delay="200">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
                             className='max-w-full w-full rounded-xl pl-10 pr-4 py-2.5 border bg-[#f9fafb] dark:bg-[#242424] dark:border-zinc-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition-all duration-200 outline-none'
-                            placeholder='Ҷустуҷӯи китобҳо...'
+                            placeholder={t('list.searchPlaceholder')}
                             type="search"
                         />
                     </div>
@@ -310,10 +305,10 @@ function Page() {
                         <Funnel className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
                         <Select onValueChange={(value) => setSubject(value)}>
                             <SelectTrigger className="w-full bg-[#f9fafb] dark:bg-[#242424] dark:border-zinc-800 py-5 pl-9 h-11 rounded-xl border">
-                                <SelectValue placeholder="Ҳама" />
+                                <SelectValue placeholder={t('list.filterAll')} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">Ҳамаи фанҳо</SelectItem>
+                                <SelectItem value="all">{t('list.filterAll')}</SelectItem>
                                 {subjectsData?.map((sub: any) => (
                                     <SelectItem key={sub.id} value={sub.id.toString()}>
                                         {sub.name}
@@ -326,28 +321,28 @@ function Page() {
                     <Dialog open={isSubjectsDialogOpen} onOpenChange={setIsSubjectsDialogOpen}>
                         <DialogTrigger asChild>
                             <Button
-                                className='col-span-1 md:col-span-1 cursor-pointer duration-600 transition-all bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white border-none font-semibold h-11 rounded-xl flex gap-2 items-center '
+                                className='col-span-1 md:col-span-1 cursor-pointer duration-600 transition-all bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-600 dark:hover:text-white border-none font-semibold h-11 rounded-xl flex gap-2 items-center'
                                 data-aos="fade-left"
                                 data-aos-delay="300"
                             >
                                 <Boxes size={18} />
-                                <span>Фанни Нав</span>
+                                <span>{t('list.addSubjectButton')}</span>
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className=" max-h-[90vh] overflow-y-auto rounded-[24px]">
+                        <DialogContent className="max-h-[90vh] overflow-y-auto rounded-[24px]">
                             <DialogHeader>
                                 <DialogTitle className="flex items-center gap-2 text-2xl">
-                                    <BookOpen className="text-blue-600" /> Иловаи Фанни нав
+                                    <BookOpen className="text-blue-600" /> {t('subjectDialog.title')}
                                 </DialogTitle>
                             </DialogHeader>
                             <form onSubmit={onSubmitSubjects(handleSubmitSubjects)} className="grid gap-4">
                                 <div className="grid gap-2">
-                                    <Label>Номи Фан</Label>
-                                    <Input placeholder="Забони модарӣ" {...registerSubject("name", { required: "Лутфан номи фанро ворид кунед" })} />
+                                    <Label>{t('subjectDialog.label')}</Label>
+                                    <Input placeholder={t('subjectDialog.placeholder')} {...registerSubject("name", { required: t('subjectDialog.error') })} />
                                 </div>
                                 <DialogFooter>
                                     <Button type="submit" disabled={isCreatingSubject} className="w-full hover:bg-blue-700 bg-blue-600 h-11 rounded-xl">
-                                        {isCreatingSubject ? <Loader2 className="animate-spin" /> : "Захира кардан"}
+                                        {isCreatingSubject ? <Loader2 className="animate-spin" /> : t('subjectDialog.button')}
                                     </Button>
                                 </DialogFooter>
                             </form>
@@ -359,10 +354,10 @@ function Page() {
                     <SheetContent className="max-h-screen md:max-w-112.5 w-full overflow-y-auto px-4 py-2 border-l-4 border-blue-600 dark:bg-[#1a1a1a]">
                         <SheetHeader className="mb-4">
                             <SheetTitle className="text-2xl font-black leading-tight">
-                                {isDetailLoading ? "Дар ҳоли боргирӣ..." : bookDetail?.title}
+                                {isDetailLoading ? t('sheet.loading') : bookDetail?.title}
                             </SheetTitle>
                             <SheetDescription>
-                                {isDetailLoading ? "Лутфан интизор шавед" : `Маълумоти муфассал дар бораи китоб`}
+                                {isDetailLoading ? t('sheet.wait') : t('sheet.description')}
                             </SheetDescription>
                         </SheetHeader>
 
@@ -385,7 +380,7 @@ function Page() {
                                             {bookDetail.subject_name}
                                         </span>
                                         <p className="text-muted-foreground mt-2">
-                                            Муаллиф: <span className="text-foreground font-medium">{bookDetail.author}</span>
+                                            {t('sheet.author')}: <span className="text-foreground font-medium">{bookDetail.author}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -394,34 +389,34 @@ function Page() {
 
                                 <div className="grid grid-cols-3 gap-3">
                                     <div className="bg-slate-50 dark:bg-zinc-900 p-3 rounded-xl border dark:border-zinc-800 text-center">
-                                        <p className="text-[10px] text-slate-500 uppercase font-bold">Умумӣ</p>
+                                        <p className="text-[10px] text-slate-500 uppercase font-bold">{t('sheet.stats.total')}</p>
                                         <p className="text-xl font-black">{bookDetail.total_copies}</p>
                                     </div>
                                     <div className="bg-green-50 dark:bg-green-900/10 p-3 rounded-xl border border-green-100 dark:border-green-900/30 text-center">
-                                        <p className="text-[10px] text-green-600 uppercase font-bold">Мавҷуд</p>
+                                        <p className="text-[10px] text-green-600 uppercase font-bold">{t('sheet.stats.available')}</p>
                                         <p className="text-xl font-black text-green-700 dark:text-green-400">{bookDetail.available_copies}</p>
                                     </div>
                                     <div className="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-xl border border-amber-100 dark:border-amber-900/30 text-center">
-                                        <p className="text-[10px] text-amber-600 uppercase font-bold">Иҷора</p>
+                                        <p className="text-[10px] text-amber-600 uppercase font-bold">{t('sheet.stats.rented')}</p>
                                         <p className="text-xl font-black text-amber-700 dark:text-amber-400">{bookDetail.rented_copies}</p>
                                     </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-y-4 gap-x-8 bg-white dark:bg-[#242424] p-4 rounded-2xl border dark:border-zinc-800 shadow-sm">
                                     <div>
-                                        <Label className="text-slate-400">Синф</Label>
+                                        <Label className="text-slate-400">{t('sheet.details.grade')}</Label>
                                         <p className="font-semibold">{bookDetail.grade}-ум</p>
                                     </div>
                                     <div>
-                                        <Label className="text-slate-400">Соли нашр</Label>
+                                        <Label className="text-slate-400">{t('sheet.details.publicationYear')}</Label>
                                         <p className="font-semibold">{bookDetail.publication_year}</p>
                                     </div>
                                     <div className="col-span-2">
-                                        <Label className="text-slate-400">Ношир</Label>
+                                        <Label className="text-slate-400">{t('sheet.details.publisher')}</Label>
                                         <p className="font-semibold">{bookDetail.publisher}</p>
                                     </div>
                                     <div className="col-span-2">
-                                        <Label className="text-slate-400">ISBN</Label>
+                                        <Label className="text-slate-400">{t('sheet.details.isbn')}</Label>
                                         <div className="flex items-center gap-2 group">
                                             <p className="font-mono text-sm bg-slate-100 dark:bg-zinc-800 p-1.5 rounded border dark:border-zinc-700 w-fit">
                                                 {bookDetail.isbn}
@@ -432,7 +427,7 @@ function Page() {
                                             >
                                                 {copied ? (
                                                     <span className="flex items-center gap-1 text-[10px] text-green-600 font-bold">
-                                                        <Check size={14} /> Нусха шуд!
+                                                        <Check size={14} /> {t('sheet.details.copied')}
                                                     </span>
                                                 ) : (
                                                     <Copy size={16} className="group-hover:text-blue-600" />
@@ -445,27 +440,27 @@ function Page() {
                                 <div className="space-y-3">
                                     <h3 className="font-bold text-lg flex items-center gap-2">
                                         <span className="w-2 h-6 bg-blue-600 rounded-full"></span>
-                                        Маълумоти молиявӣ
+                                        {t('sheet.financial.title')}
                                     </h3>
                                     <div className="flex justify-between items-center p-3 bg-blue-50/50 dark:bg-blue-900/10 rounded-lg border border-dashed border-blue-200 dark:border-blue-900/30">
-                                        <span className="text-slate-600 dark:text-zinc-400">Нархи аслӣ:</span>
-                                        <span className="text-xl font-bold">{bookDetail.print_price} TJS</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">{t('sheet.financial.printPrice')}:</span>
+                                        <span className="text-xl font-bold">{bookDetail.print_price} {t('sheet.financial.currency')}</span>
                                     </div>
                                     <div className="flex justify-between items-center p-3 bg-green-50/50 dark:bg-green-900/10 rounded-lg border border-dashed border-green-200 dark:border-green-900/30">
-                                        <span className="text-slate-600 dark:text-zinc-400">Нархи иҷора:</span>
-                                        <span className="text-xl font-bold text-green-600 dark:text-green-400">{bookDetail.rent_value_per_year} TJS</span>
+                                        <span className="text-slate-600 dark:text-zinc-400">{t('sheet.financial.rentPrice')}:</span>
+                                        <span className="text-xl font-bold text-green-600 dark:text-green-400">{bookDetail.rent_value_per_year} {t('sheet.financial.currency')}</span>
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label className="text-slate-400 italic">Тавсифи китоб:</Label>
+                                    <Label className="text-slate-400 italic">{t('sheet.description')}:</Label>
                                     <p className="text-slate-700 dark:text-zinc-300 leading-relaxed bg-slate-50 dark:bg-zinc-900 p-3 rounded-lg border dark:border-zinc-800">
                                         {bookDetail.description}
                                     </p>
                                 </div>
 
                                 <div className="text-[10px] text-slate-400 pt-4 text-center">
-                                    ID: {bookDetail.id} • Сана: {new Date(bookDetail.created_at).toLocaleString('tg-TJ')}
+                                    {t('sheet.id')}: {bookDetail.id} • {t('sheet.date')}: {new Date(bookDetail.created_at).toLocaleString('tg-TJ')}
                                 </div>
                             </div>
                         )}
@@ -474,20 +469,19 @@ function Page() {
 
                 <div
                     className={`w-full sm:max-w-max max-w-85 md:max-w-full 
-                    ${isFetching ? "opacity-50" : "opacity-100"} 
-                    overflow-x-auto overflow-y-clip  rounded-xl border border-gray-200 
-                    dark:border-zinc-800 bg-white dark:bg-[#1a1a1a] 
-                    transition-opacity duration-200`}
+        ${isFetching ? "opacity-50" : "opacity-100"} 
+        overflow-x-auto overflow-y-clip rounded-xl border border-gray-200 
+        dark:border-zinc-800 bg-white dark:bg-[#1a1a1a] 
+        transition-opacity duration-200`}
                 >
-
                     <table className="w-full text-left border-collapse border border-gray-200 dark:border-zinc-800 min-w-212.5">
                         <thead className="bg-gray-50 dark:bg-[#141212]">
                             <tr>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-[#141212] border-b dark:border-zinc-800">Номи китоб</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">Синф</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">Иҷора</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">Ҳолат</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">Санаи навсозӣ</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-[#141212] border-b dark:border-zinc-800">{t('list.table.bookName')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">{t('list.table.grade')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">{t('list.table.rental')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">{t('list.table.status')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">{t('list.table.updateDate')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
@@ -505,11 +499,11 @@ function Page() {
                                     <td className="p-4">
                                         {book.is_new ? (
                                             <span className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 px-2.5 py-1 rounded-full text-[11px] font-bold">
-                                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> Нав
+                                                <span className="w-1.5 h-1.5 bg-green-500 rounded-full"></span> {t('list.table.new')}
                                             </span>
                                         ) : (
                                             <span className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 px-2.5 py-1 rounded-full text-[11px] font-bold">
-                                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> Кӯҳна
+                                                <span className="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> {t('list.table.old')}
                                             </span>
                                         )}
                                     </td>
@@ -524,7 +518,7 @@ function Page() {
                     {booksLoading && (
                         <div className="flex justify-center items-center p-8">
                             <Loader2 className="animate-spin h-12 w-12 text-blue-600" />
-                            <span className="ml-3 text-gray-600 dark:text-zinc-400">Китобҳо дар ҳоли бор шудан...</span>
+                            <span className="ml-3 text-gray-600 dark:text-zinc-400">{t('list.loading')}</span>
                         </div>
                     )}
                 </div>

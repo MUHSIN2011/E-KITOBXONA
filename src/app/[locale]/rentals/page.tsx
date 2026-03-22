@@ -246,7 +246,6 @@ export default function RentalsPage() {
                                                     const book = item.textbook;
                                                     const isSelected = selectedBookIds.includes(item.id);
 
-                                                    // Ин сатр барои ҷустуҷӯ истифода мешавад
                                                     const searchLabel = `${book?.title} ${item.inventory_number}`.toLowerCase();
 
                                                     return (
@@ -356,7 +355,14 @@ export default function RentalsPage() {
                         </TableHeader>
                         <TableBody>
                             {rentalsLoading ? (
-                                <TableRow><TableCell colSpan={4} className="text-center py-10"><Loader2 className="animate-spin mx-auto" /></TableCell></TableRow>
+                                Array.from({ length: 5 }).map((_, index) => (
+                                    <TableRow key={index} className="animate-pulse">
+                                        <TableCell className="p-1"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></TableCell>
+                                        <TableCell className="p-1"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
+                                        <TableCell className="p-1"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
+                                        <TableCell className="p-1 text-center"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div></TableCell>
+                                    </TableRow>
+                                ))
                             ) : rentals?.items?.map((rental: any) => (
                                 <TableRow onClick={() => setSelectedStudent(rental)} key={rental.student_id} className="hover:bg-gray-50/50 hover:dark:bg-blue-500/50 transition-colors cursor-pointer">
                                     <TableCell>
@@ -442,20 +448,19 @@ export default function RentalsPage() {
                 setIsReturnModalOpen(val);
                 if (!val) resetReturnForm();
             }}>
-                <DialogContent className="sm:max-w-[460px] p-0 overflow-hidden border-none shadow-lg">
-                    {/* Сарлавҳа бо заминаи сабук */}
-                    <DialogHeader className="p-6 pb-0">
+                <DialogContent className="sm:max-w-[460px] p-0 border-none shadow-lg max-h-[90vh] flex flex-col overflow-hidden">
+                    <DialogHeader className="p-6 pb-4 flex-shrink-0 border-b border-slate-50">
                         <DialogTitle className="text-xl font-bold text-slate-800 tracking-tight">
                             Қабули китоб
                         </DialogTitle>
-                        <DialogDescription className="text-slate-500 pt-2">
+                        <DialogDescription className="text-slate-500 pt-1">
                             Ҳолати китоби <span className="font-semibold text-slate-700 underline decoration-blue-200">
                                 {selectedBookToReturn?.textbook_title}
                             </span>-ро ворид кунед.
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="p-6 space-y-6">
+                    <div className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
                         <div className="space-y-3">
                             <p className="text-sm font-semibold text-slate-600 ml-1">Ҳолати умумӣ:</p>
                             <Select value={returnCondition} onValueChange={setReturnCondition}>
@@ -471,9 +476,8 @@ export default function RentalsPage() {
                             </Select>
                         </div>
 
-                        {/* Сексияи зарар бо дизайни тоза ва мулоим */}
                         {returnCondition === "damaged" && (
-                            <div className="space-y-4 p-4 rounded-xl border border-slate-200 bg-slate-50/50 animate-in fade-in zoom-in-95 duration-200">
+                            <div className="space-y-4 p-4 rounded-xl border border-slate-200 bg-slate-50/50 animate-in fade-in slide-in-from-top-2 duration-300">
                                 <div className="flex items-center gap-2 mb-1">
                                     <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
                                     <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Тафсилоти зарар</span>
@@ -519,7 +523,8 @@ export default function RentalsPage() {
                         )}
                     </div>
 
-                    <DialogFooter className="p-6 pt-2 bg-slate-50/50 gap-2 sm:gap-0">
+                    {/* flex-shrink-0 намегузорад, ки Footer фишурда шавад ё ба боло скрол шавад */}
+                    <DialogFooter className="p-6 pt-4 bg-slate-50/80 border-t border-slate-100 gap-2 sm:gap-0 flex-shrink-0">
                         <Button
                             variant="ghost"
                             onClick={() => setIsReturnModalOpen(false)}

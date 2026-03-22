@@ -15,12 +15,9 @@ export default function BookDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-white">
-        <div className="flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
-          <p className="mt-4 text-gray-500 font-medium">Маълумот боргузорӣ мешавад...</p>
-        </div>
-      </div>
+      <div className="flex h-[85vh] items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
     );
   }
 

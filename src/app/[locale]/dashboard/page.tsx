@@ -28,10 +28,9 @@ function Page() {
 
     const { data: getyears } = useGetActiveYearQuery();
     const activeYearId = getyears?.id;
-    const { data: overview } = useGetReportsOverviewQuery(getyears?.id);
-    console.log(overview);
-
-    console.log(usersData?.total_users);
+    const { data: overview } = useGetReportsOverviewQuery(activeYearId,
+        { skip: !activeYearId }
+    );
 
     useEffect(() => {
         AOS.init({

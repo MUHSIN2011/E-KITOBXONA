@@ -4,12 +4,14 @@ import React, { useMemo, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { useGetDistrictsQuery, useGetRegionsQuery } from '@/api/api';
 import { LayoutDashboard, MapPin, School } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 
 const MyBarChart = () => {
     const [user, setUser] = useState<any>(null);
+    const t = useTranslations("RegionalAnalysis");
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -56,6 +58,20 @@ const MyBarChart = () => {
                 speed: 800,
             }
         },
+        legend: {
+            show: true,
+            position: 'bottom',
+            horizontalAlign: 'center',
+            markers: {
+                radius: 12,
+                width: 10,
+                height: 10,
+            },
+            itemMargin: {
+                horizontal: 10,
+                vertical: 5
+            }
+        },
         plotOptions: {
             bar: {
                 borderRadius: 8,
@@ -98,7 +114,7 @@ const MyBarChart = () => {
         xaxis: {
             categories: chartData.names,
             labels: {
-                style: { colors: '#94a3b8', fontSize: '12px' }
+                style: { colors: '#94a3b8', fontSize: '12px', fontWeight: 600, }
             },
             axisBorder: { show: false },
             axisTicks: { show: false }
@@ -141,12 +157,12 @@ const MyBarChart = () => {
                     </div>
                     <div>
                         <h2 className="text-xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-2 tracking-tight">
-                            Таҳлили минтақавӣ
+                            {t('title')}
                         </h2>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="flex h-2 w-2 rounded-full bg-emerald-500"></span>
                             <p className="text-[11px] text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">
-                                Миқдори муассисаҳо дар ноҳияҳо
+                                {t('subtitle')}
                             </p>
                         </div>
                     </div>
@@ -172,27 +188,26 @@ const MyBarChart = () => {
                         </>
                     ) : (
                         <div className="flex items-center gap-2 px-4 py-2.5 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-xl">
-                            <MapPin className="w-4 h-4 text-blue-500" />
+                            <MapPin className="w-4 h-4 rounded-full text-blue-500" />
                             <span className="text-sm font-bold text-slate-700 dark:text-slate-200">
-                                {regions?.find((r: any) => r.id === selectedRegionId)?.name || "Вилояти ман"}
+                                {regions?.find((r: any) => r.id === selectedRegionId)?.name || t('myRegion')}
                             </span>
                         </div>
                     )}
                 </div>
             </div>
 
-            <div className="min-h-[350px] w-full relative">
+            <div className="min-h-[300px] w-full relative">
                 {isLoading ? (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                        <div className="w-10 h-10 border-4 border-blue-600/20 border-t-blue-600 rounded-full animate-spin"></div>
-                        <span className="text-sm font-medium text-slate-400">Дар ҳоли боргузорӣ...</span>
+                    <div className="flex h-[85vh] items-center justify-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                     </div>
                 ) : chartData.names.length > 0 ? (
                     <Chart
                         options={chartOptions}
-                        series={[{ name: 'Мактабҳо', data: chartData.counts }]}
+                        series={[{ name: t('chart.seriesName'), data: chartData.counts }]}
                         type="bar"
-                        height={350}
+                        height={300}
                     />
                 ) : (
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
@@ -200,7 +215,7 @@ const MyBarChart = () => {
                             <LayoutDashboard className="w-8 h-8 text-slate-300" />
                         </div>
                         <p className="text-slate-400 dark:text-slate-500 text-sm font-medium">
-                            Дар ин минтақа ягон маълумот ёфт нашуд
+                            {t('chart.noData')}
                         </p>
                     </div>
                 )}

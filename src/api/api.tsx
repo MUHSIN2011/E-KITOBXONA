@@ -301,7 +301,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects', 'transfers'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -629,11 +629,11 @@ export const Todo = createApi({
 
         createCompensation: builder.mutation({
             query: (data) => ({
-                url: '/compensations/',
+                url: '/finance/compensations/',
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['Rentals'],
+            invalidatesTags: ['Rentals', 'overview'],
         }),
         bookRequest: builder.mutation({
             query: (data) => ({
@@ -692,8 +692,33 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['BookRequests'],
         }),
-
-
+        MyTransfers: builder.query<void, void>({
+            query: () => '/transfers',
+            providesTags: ['transfers'],
+        }),
+        CreateTransfers: builder.mutation<void, { to_school_id: number; textbook_copy_ids: number[]; reason: string }>({
+            query: ({ to_school_id, textbook_copy_ids, reason }) => ({
+                url: `/transfers`,
+                method: 'POST',
+                body: { to_school_id, textbook_copy_ids, reason },
+            }),
+            invalidatesTags: ['transfers'],
+        }),
+        TransfersCancel: builder.mutation<void, { IdTransfer: number }>({
+            query: ({ IdTransfer }) => ({
+                url: `/transfers/${IdTransfer}/cancel`,
+                method: 'POST',
+                body: { IdTransfer },
+            }),
+            invalidatesTags: ['transfers'],
+        }),
+        TransfersById: builder.query<any, number>({
+            query: (transfer_id) => ({
+                url: `/transfers/${transfer_id}`,
+                method: 'GET',
+            }),
+            providesTags: ['transfers'],
+        })
     }),
 });
 
@@ -749,5 +774,9 @@ export const {
     useDeleteStudentMutation,
     useCreateSubjectsMutation,
     useMyBookRequestsQuery,
-    useCancelBookRequestsMutation
+    useCancelBookRequestsMutation,
+    useMyTransfersQuery,
+    useCreateTransfersMutation,
+    useTransfersCancelMutation,
+    useLazyTransfersByIdQuery
 } = Todo;

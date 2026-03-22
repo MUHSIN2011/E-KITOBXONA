@@ -14,6 +14,48 @@
       "home": "Главная",
       "books": "Книги",
       "settings": "Настройки"
+    },
+    "SystemArchitecture": {
+      "title": "Архитектура Системы Учебников",
+      "subtitle": "Централизованный процесс распределения и управления книгами",
+      "elements": {
+        "systemUsers": {
+          "title": "Пользователи системы",
+          "description": "Модераторы и администраторы"
+        },
+        "textbooks": {
+          "title": "Учебники",
+          "description": "Издания и книги"
+        },
+        "students": {
+          "title": "Студенты",
+          "description": "Основные пользователи"
+        },
+        "database": {
+          "title": "База данных",
+          "description": "Данные системы"
+        },
+        "ministry": {
+          "title": "Министерство",
+          "description": "Государственный контроль"
+        },
+        "analytics": {
+          "title": "Аналитика",
+          "description": "Статистика системы"
+        },
+        "centralSystem": {
+          "title": "Центральная система",
+          "description": "Ядро управления",
+          "version": "V 1.0"
+        }
+      },
+      "stats": {
+        "systemUsers": "Пользователи системы",
+        "books": "Книги",
+        "centralSystem": "Центральная система",
+        "ministry": "Министерство образования",
+        "status": "Онлайн"
+      }
     }
   },
   "LoginPage": {
@@ -184,7 +226,287 @@
       "available": "Доступно",
       "rented": "Аренда",
       "lost": "Потеряно",
-      "damaged": "Повреждено"
+      "damaged": "Повреждено",
+      "total": "Всего"
+    }
+  },
+  "SystemArchitecture": {
+    "title": "Архитектура Системы Учебников",
+    "subtitle": "Централизованный процесс распределения и управления книгами",
+    "elements": {
+      "systemUsers": {
+        "title": "Пользователи системы",
+        "description": "Модераторы и администраторы"
+      },
+      "textbooks": {
+        "title": "Учебники",
+        "description": "Издания и книги"
+      },
+      "students": {
+        "title": "Студенты",
+        "description": "Основные пользователи"
+      },
+      "database": {
+        "title": "База данных",
+        "description": "Данные системы"
+      },
+      "ministry": {
+        "title": "Министерство",
+        "description": "Государственный контроль"
+      },
+      "analytics": {
+        "title": "Аналитика",
+        "description": "Статистика системы"
+      },
+      "centralSystem": {
+        "title": "Центральная система",
+        "description": "Ядро управления",
+        "version": "V 1.0"
+      }
+    },
+    "stats": {
+      "systemUsers": "Пользователи системы",
+      "books": "Книги",
+      "centralSystem": "Центральная система",
+      "ministry": "Министерство образования",
+      "status": "Онлайн"
+    }
+  },
+  "RegionalAnalysis": {
+    "title": "Региональный анализ",
+    "subtitle": "Количество учреждений в районах",
+    "regionSelect": "Выберите регион",
+    "myRegion": "Мой регион",
+    "chart": {
+      "seriesName": "Школы",
+      "noData": "В этом регионе данные не найдены"
+    }
+  },
+  "MultiyearAnalysis": {
+    "title": "Многолетний анализ",
+    "subtitle": "Динамика развития книжного фонда",
+    "legend": {
+      "rental": "Аренда",
+      "return": "Возврат"
+    },
+    "stats": {
+      "bestRate": "Лучший показатель",
+      "bestRateValue": "{value}% возврат",
+      "averageBooks": "Среднее книг/ученик",
+      "averageBooksValue": "{value} шт",
+      "yearStatus": "Состояние года"
+    }
+  },
+  "BooksPage": {
+    "title": "Управление книжным фондом",
+    "subtitle": "Контроль и управление учебниками в системе",
+    "addButton": "Добавить книгу",
+    "list": {
+      "title": "Все учебники",
+      "description": "Полный список всех учебников в системе",
+      "searchPlaceholder": "Поиск книг...",
+      "filterAll": "Все предметы",
+      "addSubjectButton": "Новый предмет",
+      "table": {
+        "bookName": "Название книги",
+        "grade": "Класс",
+        "rental": "Аренда",
+        "status": "Статус",
+        "updateDate": "Дата обновления",
+        "new": "Новый",
+        "old": "Старый"
+      },
+      "loading": "Загрузка книг..."
+    },
+    "dialog": {
+      "title": "Добавление новой книги",
+      "labels": {
+        "bookName": "Название книги",
+        "subject": "Предмет",
+        "grade": "Класс",
+        "publicationYear": "Год издания",
+        "isbn": "ISBN",
+        "author": "Автор",
+        "publisher": "Издатель",
+        "printPrice": "Цена печати (TJS)",
+        "rentPerYear": "Аренда / год",
+        "bookImage": "Изображение книги",
+        "description": "Описание"
+      },
+      "placeholders": {
+        "bookName": "Родной язык",
+        "subject": "Выберите предмет",
+        "grade": "1",
+        "publicationYear": "2001",
+        "isbn": "978-...",
+        "author": "Абдуллозода С.",
+        "publisher": "Маориф",
+        "printPrice": "50",
+        "rentPerYear": "1",
+        "uploadImage": "Загрузить"
+      },
+      "buttons": {
+        "saving": "Сохранить",
+        "savingWithSpinner": "Сохранить"
+      }
+    },
+    "subjectDialog": {
+      "title": "Добавление нового предмета",
+      "label": "Название предмета",
+      "placeholder": "Родной язык",
+      "button": "Сохранить",
+      "error": "Пожалуйста, введите название предмета"
+    },
+    "sheet": {
+      "loading": "Загрузка...",
+      "wait": "Пожалуйста, подождите",
+      "description": "Детальная информация о книге",
+      "author": "Автор",
+      "stats": {
+        "total": "Всего",
+        "available": "Доступно",
+        "rented": "Аренда"
+      },
+      "details": {
+        "grade": "Класс",
+        "publicationYear": "Год издания",
+        "publisher": "Издатель",
+        "isbn": "ISBN",
+        "copied": "Скопировано!",
+        "copy": "Копировать"
+      },
+      "financial": {
+        "title": "Финансовая информация",
+        "printPrice": "Цена печати",
+        "rentPrice": "Цена аренды",
+        "currency": "TJS"
+      },
+      "description": "Описание книги",
+      "id": "ID",
+      "date": "Дата"
+    },
+    "stats": {
+      "totalBooks": "Всего книг",
+      "rentedBooks": "Арендовано",
+      "totalCopies": "Всего экземпляров"
+    }
+  },
+  "TransferPage": {
+    "title": "Трансфер Книг",
+    "subtitle": "Централизованная система распределения учебников",
+    "location": {
+      "title": "Информация о местоположении",
+      "description": "Область, район и учебная школа",
+      "region": {
+        "label": "Область / Регион",
+        "placeholder": "Выберите область..."
+      },
+      "district": {
+        "label": "Город / Район",
+        "placeholder": "Выберите район..."
+      },
+      "school": {
+        "label": "Учебная школа",
+        "placeholder": "Выберите школу..."
+      }
+    },
+    "book": {
+      "title": "Информация об издании и количестве",
+      "description": "Учебник и техническое состояние",
+      "bookType": {
+        "label": "Тип книг",
+        "new": "Новые книги (ввод инвентаря школой)",
+        "old": "Старые книги (с существующим инвентарем)",
+        "newBadge": "НОВЫЕ",
+        "oldBadge": "СТАРЫЕ"
+      },
+      "bookSelect": {
+        "label": "Название учебника",
+        "placeholder": "Выберите книгу...",
+        "grade": "Класс {grade} • {author}"
+      },
+      "quantity": {
+        "label": "Количество"
+      },
+      "notes": {
+        "label": "Примечание",
+        "placeholder": "Дополнительная информация..."
+      },
+      "copies": {
+        "label": "Выбор конкретных экземпляров:",
+        "notFound": "Экземпляры не найдены",
+        "selected": "Всего: {count} экземпляров выбрано",
+        "inventory": "№ {number}"
+      }
+    },
+    "button": "ПОДТВЕРДИТЬ ТРАНСФЕР",
+    "loading": "Загрузка..."
+  },
+  "MinistryPage": {
+    "title": "Министерство Образования",
+    "addButton": "Добавить новое",
+    "steps": {
+      "step1": {
+        "title": "Что вы хотите добавить?"
+      },
+      "step2": {
+        "title": "Введите информацию",
+        "editTitle": "Редактировать",
+        "regionSelect": {
+          "label": "Выберите область",
+          "placeholder": "Выберите область"
+        },
+        "districtSelect": {
+          "label": "Выберите район",
+          "placeholder": "Выберите район"
+        },
+        "name": {
+          "label": "Название",
+          "placeholder": "Введите название..."
+        },
+        "buttons": {
+          "back": "Назад",
+          "save": "Сохранить"
+        }
+      }
+    },
+    "types": {
+      "region": "Область",
+      "district": "Район",
+      "school": "Школа"
+    },
+    "tabs": {
+      "regions": "Области",
+      "districts": "Районы",
+      "schools": "Школы"
+    },
+    "search": {
+      "regions": {
+        "title": "Поиск областей",
+        "description": "Области Республики Таджикистан",
+        "country": "Республика Таджикистан"
+      },
+      "districts": {
+        "title": "Поиск районов",
+        "description": "Выберите область для фильтрации",
+        "placeholder": "Выберите область..."
+      },
+      "schools": {
+        "title": "Поиск школ",
+        "description": "Выберите область и район",
+        "regionPlaceholder": "Область",
+        "districtPlaceholder": "Район"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Вы уверены?",
+        "regionDescription": "Удалить область '{name}'?",
+        "districtDescription": "Удалить район \"{name}\"?",
+        "schoolDescription": "Удалить школу \"{name}\"?",
+        "cancel": "Отмена",
+        "confirm": "Удалить"
+      }
     }
   }
 }

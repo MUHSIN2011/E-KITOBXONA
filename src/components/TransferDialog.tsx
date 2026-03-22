@@ -9,18 +9,19 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem,
 import { Search, Caravan, BookOpen, School, X, Check, ChevronDown } from 'lucide-react'
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { useGetBooksSchoolQuery, IGetbooksSchool, useGetSchoolsByDistrictQuery, useGetMeQuery, useCreateTransfersMutation } from "@/api/api"
+import toast, { Toaster } from "react-hot-toast"
 
 interface School {
   id: string
   name: string
 }
 
-interface Book {
-  id: string
-  title: string
-  author: string
-  isbn: string
-  available: number
+interface ApiResponse {
+  items: IGetbooksSchool[];
+  total: number;
+  page: number;
+  size: number;
 }
 
 interface TransferDialogProps {
@@ -35,37 +36,30 @@ export default function TransferDialog({ children }: TransferDialogProps) {
   const [schoolSearch, setSchoolSearch] = useState("")
   const [bookSearch, setBookSearch] = useState("")
 
-  // Sample data - in real app, these would come from API
-  const schools: School[] = [
-    { id: "1", name: "Мактаби №1 шаҳри Душанбе" },
-    { id: "2", name: "Мактаби №5 шаҳри Душанбе" },
-    { id: "3", name: "Мактаби №12 шаҳри Душанбе" },
-    { id: "4", name: "Мактаби №3 шаҳри Хуҷанд" },
-    { id: "5", name: "Мактаби №8 шаҳри Кӯлоб" },
-    { id: "6", name: "Мактаби №2 шаҳри Бохтар" },
-    { id: "7", name: "Мактаби №15 шаҳри Душанбе" },
-    { id: "8", name: "Мактаби №7 шаҳри Истаравшан" },
-  ]
+  const { data: Me } = useGetMeQuery();
+  const districtId = Me?.district_id;
+  const currentSchoolId = Me?.school_id?.toString();
+  const { data: books, isLoading } = useGetBooksSchoolQuery({
+    skip: 0,
+    limit: 100
+  });
+  const { data: schools, isLoading: schoolsLoading } = useGetSchoolsByDistrictQuery(districtId, {
+    skip: !districtId,
+  });
+  const [createtransfer, { isLoading: createtransferIsLoading }] = useCreateTransfersMutation();
 
-  const books: Book[] = [
-    { id: "1", title: "Рӯдакӣ", author: "Садриддин Айнӣ", isbn: "978-999-47-0-1", available: 5 },
-    { id: "2", title: "Дастури алфабон", author: "С. Айнӣ", isbn: "978-999-47-0-2", available: 3 },
-    { id: "3", title: "Қиссаи ҳаёт", author: "Садриддин Айнӣ", isbn: "978-999-47-0-3", available: 2 },
-    { id: "4", title: "Ёддоштҳо", author: "Садриддин Айнӣ", isbn: "978-999-47-0-4", available: 4 },
-    { id: "5", title: "Таърихи адабиёти тоҷик", author: "Раҳим Ҳошим", isbn: "978-999-47-0-5", available: 6 },
-    { id: "6", title: "Фарҳанги забони тоҷикӣ", author: "М. Фарҳанг", isbn: "978-999-47-0-6", available: 8 },
-    { id: "7", title: "Гулшан", author: "Абдураҳмони Ҷомӣ", isbn: "978-999-47-0-7", available: 1 },
-    { id: "8", title: "Бадъи-л-вақоъ", author: "Васофи", isbn: "978-999-47-0-8", available: 3 },
-  ]
+  const filteredSchools = schools?.filter(school => {
+    return school.name.toLowerCase().includes(schoolSearch.toLowerCase()) && school.id.toString() !== currentSchoolId;
+  }) || []
 
-  const filteredSchools = schools.filter(school =>
-    school.name.toLowerCase().includes(schoolSearch.toLowerCase())
-  )
+  const filteredBooks = (books?.items || []).filter((book: IGetbooksSchool) => {
+    const isAvailable = book.status === "available";
+    const matchesSearch =
+      book.textbook?.title?.toLowerCase().includes(bookSearch.toLowerCase()) ||
+      book.inventory_number?.includes(bookSearch);
 
-  const filteredBooks = books.filter(book =>
-    book.title.toLowerCase().includes(bookSearch.toLowerCase()) ||
-    book.author.toLowerCase().includes(bookSearch.toLowerCase())
-  )
+    return isAvailable && matchesSearch;
+  });
 
   const toggleBookSelection = (bookId: string) => {
     setSelectedBooks(prev =>
@@ -75,30 +69,37 @@ export default function TransferDialog({ children }: TransferDialogProps) {
     )
   }
 
-  const selectedBooksData = books.filter(book => selectedBooks.includes(book.id))
+  const selectedBooksData = books?.items?.filter((book: IGetbooksSchool) =>
+    selectedBooks.includes(book.id.toString())
+  )
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedSchool || selectedBooks.length === 0 || !description.trim()) {
-      alert("Лутфан ҳамаи майдонҳоро пур кунед!")
-      return
+      toast("Лутфан ҳамаи майдонҳоро пур кунед!");
+      return;
     }
 
-    console.log("Transfer data:", {
-      schoolId: selectedSchool,
-      books: selectedBooks,
-      description
-    })
+    try {
+      await createtransfer({
+        to_school_id: Number(selectedSchool),
+        textbook_copy_ids: selectedBooks.map(id => Number(id)),
+        reason: description
+      }).unwrap();
 
-    // Here you would make API call to create transfer
-    setOpen(false)
-    // Reset form
-    setSelectedSchool("")
-    setSelectedBooks([])
-    setDescription("")
-  }
+      setOpen(false);
+      setSelectedSchool("");
+      setSelectedBooks([]);
+      setDescription("");
+      toast.success("Трансфер бо муваффақият сохта шуд!");
+    } catch (error) {
+      console.error("Хатогӣ ҳангоми сохтани трансфер:", error);
+      toast.error("Хатогӣ рӯй дод. Дубора кӯшиш кунед.");
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <Toaster />
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
@@ -124,7 +125,7 @@ export default function TransferDialog({ children }: TransferDialogProps) {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="justify-between w-full border-gray-300 rounded-xl">
                   {selectedSchool
-                    ? schools.find(s => s.id === selectedSchool)?.name || "Интихоб..."
+                    ? schools?.find(s => s.id === selectedSchool)?.name || "Интихоб..."
                     : "Ҷустуҷӯи мактаб..."}
                   <ChevronDown className="ml-2 h-4 w-4 text-gray-400" />
                 </Button>
@@ -141,27 +142,34 @@ export default function TransferDialog({ children }: TransferDialogProps) {
                     />
                   </div>
                 </div>
-                {filteredSchools.length === 0 ? (
+                {filteredSchools?.length === 0 ? (
                   <div className="p-4 text-center text-gray-500 text-sm">Мактаб ёфт нашуд.</div>
-                ) : (
-                  filteredSchools.map((school) => (
-                    <DropdownMenuItem 
-                      key={school.id} 
-                      onClick={() => setSelectedSchool(school.id)}
+                ) :
+                  filteredSchools?.map((school) => (
+                    <DropdownMenuItem
+                      key={school.id}
+                      onClick={() => setSelectedSchool(school.id.toString())}
                       className="py-3 px-4 cursor-pointer"
                     >
-                      <Check className={cn("mr-2 h-4 w-4 text-[#0950c3]", selectedSchool === school.id ? "opacity-100" : "opacity-0")} />
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4 text-[#0950c3]",
+                          selectedSchool === school.id.toString() ? "opacity-100" : "opacity-0"
+                        )}
+                      />
                       <div>
-                        <div className="font-medium">{school.name}</div>
+                        <div className="font-medium">
+                          {school.name}
+                        </div>
                       </div>
                     </DropdownMenuItem>
                   ))
-                )}
+                }
+
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
-          {/* Book Selection */}
           <div className="space-y-3">
             <Label className="text-base font-medium flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
@@ -191,20 +199,23 @@ export default function TransferDialog({ children }: TransferDialogProps) {
                 {filteredBooks.length === 0 ? (
                   <div className="p-4 text-center text-gray-500 text-sm">Китоб ёфт нашуд.</div>
                 ) : (
-                  filteredBooks.map((book) => (
-                    <DropdownMenuItem 
-                      key={book.id} 
-                      onClick={() => toggleBookSelection(book.id)}
+                  filteredBooks.map((book: IGetbooksSchool) => (
+                    <DropdownMenuItem
+                      onSelect={(e) => {
+                        e.preventDefault();
+                        toggleBookSelection(book.id.toString());
+                      }}
+                      key={book.id}
                       className="py-3 px-4 cursor-pointer"
                     >
-                      <Check className={cn("mr-2 h-4 w-4 text-[#0950c3]", selectedBooks.includes(book.id) ? "opacity-100" : "opacity-0")} />
+                      <Check className={cn("mr-2 h-4 w-4 text-[#0950c3]", selectedBooks.includes(book.id.toString()) ? "opacity-100" : "opacity-0")} />
                       <div className="flex-1">
-                        <div className="font-medium">{book.title}</div>
-                        <div className="text-xs text-gray-500">{book.author}</div>
-                        <div className="text-xs text-gray-400 mt-1">ISBN: {book.isbn}</div>
+                        <div className="font-medium">{book.textbook.title}</div>
+                        <div className="text-xs text-gray-500">{book.textbook.author}</div>
+                        <Badge className="text-xs  mt-1  bg-gray-200 text-gray-600">Синф: {book.textbook.grade}</Badge>
                       </div>
-                      <Badge variant={book.available > 0 ? "default" : "destructive"} className="text-xs ml-2">
-                        {book.available}
+                      <Badge className="text-xs ml-2 bg-gray-200 text-gray-600">
+                        {book.textbook.isbn}
                       </Badge>
                     </DropdownMenuItem>
                   ))
@@ -213,21 +224,37 @@ export default function TransferDialog({ children }: TransferDialogProps) {
             </DropdownMenu>
           </div>
 
-          {/* Selected Books Summary */}
           {selectedBooks.length > 0 && (
             <div className="space-y-2">
-              <Label className="text-base font-medium">Китобҳои интихобшуда:</Label>
-              <div className="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
-                {selectedBooksData.map((book) => (
-                  <Badge key={book.id} variant="secondary" className="text-xs">
-                    {book.title}
+              <Label className="text-base font-medium">Китобҳои интихобшуда {selectedBooks.length}:</Label>
+              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto p-2 border rounded-lg bg-slate-50">
+                {selectedBooksData?.map((book) => (
+                  <Badge
+                    key={book.id}
+                    variant="secondary"
+                    className="text-xs py-1 px-2 flex items-center gap-1 group"
+                  >
+                    <span className="max-w-[150px] truncate">
+                      {book.textbook.title}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleBookSelection(book.id.toString());
+                      }}
+                      className="rounded-full hover:bg-red-100 cursor-pointer p-0.5 group/btn transition-colors"
+                    >
+                      <X className="w-3.5 h-3.5 text-slate-400 group-hover/btn:text-red-500" />
+                    </button>
                   </Badge>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Description */}
           <div className="space-y-3">
             <Label className="text-base font-medium" htmlFor="description">
               Шарҳи интиқол
@@ -241,7 +268,6 @@ export default function TransferDialog({ children }: TransferDialogProps) {
             />
           </div>
 
-          {/* Action Buttons */}
           <div className="flex justify-end gap-3 pt-4 border-t">
             <Button
               variant="outline"

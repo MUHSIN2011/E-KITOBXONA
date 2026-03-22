@@ -10,6 +10,31 @@
   },
   "Dashboard": {
     "welcome": "Хуш омадед ба система",
+    "academicYear": "Соли таҳсили",
+    "bookFundControl": "Назорати умумидавлатии фондҳои китоб",
+    "closeYear": "Бастани сол",
+    "closing": "Пайваст...",
+    "addNewYear": "Иловаи соли нав",
+    "addAcademicYear": "Иловаи соли таҳсили нав",
+    "yearName": "Номи сол",
+    "yearPlaceholder": "Масалан: 2026-2027",
+    "startDate": "Санаи оғоз",
+    "endDate": "Санаи анҷом",
+    "adding": "Дар ҳоли илова...",
+    "save": "Захира кардан",
+    "totalRegions": "Ҳамагӣ вилоятҳо",
+    "activeInSystem": "Фаъол дар система",
+    "totalBooks": "Ҳамагӣ китобҳо",
+    "inMinistry": "Дар Вазорати Маориф",
+    "totalSchools": "Ҳамагӣ мактабҳо",
+    "totalStudents": "Ҳамагӣ хонандагон",
+    "registered": "Бақайдгирифташуда",
+    "returnProcess": "Раванди бозпардохт",
+    "returnProgress": "Пешрафти умумии бозпардохти китобҳо дар 12 моҳи охир",
+    "errorTitle": "Хатогӣ ҳангоми гирифтани маълумот!!",
+    "errorDescription": "Лутфан сайтро аз нав кушоед!",
+    "refreshButton": "Навсозӣ кардан",
+    "refreshing": "Навсозӣ...",
     "sidebar": {
       "home": "Асосӣ",
       "books": "Китобҳо",
@@ -33,33 +58,6 @@
     "wifiError": "Лутфан авал ба WIFI пайваст шавед!",
     "emailPlaceholder": "email@example.com",
     "passwordPlaceholder": "••••••••"
-  },
-  "Dashboard": {
-    "academicYear": "Соли таҳсили",
-    "bookFundControl": "Назорати умумидавлатии фондҳои китоб",
-    "closeYear": "Бастани сол",
-    "closing": "Пайваст...",
-    "addNewYear": "Иловаи соли нав",
-    "addAcademicYear": "Иловаи соли таҳсили нав",
-    "yearName": "Номи сол",
-    "yearPlaceholder": "Масалан: 2026-2027",
-    "startDate": "Санаи оғоз",
-    "endDate": "Санаи анҷом",
-    "adding": "Дар ҳоли илова...",
-    "save": "Захира кардан",
-    "totalRegions": "Ҳамагӣ вилоятҳо",
-    "activeInSystem": "Фаъол дар система",
-    "totalBooks": "Ҳамагӣ китобҳо",
-    "inMinistry": "Дар Вазорати Маориф",
-    "totalSchools": "Ҳамагӣ мактабҳо",
-    "totalStudents": "Ҳамагӣ хонандагон",
-    "registered": "Бақайдгирифташуда",
-    "returnProcess": "Раванди бозпардохт",
-    "returnProgress": "Пешрафти умумии бозпардохти китобҳо дар 6 моҳи охир",
-    "errorTitle": "Хатогӣ ҳангоми гирифтани маълумот!!",
-    "errorDescription": "Лутфан сайтро аз нав кушоед!",
-    "refreshButton": "Навсозӣ кардан",
-    "refreshing": "Навсозӣ..."
   },
   "StudentsPage": {
     "title": "Хонандагон",
@@ -184,7 +182,236 @@
       "available": "Дастрас",
       "rented": "Иҷора",
       "lost": "Гумшуда",
-      "damaged": "Вайроншуда"
+      "damaged": "Вайроншуда",
+      "total": "Ҳамагӣ"
+    }
+  },
+  "SystemArchitecture": {
+    "title": "Архитектураи Системаи Китобҳои Дарсӣ",
+    "subtitle": "Раванди марказонидашудаи тақсимот ва идоракунии китобҳо",
+    "elements": {
+      "systemUsers": {
+        "title": "Корбарони система",
+        "description": "Модераторҳо ва мудирон"
+      },
+      "textbooks": {
+        "title": "Китобҳои дарсӣ",
+        "description": "Нашрияҳо ва китобҳо"
+      },
+      "students": {
+        "title": "Донишҷӯён",
+        "description": "Истифодабарандагони асосӣ"
+      },
+      "database": {
+        "title": "Пойгоҳи дода",
+        "description": "Маълумотҳои система"
+      },
+      "ministry": {
+        "title": "Вазорат",
+        "description": "Назорати давлатӣ"
+      },
+      "analytics": {
+        "title": "Аналитика",
+        "description": "Омори система"
+      },
+      "centralSystem": {
+        "title": "Системаи марказӣ",
+        "description": "Ядрои идоракунӣ",
+        "version": "V 1.0"
+      }
+    },
+    "stats": {
+      "systemUsers": "Корбарони система",
+      "books": "Китобҳо",
+      "centralSystem": "Системаи марказӣ",
+      "ministry": "Вазорати маориф",
+      "status": "Online"
+    }
+  },
+  "RegionalAnalysis": {
+    "title": "Таҳлили минтақавӣ",
+    "subtitle": "Миқдори муассисаҳо дар ноҳияҳо",
+    "regionSelect": "Интихоби вилоят",
+    "myRegion": "Вилояти ман",
+    "chart": {
+      "seriesName": "Мактабҳо",
+      "noData": "Дар ин минтақа ягон маълумот ёфт нашуд"
+    }
+  },
+  "MultiyearAnalysis": {
+    "title": "Таҳлили бисёрсола",
+    "subtitle": "Динамикаи рушди фонди китоб",
+    "legend": {
+      "rental": "Иҷора",
+      "return": "Бозгашт"
+    },
+    "stats": {
+      "bestRate": "Беҳтарин нишондиҳанда",
+      "bestRateValue": "{value}% бозгашт",
+      "averageBooks": "Миёнаи китоб/хонанда",
+      "averageBooksValue": "{value} адад",
+      "yearStatus": "Ҳолати сол"
+    }
+  },
+  "BooksPage": {
+    "title": "Идоракунии фонди китобҳо",
+    "subtitle": "Назорат ва идоракунии китобҳои дарсӣ дар система",
+    "addButton": "Нашри китоби нав",
+    "list": {
+      "title": "Хамаи китобҳои дарсӣ",
+      "description": "Рӯйхати пурраи ҳамаи китобҳои дарсӣ дар система",
+      "searchPlaceholder": "Ҷустуҷӯи китобҳо...",
+      "filterAll": "Ҳамаи фанҳо",
+      "addSubjectButton": "Фанни Нав",
+      "table": {
+        "bookName": "Номи китоб",
+        "grade": "Синф",
+        "rental": "Иҷора",
+        "status": "Ҳолат",
+        "updateDate": "Санаи навсозӣ",
+        "new": "Нав",
+        "old": "Кӯҳна"
+      },
+      "loading": "Китобҳо дар ҳоли бор шудан..."
+    },
+    "dialog": {
+      "title": "Иловаи китоби нав",
+      "labels": {
+        "bookName": "Номи китоб",
+        "subject": "Фан",
+        "grade": "Синф",
+        "publicationYear": "Соли нашр",
+        "isbn": "ISBN",
+        "author": "Муаллиф",
+        "publisher": "Ношир",
+        "printPrice": "Нархи чоп (TJS)",
+        "rentPerYear": "Иҷора / сол",
+        "bookImage": "Акси китоб",
+        "description": "Тавсиф"
+      },
+      "placeholders": {
+        "bookName": "Забони модарӣ",
+        "subject": "Интихоби фан",
+        "grade": "1",
+        "publicationYear": "2001",
+        "isbn": "978-...",
+        "author": "Абдуллозода С.",
+        "publisher": "Маориф",
+        "printPrice": "50",
+        "rentPerYear": "1",
+        "uploadImage": "Боргузорӣ"
+      },
+      "buttons": {
+        "saving": "Захира кардан",
+        "savingWithSpinner": "Захира кардан"
+      }
+    },
+    "subjectDialog": {
+      "title": "Иловаи Фанни нав",
+      "label": "Номи Фан",
+      "placeholder": "Забони модарӣ",
+      "button": "Захира кардан",
+      "error": "Лутфан номи фанро ворид кунед"
+    },
+    "sheet": {
+      "loading": "Дар ҳоли боргирӣ...",
+      "wait": "Лутфан интизор шавед",
+      "description": "Маълумоти муфассал дар бораи китоб",
+      "author": "Муаллиф",
+      "stats": {
+        "total": "Умумӣ",
+        "available": "Мавҷуд",
+        "rented": "Иҷора"
+      },
+      "details": {
+        "grade": "Синф",
+        "publicationYear": "Соли нашр",
+        "publisher": "Ношир",
+        "isbn": "ISBN",
+        "copied": "Нусха шуд!",
+        "copy": "Нусха"
+      },
+      "financial": {
+        "title": "Маълумоти молиявӣ",
+        "printPrice": "Нархи аслӣ",
+        "rentPrice": "Нархи иҷора",
+        "currency": "TJS"
+      },
+      "description": "Тавсифи китоб",
+      "id": "ID",
+      "date": "Сана"
+    },
+    "stats": {
+      "totalBooks": "Ҳамагӣ китобҳо",
+      "rentedBooks": "Иҷорашуда",
+      "totalCopies": "Руйхати Ҳамаи китобҳо"
+    }
+  },
+  "MinistryPage": {
+    "title": "Вазорати Маориф",
+    "addButton": "Иловаи нав",
+    "steps": {
+      "step1": {
+        "title": "Чиро илова мекунед?"
+      },
+      "step2": {
+        "title": "Маълумотро ворид кунед",
+        "editTitle": "Таҳрир кардан",
+        "regionSelect": {
+          "label": "Интихоби вилоят",
+          "placeholder": "Вилоятро интихоб кунед"
+        },
+        "districtSelect": {
+          "label": "Интихоби ноҳия",
+          "placeholder": "Ноҳияро интихоб кунед"
+        },
+        "name": {
+          "label": "Номгузорӣ",
+          "placeholder": "Номро ворид кунед..."
+        },
+        "buttons": {
+          "back": "Бозгашт",
+          "save": "Захира кардан"
+        }
+      }
+    },
+    "types": {
+      "region": "Вилоят",
+      "district": "Ноҳия",
+      "school": "Мактаб"
+    },
+    "tabs": {
+      "regions": "Вилоятҳо",
+      "districts": "Ноҳияҳо",
+      "schools": "Мактабҳо"
+    },
+    "search": {
+      "regions": {
+        "title": "Ҷустуҷӯи вилоятҳо",
+        "description": "Вилоятҳои Ҷумҳурии Тоҷикистон",
+        "country": "Ҷумҳурии Тоҷикистон"
+      },
+      "districts": {
+        "title": "Ҷустуҷӯи ноҳияҳо",
+        "description": "Вилоятро барои филтр интихоб кунед",
+        "placeholder": "Интихоби вилоят..."
+      },
+      "schools": {
+        "title": "Ҷустуҷӯи мактабҳо",
+        "description": "Вилоят ва ноҳияро интихоб кунед",
+        "regionPlaceholder": "Вилоят",
+        "districtPlaceholder": "Ноҳия"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Боварӣ доред?",
+        "regionDescription": "'{name}' вилоятамонро нест мекунед?",
+        "districtDescription": "Ноҳияи \"{name}\" нест мешавад.",
+        "schoolDescription": "Мактаби \"{name}\" нест мешавад.",
+        "cancel": "Кафо",
+        "confirm": "Нест кардан"
+      }
     }
   }
 }

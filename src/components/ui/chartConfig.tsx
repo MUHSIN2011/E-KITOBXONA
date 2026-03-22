@@ -29,7 +29,7 @@ const chartConfig = {
 
 export function ChartRadialLabel() {
     const { data: overview, isLoading } = useGetReportsOverviewQuery(1)
-    const t = useTranslations()
+    const t = useTranslations('BooksChart')
 
     const chartData = [
         { status: "total", count: overview?.total_books || 0, fill: "var(--color-total)" },
@@ -45,8 +45,8 @@ export function ChartRadialLabel() {
     return (
         <Card className="flex flex-col border-none shadow-none ">
             <CardHeader className="items-center pb-0">
-                <CardTitle>{t('BooksChart.title')}</CardTitle>
-                <CardDescription>{t('BooksChart.description')}</CardDescription>
+                <CardTitle>{t('title')}</CardTitle>
+                <CardDescription>{t('description')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
@@ -70,7 +70,7 @@ export function ChartRadialLabel() {
                                 dataKey="status"
                                 className="fill-gray-400 capitalize mix-blend-luminosity"
                                 fontSize={11}
-                                formatter={(value: string) => t(`BooksChart.status.${value}`)}
+                                formatter={(value: string) => t(`status.${value}`)}
                             />
                         </RadialBar>
                     </RadialBarChart>

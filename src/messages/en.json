@@ -51,7 +51,49 @@
     "errorTitle": "Error fetching data!!",
     "errorDescription": "Please reload the site!",
     "refreshButton": "Refresh",
-    "refreshing": "Refreshing..."
+    "refreshing": "Refreshing...",
+    "SystemArchitecture": {
+      "title": "Textbook System Architecture",
+      "subtitle": "Centralized distribution and book management process",
+      "elements": {
+        "systemUsers": {
+          "title": "System Users",
+          "description": "Moderators and managers"
+        },
+        "textbooks": {
+          "title": "Textbooks",
+          "description": "Publications and books"
+        },
+        "students": {
+          "title": "Students",
+          "description": "Main users"
+        },
+        "database": {
+          "title": "Database",
+          "description": "System data"
+        },
+        "ministry": {
+          "title": "Ministry",
+          "description": "State control"
+        },
+        "analytics": {
+          "title": "Analytics",
+          "description": "System statistics"
+        },
+        "centralSystem": {
+          "title": "Central System",
+          "description": "Management core",
+          "version": "V 1.0"
+        }
+      },
+      "stats": {
+        "systemUsers": "System Users",
+        "books": "Books",
+        "centralSystem": "Central System",
+        "ministry": "Ministry of Education",
+        "status": "Online"
+      }
+    }
   },
   "StudentsPage": {
     "title": "Students",
@@ -169,14 +211,294 @@
       "add": "Add"
     }
   },
-    "BooksChart": {
-      "title": "Fund Ratio",
-      "description": "Overall book indicators",
-      "status": {
+  "BooksChart": {
+    "title": "Fund Ratio",
+    "description": "Overall book indicators",
+    "status": {
+      "available": "Available",
+      "rented": "Rented",
+      "lost": "Lost",
+      "damaged": "Damaged",
+      "total": "Total"
+    }
+  },
+  "SystemArchitecture": {
+    "title": "Textbook System Architecture",
+    "subtitle": "Centralized distribution and book management process",
+    "elements": {
+      "systemUsers": {
+        "title": "System Users",
+        "description": "Moderators and managers"
+      },
+      "textbooks": {
+        "title": "Textbooks",
+        "description": "Publications and books"
+      },
+      "students": {
+        "title": "Students",
+        "description": "Main users"
+      },
+      "database": {
+        "title": "Database",
+        "description": "System data"
+      },
+      "ministry": {
+        "title": "Ministry",
+        "description": "State control"
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "System statistics"
+      },
+      "centralSystem": {
+        "title": "Central System",
+        "description": "Management core",
+        "version": "V 1.0"
+      }
+    },
+    "stats": {
+      "systemUsers": "System Users",
+      "books": "Books",
+      "centralSystem": "Central System",
+      "ministry": "Ministry of Education",
+      "status": "Online"
+    }
+  },
+  "RegionalAnalysis": {
+    "title": "Regional Analysis",
+    "subtitle": "Number of institutions in districts",
+    "regionSelect": "Select region",
+    "myRegion": "My region",
+    "chart": {
+      "seriesName": "Schools",
+      "noData": "No data found in this region"
+    }
+  },
+  "MultiyearAnalysis": {
+    "title": "Multiyear Analysis",
+    "subtitle": "Book fund development dynamics",
+    "legend": {
+      "rental": "Rental",
+      "return": "Return"
+    },
+    "stats": {
+      "bestRate": "Best indicator",
+      "bestRateValue": "{value}% return",
+      "averageBooks": "Average books/student",
+      "averageBooksValue": "{value} items",
+      "yearStatus": "Year status"
+    }
+  },
+  "BooksPage": {
+    "title": "Book Fund Management",
+    "subtitle": "Control and management of textbooks in the system",
+    "addButton": "Add New Book",
+    "list": {
+      "title": "All Textbooks",
+      "description": "Complete list of all textbooks in the system",
+      "searchPlaceholder": "Search books...",
+      "filterAll": "All Subjects",
+      "addSubjectButton": "New Subject",
+      "table": {
+        "bookName": "Book Title",
+        "grade": "Grade",
+        "rental": "Rental",
+        "status": "Status",
+        "updateDate": "Update Date",
+        "new": "New",
+        "old": "Old"
+      },
+      "loading": "Loading books..."
+    },
+    "dialog": {
+      "title": "Add New Book",
+      "labels": {
+        "bookName": "Book Title",
+        "subject": "Subject",
+        "grade": "Grade",
+        "publicationYear": "Publication Year",
+        "isbn": "ISBN",
+        "author": "Author",
+        "publisher": "Publisher",
+        "printPrice": "Print Price (TJS)",
+        "rentPerYear": "Rent / Year",
+        "bookImage": "Book Image",
+        "description": "Description"
+      },
+      "placeholders": {
+        "bookName": "Native Language",
+        "subject": "Select subject",
+        "grade": "1",
+        "publicationYear": "2001",
+        "isbn": "978-...",
+        "author": "Abdullozoda S.",
+        "publisher": "Maorif",
+        "printPrice": "50",
+        "rentPerYear": "1",
+        "uploadImage": "Upload"
+      },
+      "buttons": {
+        "saving": "Save",
+        "savingWithSpinner": "Save"
+      }
+    },
+    "subjectDialog": {
+      "title": "Add New Subject",
+      "label": "Subject Name",
+      "placeholder": "Native Language",
+      "button": "Save",
+      "error": "Please enter subject name"
+    },
+    "sheet": {
+      "loading": "Loading...",
+      "wait": "Please wait",
+      "description": "Detailed information about the book",
+      "author": "Author",
+      "stats": {
+        "total": "Total",
         "available": "Available",
-        "rented": "Rented",
-        "lost": "Lost",
-        "damaged": "Damaged"
+        "rented": "Rented"
+      },
+      "details": {
+        "grade": "Grade",
+        "publicationYear": "Publication Year",
+        "publisher": "Publisher",
+        "isbn": "ISBN",
+        "copied": "Copied!",
+        "copy": "Copy"
+      },
+      "financial": {
+        "title": "Financial Information",
+        "printPrice": "Print Price",
+        "rentPrice": "Rent Price",
+        "currency": "TJS"
+      },
+      "description": "Book Description",
+      "id": "ID",
+      "date": "Date"
+    },
+    "stats": {
+      "totalBooks": "Total Books",
+      "rentedBooks": "Rented",
+      "totalCopies": "Total Copies"
+    }
+  },
+  "TransferPage": {
+    "title": "Book Transfer",
+    "subtitle": "Centralized textbook distribution system",
+    "location": {
+      "title": "Location Information",
+      "description": "Region, district and educational school",
+      "region": {
+        "label": "Region",
+        "placeholder": "Select region..."
+      },
+      "district": {
+        "label": "District",
+        "placeholder": "Select district..."
+      },
+      "school": {
+        "label": "School",
+        "placeholder": "Select school..."
+      }
+    },
+    "book": {
+      "title": "Publication and Quantity Information",
+      "description": "Textbook and technical condition",
+      "bookType": {
+        "label": "Book Type",
+        "new": "New books (inventory entry by school)",
+        "old": "Old books (with existing inventory)",
+        "newBadge": "NEW",
+        "oldBadge": "OLD"
+      },
+      "bookSelect": {
+        "label": "Textbook Title",
+        "placeholder": "Select book...",
+        "grade": "Grade {grade} • {author}"
+      },
+      "quantity": {
+        "label": "Quantity"
+      },
+      "notes": {
+        "label": "Notes",
+        "placeholder": "Additional information..."
+      },
+      "copies": {
+        "label": "Select specific copies:",
+        "notFound": "No copies found",
+        "selected": "Total: {count} copies selected",
+        "inventory": "№ {number}"
+      }
+    },
+    "button": "CONFIRM TRANSFER",
+    "loading": "Loading..."
+  },
+  "MinistryPage": {
+    "title": "Ministry of Education",
+    "addButton": "Add New",
+    "steps": {
+      "step1": {
+        "title": "What would you like to add?"
+      },
+      "step2": {
+        "title": "Enter information",
+        "editTitle": "Edit",
+        "regionSelect": {
+          "label": "Select region",
+          "placeholder": "Select region"
+        },
+        "districtSelect": {
+          "label": "Select district",
+          "placeholder": "Select district"
+        },
+        "name": {
+          "label": "Name",
+          "placeholder": "Enter name..."
+        },
+        "buttons": {
+          "back": "Back",
+          "save": "Save"
+        }
+      }
+    },
+    "types": {
+      "region": "Region",
+      "district": "District",
+      "school": "School"
+    },
+    "tabs": {
+      "regions": "Regions",
+      "districts": "Districts",
+      "schools": "Schools"
+    },
+    "search": {
+      "regions": {
+        "title": "Search regions",
+        "description": "Regions of the Republic of Tajikistan",
+        "country": "Republic of Tajikistan"
+      },
+      "districts": {
+        "title": "Search districts",
+        "description": "Select region to filter",
+        "placeholder": "Select region..."
+      },
+      "schools": {
+        "title": "Search schools",
+        "description": "Select region and district",
+        "regionPlaceholder": "Region",
+        "districtPlaceholder": "District"
+      }
+    },
+    "dialogs": {
+      "delete": {
+        "title": "Are you sure?",
+        "regionDescription": "Delete region '{name}'?",
+        "districtDescription": "Delete district \"{name}\"?",
+        "schoolDescription": "Delete school \"{name}\"?",
+        "cancel": "Cancel",
+        "confirm": "Delete"
       }
     }
+  }
 }

@@ -20,8 +20,8 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
             if (!isAuthenticated) {
                 router.push("/");
             } else if (user && !allowedRoles.includes(user.role)) {
-                toast.error("Шумо иҷозат надоред ба ин саҳифа дастрасӣ пайдо кунед.");
                 router.push("/");
+                toast.error("Шумо иҷозат надоред ба ин саҳифа дастрасӣ пайдо кунед.");
             }
         }
     }, [isLoading, isAuthenticated, user, allowedRoles, router]);
@@ -30,7 +30,6 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
         return (
             <div className="flex h-screen items-center justify-center bg-white">
                 <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500"></div>
-                <p className="ml-3 text-gray-500">Боргузорӣ...</p>
             </div>
         );
     }

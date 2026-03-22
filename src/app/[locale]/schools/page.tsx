@@ -22,6 +22,7 @@ import {
 import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { Toaster } from 'react-hot-toast'
+import { useTranslations } from 'next-intl'
 
 interface Region {
     id: number;
@@ -36,6 +37,7 @@ function DeliveryPage() {
     const { data: districts, isLoading: districtsLoading } = useGetDistrictsQuery(Number(selectedRegion), { skip: !selectedRegion })
     const { data: schools, isLoading: schoolsLoading } = useGetSchoolsByDistrictQuery(Number(selectedDistrict), { skip: !selectedDistrict })
     const { data: textbooks } = useGetTextbooksQuery('all')
+    const t = useTranslations('TransferPage')
 
     const [formData, setFormData] = useState({
         textbook_id: '',
@@ -166,7 +168,7 @@ function DeliveryPage() {
 
 
     return (
-        <div className="min-h-screen  p-4 md:p-3 max-w-6xl mx-auto space-y-8">
+        <div className="min-h-screen p-4 md:p-3 max-w-6xl mx-auto space-y-8">
             <Toaster />
             <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4">
                 <div className="inline-flex items-center justify-center gap-4 bg-white/80 dark:bg-[#1a1a1a] dark:border-[#1a1a1a] backdrop-blur-sm px-8 py-4 rounded-2xl shadow-lg border border-blue-100">
@@ -175,23 +177,23 @@ function DeliveryPage() {
                     </div>
                     <div className="text-left">
                         <h1 className="text-3xl font-black tracking-tight text-slate-900 bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
-                            Интиқоли Китобҳо
+                            {t('title')}
                         </h1>
-                        <p className="text-slate-500 font-medium text-sm">Системаи марказонидашудаи тақсимоти китобҳои дарсӣ</p>
+                        <p className="text-slate-500 font-medium text-sm">{t('subtitle')}</p>
                     </div>
                 </div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                <Card className="border border-blue-100 dark:bg-[#1a1a1a]  py-0 shadow-xl overflow-hidden dark:border-none bg-white/90 backdrop-blur-md">
+                <Card className="border border-blue-100 dark:bg-[#1a1a1a] py-0 shadow-xl overflow-hidden dark:border-none bg-white/90 backdrop-blur-md">
                     <CardHeader className="bg-gradient-to-r from-slate-900 to-blue-900 dark:to-blue-600 text-white p-6">
                         <CardTitle className="text-xl font-bold flex items-center gap-3">
                             <div className="p-2 bg-white/20 rounded-lg">
                                 <MapPin size={20} className="text-blue-300" />
                             </div>
                             <div>
-                                <span>Маълумоти ҷойгиршавӣ</span>
-                                <p className="text-sm font-normal text-blue-200 mt-1">Вилоят, ноҳия ва мактаби таълимӣ</p>
+                                <span>{t('location.title')}</span>
+                                <p className="text-sm font-normal text-blue-200 mt-1">{t('location.description')}</p>
                             </div>
                         </CardTitle>
                     </CardHeader>
@@ -199,7 +201,7 @@ function DeliveryPage() {
                         <div className="space-y-3">
                             <Label className="text-slate-700 dark:text-white/80 font-semibold flex items-center gap-2">
                                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                Вилоят / Регион
+                                {t('location.region.label')}
                             </Label>
                             <Select
                                 value={selectedRegion}
@@ -208,8 +210,8 @@ function DeliveryPage() {
                                     setSelectedDistrict('');
                                 }}
                             >
-                                <SelectTrigger className=' dark:border-gray-600'>
-                                    <SelectValue placeholder="Вилоятро интихоб кунед..." />
+                                <SelectTrigger className='dark:border-gray-600'>
+                                    <SelectValue placeholder={t('location.region.placeholder')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {regionsLoading ? (
@@ -220,11 +222,10 @@ function DeliveryPage() {
                                                 className="w-full flex justify-center items-center py-3"
                                             >
                                                 <div className="flex items-center justify-center w-full min-w-[150px]">
-                                                    <div className="animate-spin rounded-full  h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
+                                                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
                                                 </div>
                                             </SelectItem>
-
-                                            <SelectItem value="1">Loading...</SelectItem>
+                                            <SelectItem value="1">{t('loading')}</SelectItem>
                                         </SelectContent>
                                     ) : (
                                         regions?.map((r: Region) => (
@@ -236,17 +237,17 @@ function DeliveryPage() {
                         </div>
 
                         <div className="space-y-3">
-                            <Label className="text-slate-700  dark:text-white/70 font-semibold flex items-center gap-2">
-                                <div className="w-2 h-2 bg-indigo-500  rounded-full"></div>
-                                Шаҳр / Ноҳия
+                            <Label className="text-slate-700 dark:text-white/70 font-semibold flex items-center gap-2">
+                                <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                                {t('location.district.label')}
                             </Label>
                             <Select
                                 disabled={!selectedRegion}
                                 value={selectedDistrict}
                                 onValueChange={(v) => { setSelectedDistrict(v); setFormData({ ...formData, to_school_id: '' }) }}
                             >
-                                <SelectTrigger className="h-12 border-slate-200 focus:ring-2  dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
-                                    <SelectValue placeholder="Ноҳияро интихоб кунед..." />
+                                <SelectTrigger className="h-12 border-slate-200 focus:ring-2 dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
+                                    <SelectValue placeholder={t('location.district.placeholder')} />
                                 </SelectTrigger>
                                 <SelectContent>
                                     {districts?.map((d: any) => (
@@ -257,17 +258,17 @@ function DeliveryPage() {
                         </div>
 
                         <div className="space-y-3">
-                            <Label className=" font-semibold flex items-center gap-2 text-blue-800">
+                            <Label className="font-semibold flex items-center gap-2 text-blue-800">
                                 <School size={16} />
-                                Мактаби таълимӣ
+                                {t('location.school.label')}
                             </Label>
                             <Select
                                 disabled={!selectedDistrict}
                                 value={formData.to_school_id || ''}
                                 onValueChange={(v) => setFormData({ ...formData, to_school_id: v })}
                             >
-                                <SelectTrigger className="h-12 border-blue-200 focus:ring-2  dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
-                                    <SelectValue placeholder="Мактабро интихоб кунед..." />
+                                <SelectTrigger className="h-12 border-blue-200 focus:ring-2 dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
+                                    <SelectValue placeholder={t('location.school.placeholder')} />
                                 </SelectTrigger>
                                 <SelectContent className="max-h-[300px]">
                                     {schools?.map((s: any) => (
@@ -288,42 +289,42 @@ function DeliveryPage() {
                                 <Book size={20} />
                             </div>
                             <div>
-                                <span>Маълумоти нашрия ва миқдор</span>
-                                <p className="text-sm font-normal text-blue-100 ">Китоби дарсӣ ва ҳолати техникӣ</p>
+                                <span>{t('book.title')}</span>
+                                <p className="text-sm font-normal text-blue-100">{t('book.description')}</p>
                             </div>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
                         <div className="flex items-center justify-between p-4 bg-blue-50/50 rounded-xl border dark:bg-blue-700 dark:border-[#1a1a1a] border-blue-100">
                             <div className="space-y-1">
-                                <Label className="text-base font-bold dark:text-white text-slate-800">Навъи китобҳо</Label>
+                                <Label className="text-base font-bold dark:text-white text-slate-800">{t('book.bookType.label')}</Label>
                                 <p className="text-sm text-slate-500 dark:text-white/70">
-                                    {formData.is_new_books ? "Китобҳои нав (ворид кардани инвентар аз тарафи мактаб)" : "Китобҳои кӯҳна (бо инвентари мавҷуда)"}
+                                    {formData.is_new_books ? t('book.bookType.new') : t('book.bookType.old')}
                                 </p>
                             </div>
                             <div className="flex items-center gap-3 bg-white dark:bg-[#1a1a1a]/40 p-2 rounded-lg shadow-sm border">
-                                <span className={`text-xs font-bold ${!formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>КӮҲНА</span>
+                                <span className={`text-xs font-bold ${!formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>{t('book.bookType.oldBadge')}</span>
                                 <Switch checked={formData.is_new_books} onCheckedChange={(v) => setFormData({ ...formData, is_new_books: v, textbook_copy_ids: [] })} />
-                                <span className={`text-xs font-bold ${formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>НАВ</span>
+                                <span className={`text-xs font-bold ${formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>{t('book.bookType.newBadge')}</span>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             <div className="space-y-4">
-                                <Label className="text-slate-700  dark:text-white font-semibold flex items-center gap-2">
+                                <Label className="text-slate-700 dark:text-white font-semibold flex items-center gap-2">
                                     <Book size={16} className="text-blue-500" />
-                                    Номи китоби дарсӣ
+                                    {t('book.bookSelect.label')}
                                 </Label>
                                 <Select value={formData.textbook_id} onValueChange={(v) => setFormData({ ...formData, textbook_id: v, textbook_copy_ids: [] })}>
                                     <SelectTrigger className="min-h-[60px] h-auto border-slate-200 dark:border-gray-600 bg-white shadow-sm">
-                                        <SelectValue placeholder="Китобро интихоб кунед..." />
+                                        <SelectValue placeholder={t('book.bookSelect.placeholder')} />
                                     </SelectTrigger>
                                     <SelectContent className="max-h-[400px]">
                                         {textbooks?.items?.map((book: any) => (
                                             <SelectItem key={book.id} value={book.id.toString()}>
                                                 <div className="flex flex-col">
                                                     <span className="font-bold">{book.title}</span>
-                                                    <span className="text-xs text-slate-500">Синфи {book.grade} • {book.author}</span>
+                                                    <span className="text-xs text-slate-500">{t('book.bookSelect.grade', { grade: book.grade, author: book.author })}</span>
                                                 </div>
                                             </SelectItem>
                                         ))}
@@ -333,28 +334,28 @@ function DeliveryPage() {
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-4">
-                                    <Label className="text-slate-700   dark:text-white font-semibold flex items-center gap-2">
+                                    <Label className="text-slate-700 dark:text-white font-semibold flex items-center gap-2">
                                         <Hash size={16} className="text-blue-500" />
-                                        Миқдор
+                                        {t('book.quantity.label')}
                                     </Label>
                                     <Input
                                         type="number"
                                         disabled={!formData.is_new_books}
                                         min="1"
-                                        className="h-14 text-lg font-bold  dark:border-gray-600 border-slate-200"
+                                        className="h-14 text-lg font-bold dark:border-gray-600 border-slate-200"
                                         value={formData.total_quantity}
                                         onChange={(e) => setFormData({ ...formData, total_quantity: Math.max(1, Number(e.target.value)) })}
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <Label className="text-slate-700   dark:text-white font-semibold flex items-center gap-2">
+                                <Label className="text-slate-700 dark:text-white font-semibold flex items-center gap-2">
                                     <MessageSquare size={16} className="text-blue-500" />
-                                    Эзоҳ (Notes)
+                                    {t('book.notes.label')}
                                 </Label>
                                 <Input
-                                    placeholder="Маълумоти иловагӣ..."
-                                    className="h-12 border-slate-200  dark:border-gray-600"
+                                    placeholder={t('book.notes.placeholder')}
+                                    className="h-12 border-slate-200 dark:border-gray-600"
                                     value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 />
@@ -370,7 +371,7 @@ function DeliveryPage() {
                                     className="space-y-3 border-t pt-4"
                                 >
                                     <Label className="flex items-center gap-2 text-blue-700 font-bold">
-                                        <ListChecks size={18} /> Интихоби нусхаҳои мушаххас:
+                                        <ListChecks size={18} /> {t('book.copies.label')}
                                     </Label>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-[200px] overflow-y-auto p-3 bg-slate-50 rounded-xl border border-dashed border-blue-200 shadow-inner">
                                         {copiesData?.items?.map((copy: any) => (
@@ -382,19 +383,18 @@ function DeliveryPage() {
                                                     : 'bg-white hover:bg-blue-50 text-slate-700 border-slate-200'
                                                     }`}
                                             >
-                                                <span className="truncate">№ {copy.inventory_number || copy.id}</span>
+                                                <span className="truncate">{t('book.copies.inventory', { number: copy.inventory_number || copy.id })}</span>
                                                 {formData.textbook_copy_ids.includes(copy.id) && <CheckCircle2 size={12} />}
                                             </div>
                                         ))}
                                         {(!copiesData?.items || copiesData.items.length === 0) && (
-                                            <p className="col-span-full text-center text-slate-400 py-4 italic text-sm">Нусхаҳо ёфт нашуданд</p>
+                                            <p className="col-span-full text-center text-slate-400 py-4 italic text-sm">{t('book.copies.notFound')}</p>
                                         )}
                                     </div>
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Ҷамъ: {formData.textbook_copy_ids.length} нусха интихоб шуд</p>
+                                    <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">{t('book.copies.selected', { count: formData.textbook_copy_ids.length })}</p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
-
 
                         <div className="pt-4">
                             <Button
@@ -402,7 +402,7 @@ function DeliveryPage() {
                                 disabled={!isValid || isPosting}
                                 className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-16 text-xl font-black shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
                             >
-                                {isPosting ? <Loader2 className="animate-spin mr-2" /> : <span>ТАСДИҚИ ИНТИҚОЛ</span>}
+                                {isPosting ? <Loader2 className="animate-spin mr-2" /> : <span>{t('button')}</span>}
                             </Button>
                         </div>
                     </CardContent>

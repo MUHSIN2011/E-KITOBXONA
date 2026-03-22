@@ -13,7 +13,6 @@ export default function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const role = request.cookies.get('role')?.value;
 
-  // Ислоҳи мантиқи ролҳо: ҷустуҷӯи калимаи dashboard дар дохили URL
   const isMinistryDashboard = /\/dashboard(\/|$)/.test(pathname);
   const isSchoolDashboard = /\/dashboard-school(\/|$)/.test(pathname);
 
