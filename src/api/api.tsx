@@ -301,7 +301,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects', 'transfers'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects', 'transfers', 'returns'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -718,7 +718,37 @@ export const Todo = createApi({
                 method: 'GET',
             }),
             providesTags: ['transfers'],
-        })
+        }),
+        createReturns: builder.mutation<void, any>({
+            query: (newReturn) => ({
+                url: `/returns/`,
+                method: 'POST',
+                body: newReturn,
+            }),
+            invalidatesTags: ['returns'],
+        }),
+        GetReturnsSchool: builder.query<any, void>({
+            query: () => ({
+                url: `/returns`,
+                method: 'GET',
+            }),
+            providesTags: ['returns'],
+        }),
+        GetReturnsSchoolById: builder.query<any, any>({
+            query: (return_id) => ({
+                url: `/returns/${return_id}`,
+                method: 'GET',
+            }),
+            providesTags: ['returns'],
+        }),
+        ReturnsSchoolCancel: builder.mutation<void, { return_id: number }>({
+            query: ({ return_id }) => ({
+                url: `/returns/${return_id}/reject`,
+                method: 'POST',
+                body: { return_id },
+            }),
+            invalidatesTags: ['transfers'],
+        }),
     }),
 });
 
@@ -778,5 +808,9 @@ export const {
     useMyTransfersQuery,
     useCreateTransfersMutation,
     useTransfersCancelMutation,
-    useLazyTransfersByIdQuery
+    useLazyTransfersByIdQuery,
+    useCreateReturnsMutation,
+    useGetReturnsSchoolQuery,
+    useGetReturnsSchoolByIdQuery,
+    useReturnsSchoolCancelMutation
 } = Todo;

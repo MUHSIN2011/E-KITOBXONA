@@ -248,7 +248,7 @@ function Page() {
                                                     <tr
                                                         key={item.id}
                                                         onClick={() => router.push(`/books-school/${item.id}`)}
-                                                        className="border-b border-gray-100 dark:border-slate-800/50  hover:bg-blue-50/50 dark:hover:bg-slate-800/60  cursor-pointer transition-all duration-300  hover:shadow-md  active:scale-[0.99] group"
+                                                        className={` border-b border-gray-100 dark:border-slate-800/50  hover:bg-blue-50/50 dark:hover:bg-slate-800/60  cursor-pointer transition-all duration-300  hover:shadow-md  active:scale-[0.99] group`}
                                                     >
                                                         <td className="p-4">
                                                             <div className="flex flex-col">
@@ -256,7 +256,7 @@ function Page() {
                                                                 <span className="text-[10px] text-blue-500 font-mono bg-blue-50 dark:bg-[#080707c4] w-fit px-1 rounded">{item.inventory_number}</span>
                                                             </div>
                                                         </td>
-                                                        <td className="p-4 text-gray-600 font-mono dark:text-white text-sm">#{item.id}</td>
+                                                        <td className="p-4 text-sm text-gray-600  dark:text-white ">#{item.id}</td>
                                                         <td className="p-4 text-sm text-gray-700 dark:text-white">{item.textbook.grade}</td>
                                                         <td className="p-4 text-sm text-gray-700 dark:text-white">{item.textbook.publication_year}</td>
                                                         <td className="p-4">

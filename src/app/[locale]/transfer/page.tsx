@@ -16,7 +16,6 @@ export default function Page() {
     const { data: data, isLoading: isLoadingMyTransfers } = useMyTransfersQuery() as { data: { total: number; items: any[] } | undefined; isLoading: boolean }
     const [transfersCancel, { isLoading: isLoadingtransferscancel }] = useTransfersCancelMutation()
     const [triggerGetInfo, { isFetching }] = useLazyTransfersByIdQuery();
-    console.log("Alo", data);
     const totalTransfers = data?.total || 0;
     const pendingCount = data?.items?.filter((item: any) => item.status === 'pending').length || 0;
     const completedCount = data?.items?.filter((item: any) => item.status === 'accepted' || item.status === 'completed').length || 0;

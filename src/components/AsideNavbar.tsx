@@ -2,7 +2,7 @@
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import { TextAnimate } from '@/components/ui/text-animate'
-import { Gauge, GraduationCap, SquareLibrary, School, Landmark, FolderPen, ArrowRightLeft } from 'lucide-react'
+import { Gauge, GraduationCap, SquareLibrary, School, Landmark, FolderPen, ArrowRightLeft, Repeat } from 'lucide-react'
 import Link from 'next/link'
 import React from 'react'
 import { usePathname } from "next/navigation";
@@ -67,9 +67,15 @@ function AsideNavbar() {
                             <TextAnimate animation="slideUp" by="word">{t('rentals')}</TextAnimate>
                         </div>
                     </Link>
+                    <Link href="/Return">
+                        <div className={getLinkStyle("/Return")}>
+                            <ArrowRightLeft className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
+                        </div>
+                    </Link>
                     <Link href="/transfer">
                         <div className={getLinkStyle("/transfer")}>
-                            <ArrowRightLeft className="w-5 h-5" />
+                            <Repeat  className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('transfer')}</TextAnimate>
                         </div>
                     </Link>
