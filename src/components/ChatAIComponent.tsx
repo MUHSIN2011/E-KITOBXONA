@@ -71,14 +71,13 @@ function ChatAIComponent() {
     };
 
     return (
-        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[9999] flex flex-col items-end">
+        <div className="fixed inset-0 z-[9999] flex flex-col items-end justify-end p-4 sm:p-6 pointer-events-none">
             {/* Chat Window with Animation */}
-            <div
-                className={`mb-3 sm:mb-4 transition-all duration-500 transform ${isOpen
-                    ? 'opacity-100 translate-x-0 scale-100 visible'
-                    : 'opacity-0 translate-x-20 scale-95 invisible'
-                    }`}
-            >
+            <div className={`mb-3 sm:mb-4 transition-all duration-500 transform pointer-events-auto ${isOpen
+                ? 'opacity-100 translate-x-0 scale-100 visible'
+                : 'opacity-0 translate-x-20 scale-95 invisible'
+                }`}>
+                
                 <div className="w-[300px] sm:w-[350px] md:w-[380px] h-[450px] sm:h-[500px] md:h-[550px] bg-white dark:bg-[#1a1a1a] rounded-xl sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
 
                     {/* Header */}
@@ -176,7 +175,7 @@ function ChatAIComponent() {
                                             >
                                                 {msg.text
                                                     .replace(/\\n/g, '\n')
-                                                    .replace(/^(\d+)\.(?!\s)/gm, '$1. ') 
+                                                    .replace(/^(\d+)\.(?!\s)/gm, '$1. ')
                                                 }
                                             </ReactMarkdown>
                                         </div>
@@ -233,7 +232,7 @@ function ChatAIComponent() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
-                    relative p-3 cursor-pointer sm:p-4 rounded-full shadow-lg transition-all duration-300 
+                    relative p-3 cursor-pointer pointer-events-auto sm:p-4 rounded-full shadow-lg transition-all duration-300 
                     transform hover:scale-110 active:scale-95
                     ${isOpen
                         ? 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 rotate-90'
