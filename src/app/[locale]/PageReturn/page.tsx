@@ -3,8 +3,8 @@ import CardsStudent from '@/components/CardsStudent'
 import { Button } from '@/components/ui/button'
 import { TextAnimate } from '@/components/ui/text-animate'
 import { Caravan, ArrowRightLeft, Clock, BadgeCheck, CircleCheckBig, XCircle, SearchAlert, BookOpen, FileText, Calendar, Info, XIcon, SearchAlertIcon } from 'lucide-react'
-import React, { useState } from 'react'
-import { useGetReturnsSchoolByIdQuery, useGetReturnsSchoolQuery, useReturnsSchoolCancelMutation } from '@/api/api'
+import React, { useEffect, useState } from 'react'
+import { useGetReturnsSchoolByIdQuery, useGetReturnsQuery, useReturnsSchoolCancelMutation, useApproveReturnMutation, useGetMeQuery } from '@/api/api'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import toast, { Toaster } from 'react-hot-toast'
@@ -20,15 +20,35 @@ import {
 } from "@/components/ui/pagination"
 
 export default function Page() {
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
     const router = useRouter()
     const [selectedReturnId, setSelectedReturnId] = useState<number | null>(null);
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+    const { data: DataMe, isLoading: isLoadingMe } = useGetMeQuery();
+    const userRole = DataMe?.role;
     const { data: infoTransfersById, isLoading: isLoadingInfo } = useGetReturnsSchoolByIdQuery(selectedReturnId as number, {
         skip: selectedReturnId === null,
     });
-    const { data, isLoading: isLoadingReturn } = useGetReturnsSchoolQuery()
+    const { data, isLoading: isLoadingReturn } = useGetReturnsQuery({
+        page: currentPage,
+        limit: limit
+    });
+    const totalPages = data?.totalPages || 1;
+
     const [transfersCancel] = useReturnsSchoolCancelMutation()
-    console.log(data);
+    const [approveReturn] = useApproveReturnMutation();
+    console.log(DataMe);
+
+    const handleApprove = async (id: number) => {
+        try {
+            await approveReturn({ return_id: id }).unwrap();
+            toast.success("Интиқол бо муваффақият қабул шуд");
+            setIsDialogOpen(false);
+        } catch {
+            toast.error("Хатогӣ ҳангоми қабул кардан");
+        }
+    }
 
 
     const totalTransfers = data?.total || 0;
@@ -66,13 +86,15 @@ export default function Page() {
                         Баргардонидани китобҳо ба мақомотҳои болоӣ
                     </p>
                 </div>
-                <Button
-                    onClick={() => router.push('/Return/Table')}
-                    className='bg-blue-600 hover:bg-blue-700 text-white flex gap-2 py-2 sm:py-3 md:py-5 px-4 w-full md:w-auto rounded-lg sm:rounded-md'
-                >
-                    <Caravan className='w-5 h-5 sm:w-6 sm:h-6' />
-                    Баргардонидан
-                </Button>
+                {userRole == "school" && (
+                    <Button
+                        onClick={() => router.push('/PageReturn/Return')}
+                        className='bg-blue-600 hover:bg-blue-700 text-white flex gap-2 py-2 sm:py-3 md:py-5 px-4 w-full md:w-auto rounded-lg sm:rounded-md'
+                    >
+                        <Caravan className='w-5 h-5 sm:w-6 sm:h-6' />
+                        Баргардонидан
+                    </Button>
+                )}
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 my-4 sm:my-5'>
@@ -191,33 +213,39 @@ export default function Page() {
                                                 : (item.reason || "Сабаб зикр нашудааст")}»
                                         </td>
 
-
                                         <td className="p-3 sm:p-4 text-xs sm:text-sm" onClick={(e) => e.stopPropagation()}>
                                             {item.status === 'pending' ? (
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-full bg-yellow-100 border border-yellow-200 cursor-pointer">
-                                                            <div className='hover:bg-yellow-200 rounded-full w-5 h-5 p-1 duration-200 transition-colors hover:animate-pulse'>
-                                                                <XIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-600 " />
+                                                userRole === item.to_entity_type ? (
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-full bg-yellow-100 border border-yellow-200 cursor-pointer">
+                                                                <div className='hover:bg-yellow-200 rounded-full w-5 h-5 p-1 duration-200 transition-colors hover:animate-pulse'>
+                                                                    <XIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-600 " />
+                                                                </div>
+                                                                <span className="text-[10px] sm:text-xs font-semibold text-yellow-600">Интизор</span>
                                                             </div>
-                                                            <span className="text-[10px] sm:text-xs font-semibold text-yellow-600">Интизор</span>
-                                                        </div>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Бекор кардани интиқол</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                Оё шумо мутмаин ҳастед, ки интиқоли №{item.id}-ро бекор кардан мехоҳед?
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Не</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleCancel(item.id)} className="bg-red-500 text-white">
-                                                                Бале, бекор шавад
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Бекор кардани интиқол</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    Оё шумо мутмаин ҳастед, ки интиқоли №{item.id}-ро бекор кардан мехоҳед?
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Не</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={() => handleCancel(item.id)} className="bg-red-500 text-white">
+                                                                    Бале, бекор шавад
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                ) : (
+                                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-600 border border-yellow-100">
+                                                        <Clock className="w-2.5 h-2.5" />
+                                                        <span className="text-[10px] sm:text-xs font-semibold">Дар баррасӣ</span>
+                                                    </div>
+                                                )
                                             ) : (
                                                 <div className={`inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-full ${item.status === 'cancelled'
                                                     ? 'bg-red-100 text-red-600'
@@ -240,31 +268,44 @@ export default function Page() {
                         </tbody>
                     </table>
                 </div>
-                <Pagination>
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious href="#" />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">1</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#" isActive>
-                                2
-                            </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationLink href="#">3</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationEllipsis />
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationNext href="#" />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            </section>
+                <div className='my-6 border-t pt-4'>
+                    <Pagination>
+                        <PaginationContent className="cursor-pointer">
+                            <PaginationPrevious
+                                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                className={currentPage === 1 ? "pointer-events-none opacity-50 cursor-not-allowed" : "cursor-pointer"}
+                            />
+
+                            {[...Array(totalPages)].map((_, index) => {
+                                const pageNumber = index + 1;
+                                if (pageNumber <= 3 || pageNumber === totalPages) {
+                                    return (
+                                        <PaginationItem key={pageNumber}>
+                                            <PaginationLink
+                                                onClick={() => setCurrentPage(pageNumber)}
+                                                isActive={currentPage === pageNumber}
+                                            >
+                                                {pageNumber}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    );
+                                }
+                                if (pageNumber === 4) return <PaginationEllipsis key="ellipsis" />;
+                                return null;
+                            })}
+
+                            <PaginationNext
+                                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                            />
+                        </PaginationContent>
+                    </Pagination>
+
+                    <p className="text-center text-xs text-gray-500 mt-2">
+                        Саҳифаи {currentPage} аз {totalPages}
+                    </p>
+                </div>
+            </section >
 
             <Dialog open={isDialogOpen} onOpenChange={(open) => {
                 setIsDialogOpen(open);
@@ -363,33 +404,45 @@ export default function Page() {
                     </div>
 
                     <DialogFooter className="p-4 bg-gray-100 dark:bg-[#2a2a2a] border-t gap-2">
-                        <DialogClose asChild>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full sm:w-auto font-semibold border-red-500 duration-300 cursor-pointer text-red-600 hover:bg-red-500 hover:text-white transition-colors"
-                                    >
-                                        Бекор кардани интиқол
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Бекор кардани интиқол</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Оё шумо мутмаин ҳастед, ки интиқоли №{infoTransfersById?.id}-ро бекор кардан мехоҳед?
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Не</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleCancel(infoTransfersById?.id)}
-                                            className="bg-red-500 text-white">
-                                            Бале, бекор шавад
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        </DialogClose>
+                        {infoTransfersById?.status === 'pending' &&
+                            userRole === infoTransfersById.to_entity_type && (
+                                <Button
+                                    onClick={() => handleApprove(infoTransfersById.id)}
+                                    className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold"
+                                >
+                                    <BadgeCheck className="w-4 h-4 mr-2" />
+                                    Қабул кардан
+                                </Button>
+                            )}
+                        {infoTransfersById?.status === 'pending' && (
+                            <DialogClose asChild>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full sm:w-auto font-semibold border-red-500 duration-300 cursor-pointer text-red-600 hover:bg-red-500 hover:text-white transition-colors"
+                                        >
+                                            Бекор кардани интиқол
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Бекор кардани интиқол</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Оё шумо мутмаин ҳастед, ки интиқоли №{infoTransfersById?.id}-ро бекор кардан мехоҳед?
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Не</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleCancel(infoTransfersById?.id)}
+                                                className="bg-red-500 text-white">
+                                                Бале, бекор шавад
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </DialogClose>
+                        )}
 
                         <DialogClose asChild>
                             <Button variant="default" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 font-semibold">
@@ -399,6 +452,6 @@ export default function Page() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
+        </div >
     )
 }

@@ -727,9 +727,9 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['returns'],
         }),
-        GetReturnsSchool: builder.query<any, void>({
-            query: () => ({
-                url: `/returns`,
+        GetReturns: builder.query<any, { page: number; limit: number }>({
+            query: ({ page, limit }) => ({
+                url: `/returns?page=${page}&limit=${limit}`,
                 method: 'GET',
             }),
             providesTags: ['returns'],
@@ -748,6 +748,32 @@ export const Todo = createApi({
                 body: { return_id },
             }),
             invalidatesTags: ['transfers'],
+        }),
+        approveReturn: builder.mutation<any, { return_id: number; notes?: string }>({
+            query: ({ return_id, notes }) => ({
+                url: `/returns/${return_id}/approve`,
+                method: 'POST',
+                body: { notes },
+            }),
+            invalidatesTags: ['returns'],
+        }),
+        sendQuestionToAi: builder.mutation<any, {
+            question: string;
+            context_type?: string;
+            context_id?: number;
+            context_data?: any
+        }>({
+            query: (body) => ({
+                url: `/ai/explain`,
+                method: 'POST',
+                body: {
+                    question: body.question,
+                    context_type: body.context_type || "general",
+                    context_id: body.context_id || 1,
+                    context_data: body.context_data || {}
+                },
+            }),
+            // invalidatesTags: ['ChatAi'], 
         }),
     }),
 });
@@ -810,7 +836,9 @@ export const {
     useTransfersCancelMutation,
     useLazyTransfersByIdQuery,
     useCreateReturnsMutation,
-    useGetReturnsSchoolQuery,
+    useGetReturnsQuery,
     useGetReturnsSchoolByIdQuery,
-    useReturnsSchoolCancelMutation
+    useReturnsSchoolCancelMutation,
+    useApproveReturnMutation,
+    useSendQuestionToAiMutation
 } = Todo;

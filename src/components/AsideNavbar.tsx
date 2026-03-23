@@ -67,7 +67,7 @@ function AsideNavbar() {
                             <TextAnimate animation="slideUp" by="word">{t('rentals')}</TextAnimate>
                         </div>
                     </Link>
-                    <Link href="/Return">
+                    <Link href="/PageReturn">
                         <div className={getLinkStyle("/Return")}>
                             <ArrowRightLeft className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
@@ -102,6 +102,12 @@ function AsideNavbar() {
                             <TextAnimate animation="slideUp" by="word">{t('schools')}</TextAnimate>
                         </div>
                     </Link>
+                    <Link href="/PageReturn">
+                        <div className={getLinkStyle("/Return")}>
+                            <ArrowRightLeft className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
+                        </div>
+                    </Link>
                     <Link href="/ministry">
                         <div className={getLinkStyle("/ministry")}>
                             <Landmark className="w-5 h-5" />
@@ -129,6 +135,12 @@ function AsideNavbar() {
                         <div className={getLinkStyle("/schools")}>
                             <School className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('schools')}</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/PageReturn">
+                        <div className={getLinkStyle("/Return")}>
+                            <ArrowRightLeft className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
                         </div>
                     </Link>
                     <Link href="/ministry">
@@ -160,7 +172,7 @@ function AsideNavbar() {
                             <TextAnimate animation="slideUp" by="word">{t('schools')}</TextAnimate>
                         </div>
                     </Link>
-                    <Link href="/Return">
+                    <Link href="/PageReturn">
                         <div className={getLinkStyle("/Return")}>
                             <ArrowRightLeft className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>

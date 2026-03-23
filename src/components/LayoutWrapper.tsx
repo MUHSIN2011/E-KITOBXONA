@@ -8,10 +8,11 @@ import { jwtDecode } from "jwt-decode";
 import AsideNavbar from "@/components/AsideNavbar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Menubar, MenubarContent,  MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarTrigger } from "@/components/ui/menubar";
 import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { NotificationSheet } from "./NotificationSheet";
 import Image from "next/image";
+import ChatAIComponent from "./ChatAIComponent";
 
 interface UserToken {
     full_name: string;
@@ -34,7 +35,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
-   
+
     const isLoginPage = pathname === "/" || /^\/(tj|ru|en)?$/.test(pathname);
 
     const isRegisterPage = pathname.includes("/register");
@@ -81,7 +82,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     };
 
 
-    const FlagTJ = "/tj.jpg"; 
+    const FlagTJ = "/tj.jpg";
     const FlagEN = "/america.jpg"
     const FlagRu = "/russia.jpg";
 
@@ -214,6 +215,8 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                         </div>
 
                         <div className="flex items-center gap-2">
+
+
                             <Menubar className="border-none bg-transparent shadow-none p-0">
                                 <MenubarMenu>
                                     <MenubarTrigger className="cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:bg-slate-100 dark:focus:bg-slate-800 outline-none">
@@ -255,6 +258,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                                     </MenubarContent>
                                 </MenubarMenu>
                             </Menubar>
+
                             <AnimatedThemeToggler className=" cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all" />
                             <NotificationSheet user={user} />
 
@@ -274,6 +278,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                         {children}
                     </div>
                 </div>
+                <ChatAIComponent />
             </main>
         </div >
     );
