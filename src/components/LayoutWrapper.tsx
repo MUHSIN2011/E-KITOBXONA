@@ -278,7 +278,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                         {children}
                     </div>
                 </div>
-                <ChatAIComponent />
+                {!isLoginPage && !isRegisterPage && (
+                    <ChatAIComponent />
+                )}
             </main>
         </div >
     );
