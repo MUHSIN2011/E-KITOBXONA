@@ -59,7 +59,6 @@ export default function RentalsPage() {
         skip: 0,
         limit: 20
     });
-    console.log("lll", booksSchool);
 
     const [rentBook, { isLoading: isRentLoading }] = useRentTextbookMutation();
     const [returnBook, { isLoading: isReturnLoading }] = useReturnBookMutation();
@@ -357,10 +356,10 @@ export default function RentalsPage() {
                             {rentalsLoading ? (
                                 Array.from({ length: 5 }).map((_, index) => (
                                     <TableRow key={index} className="animate-pulse">
-                                        <TableCell className="p-1"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></TableCell>
-                                        <TableCell className="p-1"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
-                                        <TableCell className="p-1"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
-                                        <TableCell className="p-1 text-center"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-20"></div></TableCell>
+                                        <TableCell className="py-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></TableCell>
+                                        <TableCell className="py-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
+                                        <TableCell className="py-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
+                                        <TableCell className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded "></div></TableCell>
                                     </TableRow>
                                 ))
                             ) : rentals?.items?.map((rental: any) => (
@@ -383,6 +382,7 @@ export default function RentalsPage() {
                                     </TableCell>
                                 </TableRow>
                             ))}
+
                         </TableBody>
                     </Table>
                 </div>

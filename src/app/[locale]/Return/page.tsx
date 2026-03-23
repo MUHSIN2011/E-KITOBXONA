@@ -2,13 +2,22 @@
 import CardsStudent from '@/components/CardsStudent'
 import { Button } from '@/components/ui/button'
 import { TextAnimate } from '@/components/ui/text-animate'
-import { Caravan, ArrowRightLeft, Clock, BadgeCheck, CircleCheckBig, XCircle, SearchAlert, BookOpen, FileText, Calendar, Info, XIcon } from 'lucide-react'
+import { Caravan, ArrowRightLeft, Clock, BadgeCheck, CircleCheckBig, XCircle, SearchAlert, BookOpen, FileText, Calendar, Info, XIcon, SearchAlertIcon } from 'lucide-react'
 import React, { useState } from 'react'
 import { useGetReturnsSchoolByIdQuery, useGetReturnsSchoolQuery, useReturnsSchoolCancelMutation } from '@/api/api'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import toast, { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 
 export default function Page() {
     const router = useRouter()
@@ -19,6 +28,8 @@ export default function Page() {
     });
     const { data, isLoading: isLoadingReturn } = useGetReturnsSchoolQuery()
     const [transfersCancel] = useReturnsSchoolCancelMutation()
+    console.log(data);
+
 
     const totalTransfers = data?.total || 0;
     const pendingCount = data?.items?.filter((item: { status: string }) => item.status === 'pending').length || 0;
@@ -32,8 +43,7 @@ export default function Page() {
         } catch {
             toast.error("Хатогӣ ҳангоми бекор кардан");
         }
-    };
-
+    }
     const handleInfo = (id: number) => {
         setSelectedReturnId(id);
         setIsDialogOpen(true);
@@ -65,7 +75,7 @@ export default function Page() {
                 </Button>
             </div>
 
-            <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 my-4 sm:my-5'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 my-4 sm:my-5'>
                 <CardsStudent
                     Icons={<ArrowRightLeft className="text-blue-500" />}
                     NameRole='Ҳамаи интиқолҳо'
@@ -93,24 +103,32 @@ export default function Page() {
                     Рӯйхати баргардонидаҳо
                 </h1>
 
-                <div className="overflow-x-auto mt-3 sm:mt-4 border rounded-lg">
-                    <table className="w-full text-left border-collapse min-w-[600px]">
+                <div className="overflow-x-auto mt-3 sm:mt-4 border rounded-xl shadow-sm bg-white dark:bg-[#1a1a1a]">
+                    <table className="w-full text-left border-collapse min-w-[600px] sm:min-w-full">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-[#2a2a2a] border-b">
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">ID</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Китоб (Инв. №)</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 hidden sm:table-cell">Сабаб</th>
+                                {/* <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">ID</th> */}
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Китоб, Синфи , (Инв. №)</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Қабулкунанда</th>
                                 <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Сана</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 hidden sm:table-cell">Сабаб</th>
                                 <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Статус</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                             {isLoadingReturn ? (
-                                <tr className="animate-pulse">
-                                    <td colSpan={5} className="p-8 sm:p-10 text-center text-sm">Боргирӣ...</td>
-                                </tr>
+                                Array.from({ length: 5 }).map((_, i) => (
+                                    <tr key={i} className="animate-pulse">
+                                        <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
+                                        <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
+                                        <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
+                                        <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
+                                        <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
+                                    </tr>
+                                ))
                             ) : data?.items?.length === 0 ? (
                                 <tr>
+                                    <td colSpan={5} className="p-8 sm:p-10 text-center text-gray-400 text-sm"><SearchAlertIcon /></td>
                                     <td colSpan={5} className="p-8 sm:p-10 text-center text-gray-400 text-sm">Рӯйхат холӣ аст</td>
                                 </tr>
                             ) : (
@@ -120,30 +138,68 @@ export default function Page() {
                                         onClick={() => handleInfo(item.id)}
                                         className="hover:bg-gray-50 dark:hover:bg-[#2a2a2a] cursor-pointer transition-colors"
                                     >
-                                        <td className="p-3 sm:p-4 text-xs sm:text-sm font-bold">#{item.id}</td>
+
+                                        {/* <td className="p-3 sm:p-4 text-xs sm:text-sm font-bold">#{item.id}</td> */}
                                         <td className="p-3 sm:p-4 text-xs sm:text-sm">
-                                            <div className="flex flex-col">
-                                                <span className="font-medium truncate max-w-[150px] sm:max-w-none">
-                                                    {item.items?.[0]?.textbook_title || `Китоби №${item.items?.[0]?.textbook_copy_id}`}
-                                                </span>
-                                                <span className="text-[9px] sm:text-[10px] text-blue-500 font-bold">
-                                                    Инв: {item.items?.[0]?.inventory_number}
-                                                    {item.items?.length > 1 && ` (+${item.items.length - 1} дигар)`}
-                                                </span>
+                                            <div className="flex flex-col gap-y-1">
+                                                {item.items.length > 0 && (
+                                                    <>
+                                                        <div className={`flex flex-col pb-1 ${item.items.length > 1 ? 'border-b border-gray-200' : ''}`}>
+                                                            <span className="font-medium text-gray-900">
+                                                                {item.items[0].textbook_title} <span className="text-gray-500 font-normal">- Синфи {item.items[0].class_level}</span>
+                                                            </span>
+                                                            <span className="text-[10px] text-blue-500 font-bold">
+                                                                Инв: {item.items[0].inventory_number}
+                                                            </span>
+                                                        </div>
+
+                                                        {item.items.length > 1 && (
+                                                            <div className="flex flex-col pt-1">
+                                                                {(() => {
+                                                                    const differentBook = item.items.find(
+                                                                        (book: any) => book.textbook_title !== item.items[0].textbook_title
+                                                                    );
+                                                                    const secondToShow = differentBook || item.items[1];
+
+                                                                    return (
+                                                                        <>
+                                                                            <span className="font-medium text-gray-900">
+                                                                                {secondToShow.textbook_title} <span className="text-gray-500 font-normal">- Синфи {secondToShow.class_level}</span>
+                                                                            </span>
+                                                                            <span className="text-[10px] text-blue-500 font-bold">
+                                                                                Инв: {secondToShow.inventory_number}
+                                                                                {item.items.length > 2 && ` (+${item.items.length - 2} дигар)`}
+                                                                            </span>
+                                                                        </>
+                                                                    );
+                                                                })()}
+                                                            </div>
+                                                        )}
+                                                    </>
+                                                )}
                                             </div>
                                         </td>
-                                        <td className="p-3 sm:p-4 text-xs sm:text-sm italic hidden sm:table-cell">
-                                            «{item.notes || item.reason}»
+                                        <td className="p-3 font-sans sm:p-4  sm:text-sm whitespace-nowrap">
+                                            {item.to_entity_type == 'ministry' ? 'Маориф' : item.to_entity_type == 'district' ? 'Ноҳия' : item.to_entity_type == 'region' ? 'Вилоят' : item.to_entity_type}
                                         </td>
                                         <td className="p-3 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                                             {new Date(item.created_at).toLocaleDateString('tg-TJ')}
                                         </td>
+                                        <td className="p-3 sm:p-4 text-xs sm:text-sm italic hidden sm:table-cell">
+                                            «{item.notes
+                                                ? (item.notes.length > 20 ? item.notes.slice(0, 20) + "..." : item.notes)
+                                                : (item.reason || "Сабаб зикр нашудааст")}»
+                                        </td>
+
+
                                         <td className="p-3 sm:p-4 text-xs sm:text-sm" onClick={(e) => e.stopPropagation()}>
                                             {item.status === 'pending' ? (
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
                                                         <div className="inline-flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-full bg-yellow-100 border border-yellow-200 cursor-pointer">
-                                                            <XIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-600 animate-pulse" />
+                                                            <div className='hover:bg-yellow-200 rounded-full w-5 h-5 p-1 duration-200 transition-colors hover:animate-pulse'>
+                                                                <XIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-600 " />
+                                                            </div>
                                                             <span className="text-[10px] sm:text-xs font-semibold text-yellow-600">Интизор</span>
                                                         </div>
                                                     </AlertDialogTrigger>
@@ -180,9 +236,34 @@ export default function Page() {
                                     </tr>
                                 ))
                             )}
+
                         </tbody>
                     </table>
                 </div>
+                <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious href="#" />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#">1</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#" isActive>
+                                2
+                            </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationLink href="#">3</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationEllipsis />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext href="#" />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             </section>
 
             <Dialog open={isDialogOpen} onOpenChange={(open) => {
@@ -281,9 +362,37 @@ export default function Page() {
                         )}
                     </div>
 
-                    <DialogFooter className="p-4 bg-gray-100 dark:bg-[#2a2a2a] border-t">
+                    <DialogFooter className="p-4 bg-gray-100 dark:bg-[#2a2a2a] border-t gap-2">
                         <DialogClose asChild>
-                            <Button variant="ghost" className="w-full sm:w-auto bg-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-semibold">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="outline"
+                                        className="w-full sm:w-auto font-semibold border-red-500 duration-300 cursor-pointer text-red-600 hover:bg-red-500 hover:text-white transition-colors"
+                                    >
+                                        Бекор кардани интиқол
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Бекор кардани интиқол</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Оё шумо мутмаин ҳастед, ки интиқоли №{infoTransfersById?.id}-ро бекор кардан мехоҳед?
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Не</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleCancel(infoTransfersById?.id)}
+                                            className="bg-red-500 text-white">
+                                            Бале, бекор шавад
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </DialogClose>
+
+                        <DialogClose asChild>
+                            <Button variant="default" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 font-semibold">
                                 Пӯшидан
                             </Button>
                         </DialogClose>

@@ -21,7 +21,7 @@ export const SchoolFinancialStatus = ({
   return (
     <div data-aos="fade-right" className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
       {/* Бюджет */}
-      <Card className="bg-blue-50/50 border-blue-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
+      <Card className="bg-blue-50/50 py-2 border-blue-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2 text-blue-600">
             <Wallet className="h-4 w-4" /> Бюджети ҷорӣ
@@ -34,7 +34,7 @@ export const SchoolFinancialStatus = ({
       </Card>
 
       {/* Хароҷот */}
-      <Card className="bg-red-50/50 border-red-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
+      <Card className="bg-red-50/50  py-2 border-red-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2 text-red-600">
             <ArrowDownCircle className="h-4 w-4" /> Хароҷот
@@ -47,7 +47,7 @@ export const SchoolFinancialStatus = ({
       </Card>
 
       {/* Даромад */}
-      <Card className="bg-green-50/50 border-green-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
+      <Card className="bg-green-50/50  py-2 border-green-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2 text-green-600">
             <ArrowUpCircle className="h-4 w-4" /> Даромад (Иҷора)
@@ -62,7 +62,7 @@ export const SchoolFinancialStatus = ({
       </Card>
 
       {/* Окупаемость (Фоизи рӯйпӯшшавӣ) */}
-      <Card className="bg-orange-50/50 border-orange-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
+      <Card className="bg-orange-50/50  py-2 border-orange-100 dark:bg-[#1a1a1a] dark:border-0 shadow-none">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-medium flex items-center gap-2 text-orange-600">
             <Percent className="h-4 w-4" /> Худмаблағгузории китобҳо

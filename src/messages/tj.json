@@ -25,7 +25,7 @@
     "save": "Захира кардан",
     "totalRegions": "Ҳамагӣ вилоятҳо",
     "activeInSystem": "Фаъол дар система",
-    "totalBooks": "Ҳамагӣ китобҳо",
+    "totalBooks": "Ҳамагӣ китобҳои фанни",
     "inMinistry": "Дар Вазорати Маориф",
     "totalSchools": "Ҳамагӣ мактабҳо",
     "totalStudents": "Ҳамагӣ хонандагон",
@@ -317,7 +317,7 @@
     "sheet": {
       "loading": "Дар ҳоли боргирӣ...",
       "wait": "Лутфан интизор шавед",
-      "description": "Маълумоти муфассал дар бораи китоб",
+      "description": "Тавсифи китоб",
       "author": "Муаллиф",
       "stats": {
         "total": "Умумӣ",
@@ -338,7 +338,6 @@
         "rentPrice": "Нархи иҷора",
         "currency": "TJS"
       },
-      "description": "Тавсифи китоб",
       "id": "ID",
       "date": "Сана"
     },

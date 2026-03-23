@@ -72,17 +72,7 @@ export default function LoginPage() {
   };
   return (
     <div className=" flex justify-center px-4 md:py-10">
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            borderRadius: '12px',
-            background: '#333',
-            color: '#fff',
-          },
-        }}
-      />
+      <Toaster />
       <div className="w-full max-w-100 m-auto">
         <div className="text-center md:mb-6 mb-3">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-xl mb-4 shadow-lg">

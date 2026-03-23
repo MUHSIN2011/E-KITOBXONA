@@ -67,7 +67,7 @@ export default function SchoolReturnPage() {
 
             await createReturn(payload).unwrap();
 
-            toast.success("Дархост бо муваффақият фиристода شد!");
+            toast.success("Дархост бо муваффақият фиристода шуд!");
 
             setFormData({
                 textbook_copy_ids: [],

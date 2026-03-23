@@ -75,7 +75,7 @@ function AsideNavbar() {
                     </Link>
                     <Link href="/transfer">
                         <div className={getLinkStyle("/transfer")}>
-                            <Repeat  className="w-5 h-5" />
+                            <Repeat className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('transfer')}</TextAnimate>
                         </div>
                     </Link>
@@ -158,6 +158,12 @@ function AsideNavbar() {
                         <div className={getLinkStyle("/schools")}>
                             <School className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('schools')}</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/Return">
+                        <div className={getLinkStyle("/Return")}>
+                            <ArrowRightLeft className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
                         </div>
                     </Link>
                     <Link href="/ministry">
