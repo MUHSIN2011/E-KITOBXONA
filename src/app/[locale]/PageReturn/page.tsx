@@ -38,7 +38,6 @@ export default function Page() {
 
     const [transfersCancel] = useReturnsSchoolCancelMutation()
     const [approveReturn] = useApproveReturnMutation();
-    console.log(DataMe);
 
     const handleApprove = async (id: number) => {
         try {
