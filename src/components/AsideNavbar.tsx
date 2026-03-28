@@ -31,7 +31,7 @@ function AsideNavbar() {
     }, []);
 
     const getLinkStyle = (href: string) => {
-        const isActive = pathname.endsWith(href) && (href !== "/" || pathname.length <= 4);
+        const isActive = pathname.endsWith(href) && (href !== "/" || pathname === "/");
 
         return `px-4 py-2 flex gap-3 rounded-md cursor-pointer transition-colors ${isActive
             ? "bg-blue-600 text-white shadow-lg shadow-blue-900/20"
@@ -68,7 +68,7 @@ function AsideNavbar() {
                         </div>
                     </Link>
                     <Link href="/PageReturn">
-                        <div className={getLinkStyle("/Return")}>
+                        <div className={getLinkStyle("/PageReturn")}>
                             <ArrowRightLeft className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
                         </div>
@@ -103,9 +103,15 @@ function AsideNavbar() {
                         </div>
                     </Link>
                     <Link href="/PageReturn">
-                        <div className={getLinkStyle("/Return")}>
+                        <div className={getLinkStyle("/PageReturn")}>
                             <ArrowRightLeft className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/transfer">
+                        <div className={getLinkStyle("/transfer")}>
+                            <Repeat className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('transfer')}</TextAnimate>
                         </div>
                     </Link>
                     <Link href="/ministry">
@@ -138,9 +144,15 @@ function AsideNavbar() {
                         </div>
                     </Link>
                     <Link href="/PageReturn">
-                        <div className={getLinkStyle("/Return")}>
+                        <div className={getLinkStyle("/PageReturn")}>
                             <ArrowRightLeft className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/transfer">
+                        <div className={getLinkStyle("/transfer")}>
+                            <Repeat className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('transfer')}</TextAnimate>
                         </div>
                     </Link>
                     <Link href="/ministry">
@@ -173,9 +185,15 @@ function AsideNavbar() {
                         </div>
                     </Link>
                     <Link href="/PageReturn">
-                        <div className={getLinkStyle("/Return")}>
+                        <div className={getLinkStyle("/PageReturn")}>
                             <ArrowRightLeft className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('return')}</TextAnimate>
+                        </div>
+                    </Link>
+                    <Link href="/transfer">
+                        <div className={getLinkStyle("/transfer")}>
+                            <Repeat className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('transfer')}</TextAnimate>
                         </div>
                     </Link>
                     <Link href="/ministry">

@@ -72,7 +72,6 @@ function ChatAIComponent() {
 
     return (
         <div className="fixed inset-0 z-[9999] flex flex-col items-end justify-end p-4 sm:p-6 pointer-events-none">
-            {/* Chat Window with Animation */}
             <div className={`mb-3 sm:mb-4 transition-all duration-500 transform pointer-events-auto ${isOpen
                 ? 'opacity-100 translate-x-0 scale-100 visible'
                 : 'opacity-0 translate-x-20 scale-95 invisible'
@@ -80,7 +79,6 @@ function ChatAIComponent() {
                 
                 <div className="w-[300px] sm:w-[350px] md:w-[380px] h-[450px] sm:h-[500px] md:h-[550px] bg-white dark:bg-[#1a1a1a] rounded-xl sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
 
-                    {/* Header */}
                     <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex justify-between items-center shadow-md">
                         <div className="flex items-center gap-2">
                             <div className="p-1 sm:p-1.5 bg-white/20 rounded-lg animate-pulse">
@@ -113,12 +111,10 @@ function ChatAIComponent() {
                         </div>
                     </div>
 
-                    {/* Messages Area */}
                     <div
                         ref={scrollRef}
                         className="flex-1 p-3 sm:p-4 overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100 dark:from-[#121212] dark:to-[#1a1a1a] text-xs sm:text-sm space-y-3"
                     >
-                        {/* Welcome Message with Stagger Animation */}
                         <div
                             className={`flex justify-start transition-all duration-500 delay-100 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
                                 }`}
@@ -197,7 +193,6 @@ function ChatAIComponent() {
                         )}
                     </div>
 
-                    {/* Input Area with Slide Animation */}
                     <div
                         className={`p-3 sm:p-4 bg-white dark:bg-[#1a1a1a] border-t border-gray-100 dark:border-gray-800 transition-all duration-500 delay-200 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                             }`}
@@ -228,7 +223,6 @@ function ChatAIComponent() {
                 </div>
             </div>
 
-            {/* Toggle Button with Pulse Ring Animation */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
@@ -246,7 +240,6 @@ function ChatAIComponent() {
                     <MessageCircle size={20} className="sm:w-7 sm:h-7" />
                 )}
 
-                {/* Notification Badge */}
                 {!isOpen && (
                     <>
                         <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />

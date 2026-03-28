@@ -92,7 +92,6 @@ export default function SchoolReturnPage() {
         <div className="p-3 sm:p-4 md:p-6 lg:p-8 max-w-2xl mx-auto space-y-4 sm:space-y-6">
             <Toaster position="top-center" />
 
-            {/* Header */}
             <div className="bg-white dark:bg-[#1a1a1a] p-5 sm:p-6 rounded-2xl md:rounded-[24px] border shadow-sm flex items-center gap-4 text-left">
                 <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl text-red-600">
                     <PackageX className="w-6 h-6" />

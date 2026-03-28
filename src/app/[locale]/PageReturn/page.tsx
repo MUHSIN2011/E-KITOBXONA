@@ -94,7 +94,7 @@ export default function Page() {
                         <Caravan className='w-5 h-5 sm:w-6 sm:h-6' />
                         Баргардонидан
                     </Button>
-                 )} 
+                )}
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 my-4 sm:my-5'>
@@ -131,6 +131,7 @@ export default function Page() {
                             <tr className="bg-gray-50 dark:bg-[#2a2a2a] border-b">
                                 {/* <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">ID</th> */}
                                 <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Китоб, Синфи , (Инв. №)</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Равон кунанда</th>
                                 <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Қабулкунанда</th>
                                 <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Сана</th>
                                 <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 hidden sm:table-cell">Сабаб</th>
@@ -146,12 +147,17 @@ export default function Page() {
                                         <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
                                         <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
                                         <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
+                                        <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
                                     </tr>
                                 ))
                             ) : data?.items?.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="p-8 sm:p-10 text-center text-gray-400 text-sm"><SearchAlertIcon /></td>
-                                    <td colSpan={5} className="p-8 sm:p-10 text-center text-gray-400 text-sm">Рӯйхат холӣ аст</td>
+                                    <td colSpan={6} className="p-8 sm:p-10 hover:bg-gray-50 duration-300 transition-colors">
+                                        <div className="flex flex-col items-center justify-center gap-2 text-gray-400">
+                                            <SearchAlertIcon className="w-10 h-10 mb-2 opacity-50" />
+                                            <span className="text-sm font-medium">Рӯйхат холӣ аст</span>
+                                        </div>
+                                    </td>
                                 </tr>
                             ) : (
                                 data?.items?.map((item: any) => (
@@ -168,7 +174,7 @@ export default function Page() {
                                                     <>
                                                         <div className={`flex flex-col pb-1 ${item.items.length > 1 ? 'border-b border-gray-200' : ''}`}>
                                                             <span className="font-medium text-gray-900">
-                                                                {item.items[0].textbook_title} <span className="text-gray-500 font-normal">- Синфи {item.items[0].class_level}</span>
+                                                                {item.items[0].textbook_title} <span className="text-gray-500 font-normal">- Синфи {item.items[0].textbook_grade}</span>
                                                             </span>
                                                             <span className="text-[10px] text-blue-500 font-bold">
                                                                 Инв: {item.items[0].inventory_number}
@@ -186,7 +192,7 @@ export default function Page() {
                                                                     return (
                                                                         <>
                                                                             <span className="font-medium text-gray-900">
-                                                                                {secondToShow.textbook_title} <span className="text-gray-500 font-normal">- Синфи {secondToShow.class_level}</span>
+                                                                                {secondToShow.textbook_title} <span className="text-gray-500 font-normal">- Синфи {secondToShow.textbook_grade}</span>
                                                                             </span>
                                                                             <span className="text-[10px] text-blue-500 font-bold">
                                                                                 Инв: {secondToShow.inventory_number}
@@ -202,7 +208,10 @@ export default function Page() {
                                             </div>
                                         </td>
                                         <td className="p-3 font-sans sm:p-4  sm:text-sm whitespace-nowrap">
-                                            {item.to_entity_type == 'ministry' ? 'Маориф' : item.to_entity_type == 'district' ? 'Ноҳия' : item.to_entity_type == 'region' ? 'Вилоят' : item.to_entity_type}
+                                            {item.from_school_title}
+                                        </td>
+                                        <td className="p-3 font-sans sm:p-4  sm:text-sm whitespace-nowrap">
+                                            Ба {item.to_entity_type == 'ministry' ? 'Маориф' : item.to_entity_type == 'district' ? 'Ноҳия' : item.to_entity_type == 'region' ? 'Вилоят' : item.to_entity_type}
                                         </td>
                                         <td className="p-3 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                                             {new Date(item.created_at).toLocaleDateString('tg-TJ')}
@@ -358,6 +367,20 @@ export default function Page() {
                                         <div className="flex items-center gap-2 text-sm font-semibold">
                                             <Calendar className="w-4 h-4 text-blue-500" />
                                             {new Date(infoTransfersById.created_at).toLocaleDateString('tg-TJ')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-[#2a2a2a] border">
+                                        <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Равон Кунанда</p>
+                                        <div className="flex items-center gap-2">
+                                            {infoTransfersById?.from_school_title}
+                                        </div>
+                                    </div>
+                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-[#2a2a2a] border">
+                                        <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Кабул Кунанда</p>
+                                        <div className="flex items-center gap-2 text-sm font-semibold">
+                                            Ба {infoTransfersById?.to_entity_type == 'ministry' ? 'Маориф' : infoTransfersById?.to_entity_type == 'district' ? 'Ноҳия' : infoTransfersById?.to_entity_type == 'region' ? 'Вилоят' : infoTransfersById?.to_entity_type}
                                         </div>
                                     </div>
                                 </div>

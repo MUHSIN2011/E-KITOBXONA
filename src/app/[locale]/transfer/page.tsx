@@ -218,7 +218,8 @@ export default function Page() {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-[#2a2a2a] border-b dark:border-gray-700">
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Мактаб</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">АЗ Мактаби</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Ба Мактаби</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Китоб</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 ">Синфи</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Сана</th>
@@ -229,6 +230,7 @@ export default function Page() {
                             {isLoadingMyTransfers ? (
                                 Array.from({ length: 5 }).map((_, index) => (
                                     <tr key={index} className="animate-pulse">
+                                        <td className="p-4"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></td>
                                         <td className="p-4"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></td>
                                         <td className="p-4"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></td>
                                         <td className="p-4"><div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div></td>
@@ -249,6 +251,7 @@ export default function Page() {
                             ) : (
                                 data?.items?.map((trans: any) => (
                                     <tr key={trans.id} onClick={() => handleInfo(trans.id)} className="hover:bg-gray-50 dark:hover:bg-[#2a2a2a]  transition-colors">
+                                        <td className="p-4 text-sm dark:text-gray-300">{trans.from_school_name}</td>
                                         <td className="p-4 text-sm dark:text-gray-300">{trans.to_school_name}</td>
                                         <td className="p-4 text-sm dark:text-gray-300">
                                             <div className="flex flex-col">
