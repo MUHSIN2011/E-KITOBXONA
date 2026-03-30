@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 interface Message {
     role: 'user' | 'ai';
     text: string;
+    disclaimer?: string; // Майдони нав
 }
 
 function ChatAIComponent() {
@@ -49,13 +50,19 @@ function ChatAIComponent() {
             }).unwrap();
 
             if (response?.answer) {
-                setMessages(prev => [...prev, { role: 'ai', text: response.answer }]);
+                setMessages(prev => [...prev, {
+                    role: 'ai',
+                    text: response.answer,
+                    disclaimer: response.disclaimer
+                }]);
             }
-        } catch (err) {
-            setMessages(prev => [...prev, {
-                role: 'ai',
-                text: "❌ Хатогӣ дар пайвастшавӣ бо AI. Лутфан аз нав кӯшиш кунед."
-            }]);
+        } catch (err: any) {
+            if (err.status === 503) {
+                setMessages(prev => [...prev, {
+                    role: 'ai',
+                    text: "😔 Бубахшед, ёвари AI вақтинча дастнорас аст. Лутфан дертар кӯшиш кунед."
+                }]);
+            }
         }
     };
 
@@ -76,7 +83,7 @@ function ChatAIComponent() {
                 ? 'opacity-100 translate-x-0 scale-100 visible'
                 : 'opacity-0 translate-x-20 scale-95 invisible'
                 }`}>
-                
+
                 <div className="w-[300px] sm:w-[350px] md:w-[380px] h-[450px] sm:h-[500px] md:h-[550px] bg-white dark:bg-[#1a1a1a] rounded-xl sm:rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 flex flex-col overflow-hidden">
 
                     <div className="p-3 sm:p-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex justify-between items-center shadow-md">
@@ -161,19 +168,24 @@ function ChatAIComponent() {
                                         }`}
                                 >
                                     {msg.role === 'ai' ? (
-                                        <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-line">
+                                        <div className="prose prose-sm dark:prose-invert max-w-none">
                                             <ReactMarkdown
                                                 components={{
-                                                    ol: ({ children }) => <ol className="list-decimal ml-4 mb-4 space-y-2 text-gray-800 dark:text-gray-200">{children}</ol>,
+                                                    ol: ({ children }) => <ol className="list-decimal ml-4 mb-2 space-y-1 text-gray-800 dark:text-gray-200">{children}</ol>,
                                                     li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-                                                    p: ({ children }) => <p className="mb-3 last:mb-0">{children}</p>
+                                                    p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>
                                                 }}
                                             >
-                                                {msg.text
-                                                    .replace(/\\n/g, '\n')
-                                                    .replace(/^(\d+)\.(?!\s)/gm, '$1. ')
-                                                }
+                                                {msg.text.replace(/\\n/g, '\n').replace(/^(\d+)\.(?!\s)/gm, '$1. ')}
                                             </ReactMarkdown>
+
+                                            {msg.disclaimer && (
+                                                <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800">
+                                                    <p className="text-[9px] sm:text-[10px] text-gray-400 italic leading-tight">
+                                                        {msg.disclaimer}
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                     ) : (
                                         <div className="whitespace-pre-wrap break-words">{msg.text}</div>

@@ -1,9 +1,9 @@
 "use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TextAnimate } from '@/components/ui/text-animate'
-import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useDeleteStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useUpdateStudentMutation } from '@/api/api'
+import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useDeleteStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useGetStudentFinanceQuery, useUpdateStudentMutation, useFinanceCompensationsPayMutation } from '@/api/api'
 import CardsStudent from '@/components/CardsStudent'
-import { Book, BookOpen, Calendar, DollarSign, FileText, Funnel, Hash, Phone, User, Users } from 'lucide-react'
+import { AlertCircle, Book, BookOpen, Calendar, DollarSign, FileText, Funnel, Hash, Phone, User, Users } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input';
 import {
@@ -35,6 +35,10 @@ function StudentsPage() {
     const [idx, setIdx] = useState<number | null>(null);
     const t = useTranslations('StudentsPage')
     const [isEditOpen, setIsEditOpen] = useState(false);
+    const [openPayment, setOpenPayment] = useState(false);
+    const [amount, setAmount] = useState<string>("");
+    const [paidDate, setPaidDate] = useState(new Date().toISOString().split('T')[0]);
+    const [note, setNote] = useState<string>("");
     const {
         register: registerStudent,
         handleSubmit: handleSubmitStudent,
@@ -46,6 +50,18 @@ function StudentsPage() {
         idx as number,
         { skip: !idx }
     )
+    const { data: StudentFinance, isLoading: isStudentFinance } = useGetStudentFinanceQuery(
+        idx as number,
+        { skip: !idx }
+    );
+
+    const [FinancePay, { isLoading: isFinancePay }] = useFinanceCompensationsPayMutation();
+
+    const totalDebt = Array.isArray(StudentFinance)
+        ? StudentFinance.reduce((sum, debt) => sum + (debt.amount_remaining || 0), 0)
+        : (StudentFinance?.amount_remaining || 0);
+
+
     const [deleteStudent, { isLoading: isDeleting }] = useDeleteStudentMutation();
 
     const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
@@ -69,6 +85,37 @@ function StudentsPage() {
             setEditData(studentbyid);
         }
     }, [studentbyid]);
+
+    // Ба ҷои танҳо payment_id, тамоми объектро қабул мекунем
+    const handlePay = async (debt: any) => {
+        const enteredAmount = Number(amount);
+
+        if (enteredAmount > debt.amount_remaining ) {
+            toast.error(`Маблағ ${enteredAmount} (TJS) наметавонад аз ${debt.amount_remaining} сомон зиёд бошад!`);
+            return;
+        }
+
+        if (enteredAmount <= 0) {
+            toast.error("Маблағи дурустро ворид кунед");
+            return;
+        }
+
+        try {
+            await FinancePay({
+                payment_id: debt.id,
+                amount_paid: enteredAmount,
+                paid_date: paidDate,
+                notes: note || `${amount} сомон супорида шуд`,
+            }).unwrap();
+
+            toast.success("Пардохт шуд!");
+            setOpenPayment(false);
+            setAmount("");
+            setNote("");
+        } catch (err) {
+            toast.error("Хатогӣ! Дубора кушиш кунед!");
+        }
+    };
 
     if (isLoading) return <div className="flex h-[84vh] items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -120,7 +167,7 @@ function StudentsPage() {
     };
 
     return (
-        <main className="p-4 space-y-6">
+        <main className="md:p-4 sm:p-3 p-2 space-y-6  ">
             <Toaster />
             <div className='flex md:flex-row flex-col justify-between md:gap-0 gap-2 md:items-center'>
                 <div>
@@ -328,111 +375,257 @@ function StudentsPage() {
 
 
             <Sheet open={!!idx} onOpenChange={() => setIdx(null)}>
-                <SheetContent className="sm:max-w-[500px] overflow-y-auto px-0">
+                {/* <SheetContent className="sm:max-w-[500px] md:max-w-[500px] max-w-full overflow-y-auto px-0"> */}
+                <SheetContent className="w-full sm:max-w-[500px] p-0 overflow-y-auto border-none">
                     <SheetHeader className="px-6 pb-6 pt-2 bg-gradient-to-r from-blue-50 to-white border-b">
                         <div className="flex justify-between items-start pt-4">
-                            <SheetTitle className="text-2xl font-bold flex items-center gap-3 text-slate-800">
+                            <SheetTitle className="text-xl font-bold flex items-center gap-3 text-slate-800">
                                 <div className="p-2 bg-blue-600 rounded-lg">
                                     <User className="w-5 h-5 text-white" />
                                 </div>
-                                {t('profile.title')}
+                                {t('profile.title')} {studentbyid ? `${studentbyid.last_name} ${studentbyid.first_name}` : t('profile.student')}
                             </SheetTitle>
                         </div>
                     </SheetHeader>
 
-                    {studentbyid && (
-                        <div className="px-6 py-6 space-y-8">
-                            <div className="flex items-center gap-5 p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                <div className="w-20 h-20 bg-blue-100 border-4 border-white shadow-sm rounded-full flex items-center justify-center text-blue-700 text-3xl font-black">
-                                    {studentbyid.first_name[0]}
+                    {isStudenting ? (
+                        <div className="flex h-[80vh] items-center justify-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                        </div>
+                    ) : studentbyid && (
+                        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 md:space-y-8">
+                            {/* Header Card */}
+                            <div className="flex items-center gap-3 sm:gap-5 p-3 sm:p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 border-4 border-white dark:border-slate-800 shadow-sm rounded-full flex items-center justify-center text-white text-xl sm:text-2xl md:text-3xl font-black">
+                                    {studentbyid ? `${studentbyid.last_name?.[0]?.toUpperCase()}${studentbyid.first_name?.[0]?.toUpperCase()}` : '?'}
                                 </div>
-                                <div className="space-y-1">
-                                    <h3 className="text-xl font-bold text-slate-900 leading-tight">
+                                <div className="space-y-0.5 sm:space-y-1 flex-1">
+                                    <h3 className="text-base sm:text-lg md:text-xl font-bold text-slate-900 dark:text-white leading-tight">
                                         {studentbyid.last_name} {studentbyid.first_name}
                                     </h3>
-                                    <p className="text-sm text-slate-500 font-medium">{studentbyid.middle_name}</p>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className="px-2 py-0.5 bg-blue-600 text-white text-[10px] font-bold rounded-md uppercase">
+                                    {studentbyid.middle_name && (
+                                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
+                                            {studentbyid.middle_name}
+                                        </p>
+                                    )}
+                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mt-1.5 sm:mt-2">
+                                        <span className="px-1.5 sm:px-2 py-0.5 bg-blue-600 text-white text-[9px] sm:text-[10px] font-bold rounded-md uppercase">
                                             {t('profile.class', { className: studentbyid.class_name })}
                                         </span>
-                                        <span className={`px-2 py-0.5 text-[10px] font-bold rounded-md uppercase ${studentbyid.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                        <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded-md uppercase ${studentbyid.is_active
+                                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                            : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                                            }`}>
                                             {studentbyid.is_active ? t('profile.active') : t('profile.inactive')}
+                                        </span>
+                                        <span className={`px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] font-bold rounded-md uppercase ${totalDebt > 0
+                                            ? ' bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 '
+                                            : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                                            }`}>
+                                            {totalDebt > 0 ? 'Қарздор аст' : 'Озод'}
                                         </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-y-6 gap-x-4">
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2 text-slate-400">
-                                        <Calendar className="w-3.5 h-3.5" />
-                                        <p className="text-[11px] uppercase font-bold tracking-wider">{t('profile.birthYear')}</p>
+                            {Array.isArray(StudentFinance) && StudentFinance.length > 0 && (
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <span className='text-xl font-semibold font-sans'>
+                                            Опши сума:
+                                        </span>
+                                        <span className="text-lg   font-semibold font-sans">
+                                            {totalDebt} - <span className=''>Сомони</span>
+                                        </span>
                                     </div>
-                                    <p className="text-sm font-semibold text-slate-700 ml-5.5">{studentbyid.birth_year}</p>
+                                    {StudentFinance.map((debt) => (
+                                        <div key={debt.id} className="p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-xl space-y-3 transition-all hover:shadow-sm">
+                                            <div className="flex items-center justify-between border-b border-red-300/80 dark:border-red-800 pb-2">
+                                                <div className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                                                    <AlertCircle className="w-4 h-4" />
+                                                    <span className="text-[10px] font-black uppercase tracking-wider">
+                                                        Қарзи №{debt.id} {debt.textbook_title ? `- ${debt.textbook_title}` : ''}
+                                                    </span>
+                                                </div>
+                                                <span className="px-2 py-0.5 bg-red-600 text-white text-[9px] font-bold rounded uppercase">
+                                                    {debt.status}
+                                                </span>
+                                            </div>
+
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <p className="text-[10px] text-slate-500 uppercase font-bold">Маблағи умумӣ:</p>
+                                                    <p className="text-sm font-bold text-slate-700 dark:text-slate-300">{debt.amount_due} TJS</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] text-red-500 uppercase font-bold">Боқимонда:</p>
+                                                    <p className="text-sm font-black text-red-600 dark:text-red-400">{debt.amount_remaining} TJS</p>
+                                                </div>
+                                                <div>
+                                                    <p className="text-[10px] text-slate-500 uppercase font-bold">Мӯҳлат:</p>
+                                                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">{debt.due_date}</p>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-[10px] text-slate-500 uppercase font-bold">ID-и зарар:</p>
+                                                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">#{debt.damage_report_id}</p>
+                                                </div>
+                                            </div>
+                                            {debt.status !== 'Paid'}
+                                            <Dialog open={openPayment} onOpenChange={setOpenPayment}>
+                                                <DialogTrigger asChild>
+                                                    <div className='border-t pt-1.5 border-red-300/80'>
+                                                        <button className='bg-blue-600 font-sans cursor-pointer focus:translate-y-2 duration-300 hover:shadow-xl rounded-xl py-1.5 text-white w-full'>
+                                                            Пардохт Кардан
+                                                        </button>
+                                                    </div>
+                                                </DialogTrigger>
+
+                                                <DialogContent className="sm:max-w-[425px]">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Қабули пардохт: {studentbyid ? `${studentbyid.last_name} ${studentbyid.first_name}` : '?'}</DialogTitle>
+                                                    </DialogHeader>
+                                                    <div className="grid gap-4 py-4">
+                                                        <div className="space-y-2">
+                                                            <label className="text-sm font-medium">Маблағи супоридашуда (TJS)</label>
+                                                            <Input
+                                                                type="number"
+                                                                placeholder="Миқдор"
+                                                                max={debt.amount_remaining}
+                                                                value={amount}
+                                                                onChange={(e) => setAmount(e.target.value)}
+                                                            />
+                                                            <p className="text-xs text-muted-foreground">
+                                                                Қарзи боқимонда: {debt.amount_remaining} сомон
+                                                            </p>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-sm font-medium italic">Санаи пардохт</label>
+                                                            <Input
+                                                                type="date"
+                                                                value={paidDate}
+                                                                onChange={(e) => setPaidDate(e.target.value)}
+                                                                className="cursor-pointer"
+                                                            />
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            <label className="text-sm font-medium">Эзоҳ (Notes)</label>
+                                                            <Input
+                                                                placeholder={`Масалан: ${amount ? amount : debt.amount_remaining} сомонашро супорид`}
+                                                                value={note}
+                                                                onChange={(e) => setNote(e.target.value)}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <Button
+                                                        onClick={() => handlePay(debt)}
+                                                        disabled={isFinancePay}
+                                                        className="w-full bg-blue-600 hover:bg-blue-700"
+                                                    >
+                                                        {isFinancePay ? "Дар ҳоли иҷро..." : "Тасдиқи пардохт"}
+                                                    </Button>
+                                                </DialogContent>
+                                            </Dialog>
+
+                                            {debt.notes && (
+                                                <div className="pt-2 border-t border-red-100 dark:border-red-900/20 text-[11px] text-red-600 italic">
+                                                    Эзоҳ: {debt.notes}
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 sm:gap-6">
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+                                        <Calendar className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                                        <p className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider">
+                                            {t('profile.birthYear')}
+                                        </p>
+                                    </div>
+                                    <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 ml-6 sm:ml-5.5">
+                                        {studentbyid.birth_year || '—'}
+                                    </p>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <div className="flex items-center gap-2 text-slate-400">
-                                        <Phone className="w-3.5 h-3.5" />
-                                        <p className="text-[11px] uppercase font-bold tracking-wider">{t('profile.parentPhone')}</p>
+                                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+                                        <Phone className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                                        <p className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider">
+                                            {t('profile.parentPhone')}
+                                        </p>
                                     </div>
-                                    <p className="text-sm font-semibold text-slate-700 ml-5.5">{studentbyid.parent_phone}</p>
+                                    <p className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 ml-6 sm:ml-5.5">
+                                        {studentbyid.parent_phone || '—'}
+                                    </p>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <div className="flex items-center gap-2 text-slate-400">
-                                        <Hash className="w-3.5 h-3.5" />
-                                        <p className="text-[11px] uppercase font-bold tracking-wider">{t('profile.studentId')}</p>
+                                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+                                        <Hash className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                                        <p className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider">
+                                            {t('profile.studentId')}
+                                        </p>
                                     </div>
-                                    <p className="text-sm font-mono font-bold text-blue-600 ml-5.5">#{studentbyid.id}</p>
+                                    <p className="text-xs sm:text-sm font-mono font-bold text-blue-600 dark:text-blue-400 ml-6 sm:ml-5.5">
+                                        #{studentbyid.id}
+                                    </p>
                                 </div>
 
                                 <div className="space-y-1">
-                                    <div className="flex items-center gap-2 text-slate-400">
-                                        <BookOpen className="w-3.5 h-3.5" />
-                                        <p className="text-[11px] uppercase font-bold tracking-wider">{t('profile.activeRentals')}</p>
+                                    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+                                        <BookOpen className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                                        <p className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider">
+                                            {t('profile.activeRentals')}
+                                        </p>
                                     </div>
-                                    <p className="text-sm font-bold text-slate-700 ml-5.5">
-                                        {t('profile.activeRentalsCount', { count: studentbyid.active_rentals_count })}
+                                    <p className="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 ml-6 sm:ml-5.5">
+                                        {t('profile.activeRentalsCount', { count: studentbyid.active_rentals_count || 0 })}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="space-y-3">
-                                <div className="flex items-center gap-2 text-slate-400">
-                                    <FileText className="w-3.5 h-3.5" />
-                                    <p className="text-[11px] uppercase font-bold tracking-wider">{t('profile.notes')}</p>
+                            {/* Notes Section */}
+                            <div className="space-y-2 sm:space-y-3">
+                                <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+                                    <FileText className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+                                    <p className="text-[10px] sm:text-[11px] uppercase font-bold tracking-wider">
+                                        {t('profile.notes')}
+                                    </p>
                                 </div>
-                                <div className="p-4 bg-blue-50/50 border border-blue-300 rounded-xl">
-                                    <p className="text-sm text-slate-600 leading-relaxed italic">
+                                <div className="p-3 sm:p-4 bg-blue-50/50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800 rounded-lg sm:rounded-xl">
+                                    <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed italic">
                                         {studentbyid.notes || t('profile.noNotes')}
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3 pt-6 border-t">
+                            <div className="grid grid-cols-2 gap-2 sm:gap-3 pt-4 sm:pt-6 border-t border-slate-100 dark:border-slate-800">
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button
                                             variant="outline"
-                                            className="rounded-xl h-11 cursor-pointer font-semibold text-slate-600 hover:bg-slate-50"
+                                            className="rounded-lg sm:rounded-xl h-9 sm:h-10 md:h-11 cursor-pointer font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                                         >
                                             {t('profile.delete')}
                                         </Button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent className="rounded-2xl border-none shadow-2xl">
+                                    <AlertDialogContent className="rounded-xl sm:rounded-2xl border-none shadow-2xl max-w-[90%] sm:max-w-md">
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle>{t('profile.deleteDialog.title')}</AlertDialogTitle>
-                                            <AlertDialogDescription>
+                                            <AlertDialogTitle className="text-base sm:text-lg">
+                                                {t('profile.deleteDialog.title')}
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription className="text-xs sm:text-sm">
                                                 {t('profile.deleteDialog.description')}
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
-                                        <AlertDialogFooter className="gap-2">
-                                            <AlertDialogCancel className="rounded-xl border-slate-200">
+                                        <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                                            <AlertDialogCancel className="rounded-lg sm:rounded-xl border-slate-200 dark:border-slate-700">
                                                 {t('profile.deleteDialog.cancel')}
                                             </AlertDialogCancel>
                                             <AlertDialogAction
-                                                className="rounded-xl bg-red-600 hover:bg-red-700 text-white"
+                                                className="rounded-lg sm:rounded-xl bg-red-600 hover:bg-red-700 text-white"
                                                 onClick={() => {
                                                     setIdx(null);
                                                     deleteStudent({ student_id: studentbyid.id });
@@ -444,10 +637,14 @@ function StudentsPage() {
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
                                 </AlertDialog>
-                                <Button onClick={() => {
-                                    setIdx(null);
-                                    setIsEditOpen(true);
-                                }} className="bg-blue-600 hover:bg-blue-700 rounded-xl h-11 font-semibold shadow-md shadow-blue-200">
+
+                                <Button
+                                    onClick={() => {
+                                        setIdx(null);
+                                        setIsEditOpen(true);
+                                    }}
+                                    className="bg-blue-600 hover:bg-blue-700 rounded-lg sm:rounded-xl h-9 sm:h-10 md:h-11 font-semibold shadow-md shadow-blue-200 dark:shadow-none transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                                >
                                     {t('profile.edit')}
                                 </Button>
                             </div>
@@ -613,7 +810,7 @@ function StudentsPage() {
                     </div>
                 </div>
 
-                <div className="overflow-x-auto md:max-w-full max-w-84 border rounded-lg">
+                <div className="overflow-x-auto md:max-w-full sm:max-w-full max-w-87  border rounded-lg">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-[#121212] border-b">
@@ -633,7 +830,7 @@ function StudentsPage() {
                                     </td>
                                     <td className="p-4 text-gray-600">{student.class_name || t('list.table.noData')}</td>
                                     <td className="p-4 text-center">
-                                        <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">0</span>
+                                        <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">{student.total_rentals_count}</span>
                                     </td>
                                     <td className="p-4 text-gray-600 text-sm">{student.parent_phone || t('list.table.noData')}</td>
                                     <td className="p-4">

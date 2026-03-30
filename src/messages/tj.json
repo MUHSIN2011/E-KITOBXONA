@@ -94,7 +94,8 @@
       "withCompensation": "Бо ҷуброн"
     },
     "profile": {
-      "title": "Профили хонанда",
+      "title": "Профили",
+      "student": "хонанда",
       "active": "Фаъол",
       "inactive": "Ғайрифаъол",
       "class": "Синфи {className}",
@@ -113,7 +114,8 @@
         "cancel": "Бекор кардан",
         "confirm": "Нест кардан"
       },
-      "deleteSuccess": "Хонанда нест карда шуд!"
+      "deleteSuccess": "Хонанда нест карда шуд!",
+      "unpaid_debt": "Қарзи супориданашуда"
     },
     "edit": {
       "title": "Таҳрири профил",

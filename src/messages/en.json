@@ -130,7 +130,7 @@
       "withCompensation": "With Compensation"
     },
     "profile": {
-      "title": "Student Profile",
+      "title": "Profile",
       "active": "Active",
       "inactive": "Inactive",
       "class": "Class {className}",
@@ -149,7 +149,9 @@
         "cancel": "Cancel",
         "confirm": "Delete"
       },
-      "deleteSuccess": "Student deleted successfully!"
+      "deleteSuccess": "Student deleted successfully!",
+      "unpaid_debt": "Unpaid Debt",
+      "student": "student"
     },
     "edit": {
       "title": "Edit Profile",
@@ -353,7 +355,7 @@
     "sheet": {
       "loading": "Loading...",
       "wait": "Please wait",
-      "description": "Detailed information about the book",
+      "description": "Book Description",
       "author": "Author",
       "stats": {
         "total": "Total",
@@ -374,7 +376,6 @@
         "rentPrice": "Rent Price",
         "currency": "TJS"
       },
-      "description": "Book Description",
       "id": "ID",
       "date": "Date"
     },

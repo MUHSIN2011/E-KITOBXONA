@@ -10,74 +10,6 @@
     "regions": "Регионы"
   },
   "Dashboard": {
-    "welcome": "Добро пожаловать в систему",
-    "sidebar": {
-      "home": "Главная",
-      "books": "Книги",
-      "settings": "Настройки"
-    },
-    "SystemArchitecture": {
-      "title": "Архитектура Системы Учебников",
-      "subtitle": "Централизованный процесс распределения и управления книгами",
-      "elements": {
-        "systemUsers": {
-          "title": "Пользователи системы",
-          "description": "Модераторы и администраторы"
-        },
-        "textbooks": {
-          "title": "Учебники",
-          "description": "Издания и книги"
-        },
-        "students": {
-          "title": "Студенты",
-          "description": "Основные пользователи"
-        },
-        "database": {
-          "title": "База данных",
-          "description": "Данные системы"
-        },
-        "ministry": {
-          "title": "Министерство",
-          "description": "Государственный контроль"
-        },
-        "analytics": {
-          "title": "Аналитика",
-          "description": "Статистика системы"
-        },
-        "centralSystem": {
-          "title": "Центральная система",
-          "description": "Ядро управления",
-          "version": "V 1.0"
-        }
-      },
-      "stats": {
-        "systemUsers": "Пользователи системы",
-        "books": "Книги",
-        "centralSystem": "Центральная система",
-        "ministry": "Министерство образования",
-        "status": "Онлайн"
-      }
-    }
-  },
-  "LoginPage": {
-    "welcome": "Добро пожаловать",
-    "buttonForLogin": "Логин",
-    "LabelEmail": "Емаил",
-    "LabelPassWord": "Пароль",
-    "LabelForgetPassWord": "Забыли пароль?",
-    "subtitle": "Пожалуйста, введите информацию для входа",
-    "systemName": "E-KITOBXONA",
-    "systemDescription": "Система управления библиотекой",
-    "emailRequired": "Email обязателен",
-    "passwordRequired": "Пароль обязателен",
-    "welcomeMessage": "Добро пожаловать!",
-    "emailOrPasswordError": "Email или пароль неверны!",
-    "dataError": "Ошибка в данных",
-    "wifiError": "Пожалуйста, сначала подключитесь к WIFI!",
-    "emailPlaceholder": "email@example.com",
-    "passwordPlaceholder": "••••••••"
-  },
-  "Dashboard": {
     "academicYear": "Учебный год",
     "bookFundControl": "Государственный контроль книжных фондов",
     "closeYear": "Закрыть год",
@@ -103,6 +35,24 @@
     "errorDescription": "Пожалуйста, перезагрузите сайт!",
     "refreshButton": "Обновить",
     "refreshing": "Обновление..."
+  },
+  "LoginPage": {
+    "welcome": "Добро пожаловать",
+    "buttonForLogin": "Логин",
+    "LabelEmail": "Емаил",
+    "LabelPassWord": "Пароль",
+    "LabelForgetPassWord": "Забыли пароль?",
+    "subtitle": "Пожалуйста, введите информацию для входа",
+    "systemName": "E-KITOBXONA",
+    "systemDescription": "Система управления библиотекой",
+    "emailRequired": "Email обязателен",
+    "passwordRequired": "Пароль обязателен",
+    "welcomeMessage": "Добро пожаловать!",
+    "emailOrPasswordError": "Email или пароль неверны!",
+    "dataError": "Ошибка в данных",
+    "wifiError": "Пожалуйста, сначала подключитесь к WIFI!",
+    "emailPlaceholder": "email@example.com",
+    "passwordPlaceholder": "••••••••"
   },
   "StudentsPage": {
     "title": "Учащиеся",
@@ -138,7 +88,7 @@
       "withCompensation": "С компенсацией"
     },
     "profile": {
-      "title": "Профиль учащегося",
+      "title": "Профиль",
       "active": "Активный",
       "inactive": "Неактивный",
       "class": "Класс {className}",
@@ -157,7 +107,8 @@
         "cancel": "Отмена",
         "confirm": "Удалить"
       },
-      "deleteSuccess": "Учащийся удален!"
+      "deleteSuccess": "Учащийся удален!",
+      "unpaid_debt": "Неоплаченный долг"
     },
     "edit": {
       "title": "Редактирование профиля",
@@ -361,7 +312,7 @@
     "sheet": {
       "loading": "Загрузка...",
       "wait": "Пожалуйста, подождите",
-      "description": "Детальная информация о книге",
+      "description": "Описание книги",
       "author": "Автор",
       "stats": {
         "total": "Всего",
@@ -382,7 +333,6 @@
         "rentPrice": "Цена аренды",
         "currency": "TJS"
       },
-      "description": "Описание книги",
       "id": "ID",
       "date": "Дата"
     },

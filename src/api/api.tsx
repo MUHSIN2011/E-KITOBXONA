@@ -301,7 +301,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects', 'transfers', 'returns'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects', 'transfers', 'returns', 'Payments'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -555,10 +555,11 @@ export const Todo = createApi({
             providesTags: ['Todo'],
         }),
         CreateDamageReport: builder.mutation<any, number>({
-            query: (yearId) => ({
+            query: () => ({
                 url: `damage-reports/`,
                 method: 'POST',
             }),
+            invalidatesTags: ['Rentals'],
         }),
         GetTextbookById: builder.query<any, number>({
             query: (id) => `textbooks/${id}`,
@@ -757,6 +758,10 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['returns'],
         }),
+        getStudentFinance: builder.query<any, number>({
+            query: (student_id) => `finance/compensations/student/${student_id}`,
+            providesTags: ['Payments'],
+        }),
         sendQuestionToAi: builder.mutation<any, {
             question: string;
             context_type?: string;
@@ -773,7 +778,14 @@ export const Todo = createApi({
                     context_data: body.context_data || {}
                 },
             }),
-            // invalidatesTags: ['ChatAi'], 
+        }),
+        FinanceCompensationsPay: builder.mutation<any, { payment_id: number; amount_paid: number; paid_date: string; notes?: string }>({
+            query: ({ payment_id, amount_paid, paid_date, notes }) => ({
+                url: `/finance/compensations/${payment_id}/pay`,
+                method: 'POST',
+                body: { amount_paid, paid_date, notes },
+            }),
+            invalidatesTags: ['Payments'],
         }),
     }),
 });
@@ -840,5 +852,7 @@ export const {
     useGetReturnsSchoolByIdQuery,
     useReturnsSchoolCancelMutation,
     useApproveReturnMutation,
-    useSendQuestionToAiMutation
+    useSendQuestionToAiMutation,
+    useGetStudentFinanceQuery,
+    useFinanceCompensationsPayMutation
 } = Todo;

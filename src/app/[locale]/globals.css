@@ -118,6 +118,8 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    /* outline: 1px solid red !important; */
+
   }
 
   body {
@@ -165,7 +167,6 @@
   animation: fade-in 0.3s ease-out forwards;
 }
 
-/* Ин барои он ки текстҳои AI "часпида" набошанд */
 .ai-content p {
   margin-bottom: 8px;
 }
