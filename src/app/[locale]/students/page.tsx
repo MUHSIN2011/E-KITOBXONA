@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { TextAnimate } from '@/components/ui/text-animate'
 import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useDeleteStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useGetStudentFinanceQuery, useUpdateStudentMutation, useFinanceCompensationsPayMutation } from '@/api/api'
 import CardsStudent from '@/components/CardsStudent'
-import { AlertCircle, Book, BookOpen, Calendar, DollarSign, FileText, Funnel, Hash, Phone, User, Users } from 'lucide-react'
+import { AlertCircle, Book, BookOpen, Calendar, DollarSign, FileText, Funnel, Hash, Phone, Search, SearchCheck, SearchX, User, Users } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input';
 import {
@@ -90,7 +90,7 @@ function StudentsPage() {
     const handlePay = async (debt: any) => {
         const enteredAmount = Number(amount);
 
-        if (enteredAmount > debt.amount_remaining ) {
+        if (enteredAmount > debt.amount_remaining) {
             toast.error(`Маблағ ${enteredAmount} (TJS) наметавонад аз ${debt.amount_remaining} сомон зиёд бошад!`);
             return;
         }
@@ -822,24 +822,35 @@ function StudentsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {students?.items?.map((student: IGetStudents) => (
-                                <tr key={student.id} onClick={() => setIdx(student.id)} className="hover:bg-gray-50/50 transition-colors">
-                                    <td className="p-4">
-                                        <div className="font-semibold text-gray-800">{student.first_name} {student.last_name}</div>
-                                        <div className="text-xs text-gray-400">{student.middle_name}</div>
-                                    </td>
-                                    <td className="p-4 text-gray-600">{student.class_name || t('list.table.noData')}</td>
-                                    <td className="p-4 text-center">
-                                        <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">{student.total_rentals_count}</span>
-                                    </td>
-                                    <td className="p-4 text-gray-600 text-sm">{student.parent_phone || t('list.table.noData')}</td>
-                                    <td className="p-4">
-                                        <span className="text-xs py-1 px-2 bg-gray-100 rounded text-gray-500 truncate max-w-[150px] inline-block">
-                                            {student.notes || t('list.table.noNotes')}
-                                        </span>
+                            {students?.items && students.items.length > 0 ? (
+                                students.items.map((student: IGetStudents) => (
+                                    <tr key={student.id} onClick={() => setIdx(student.id)} className="hover:bg-gray-50/50 transition-colors">
+                                        <td className="p-4">
+                                            <div className="font-semibold text-gray-800">{student.first_name} {student.last_name}</div>
+                                            <div className="text-xs text-gray-400">{student.middle_name}</div>
+                                        </td>
+                                        <td className="p-4 text-gray-600">{student.class_name || t('list.table.noData')}</td>
+                                        <td className="p-4 text-center">
+                                            <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">{student.total_rentals_count}</span>
+                                        </td>
+                                        <td className="p-4 text-gray-600 text-sm">{student.parent_phone || t('list.table.noData')}</td>
+                                        <td className="p-4">
+                                            <span className="text-xs py-1 px-2 bg-gray-100 rounded text-gray-500 truncate max-w-[150px] inline-block">
+                                                {student.notes || t('list.table.noNotes')}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={5} className="p-10 text-center text-gray-500 italic">
+                                        <div className="flex flex-col items-center justify-center gap-2">
+                                            <span><SearchX className='size-10 ' /></span>
+                                            Ягон талаба ёфт нашуд
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

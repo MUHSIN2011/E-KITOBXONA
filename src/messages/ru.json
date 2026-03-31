@@ -54,6 +54,12 @@
     "emailPlaceholder": "email@example.com",
     "passwordPlaceholder": "••••••••"
   },
+  "ForgetPassword": {
+    "title": "Восстановление пароля",
+    "subtitle": "Введите свой email, чтобы получить новый пароль",
+    "sendButton": "Отправить пароль",
+    "backToLogin": "Вернуться ко входу"
+  },
   "StudentsPage": {
     "title": "Учащиеся",
     "subtitle": "Управление учащимися и их арендами",

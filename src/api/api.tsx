@@ -642,7 +642,7 @@ export const Todo = createApi({
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['Rentals'],
+            invalidatesTags: ['Rentals', 'Supplies'],
         }),
         bookRequests: builder.query<IBookRequest[], void>({
             query: () => '/book-requests/',
@@ -787,6 +787,13 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['Payments'],
         }),
+        GetCopiesSummary: builder.query<any, { skip?: number; limit?: number }>({
+            query: ({ skip = 0, limit = 100 }) => ({
+                url: '/copies/summary',
+                params: { skip, limit },
+            }),
+            providesTags: ['Copies'],
+        }),
     }),
 });
 
@@ -854,5 +861,6 @@ export const {
     useApproveReturnMutation,
     useSendQuestionToAiMutation,
     useGetStudentFinanceQuery,
-    useFinanceCompensationsPayMutation
+    useFinanceCompensationsPayMutation,
+    useGetCopiesSummaryQuery
 } = Todo;

@@ -60,6 +60,12 @@
     "emailPlaceholder": "email@example.com",
     "passwordPlaceholder": "••••••••"
   },
+  "ForgetPassword": {
+    "title": "Фаромӯш кардани рамз",
+    "subtitle": "Почтаи электронии худро ворид кунед, то рамзи нав гиред",
+    "sendButton": "Фиристодани рамз",
+    "backToLogin": "Бозгашт ба воридшавӣ"
+  },
   "StudentsPage": {
     "title": "Хонандагон",
     "subtitle": "Идоракунии хонандагон ва иҷораҳои онҳо",

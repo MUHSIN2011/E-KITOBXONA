@@ -27,6 +27,12 @@
     "emailPlaceholder": "email@example.com",
     "passwordPlaceholder": "••••••••"
   },
+  "ForgetPassword": {
+    "title": "Forgot Password",
+    "subtitle": "Enter your email to get a new password",
+    "sendButton": "Send Password",
+    "backToLogin": "Back to Login"
+  },
   "Dashboard": {
     "academicYear": "Academic Year",
     "bookFundControl": "State control of book funds",

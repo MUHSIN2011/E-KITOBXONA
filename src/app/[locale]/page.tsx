@@ -150,7 +150,7 @@ export default function LoginPage() {
           </form>
           <div className="mt-4 text-center">
             <Link
-              href="/forgot-password"
+              href="/forget-password"
               className="text-xs text-blue-500  hover:text-blue-600"
             >{l('LabelForgetPassWord')}</Link>
           </div>

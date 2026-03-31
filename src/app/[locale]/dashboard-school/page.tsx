@@ -102,9 +102,9 @@ function Page() {
                 </section>
 
                 <SchoolFinancialStatus
-                    balance={budget?.balance}
-                    rentalIncome={budget?.total_income}
-                    totalExpenses={budget?.total_expenses}
+                    balance={budget?.balance || '0'}
+                    rentalIncome={budget?.total_income || '0'}
+                    totalExpenses={budget?.total_expenses || '0'}
                     paybackPercent={budget?.total_expenses > 0
                         ? (budget.total_income / budget.total_expenses) * 100
                         : 0
