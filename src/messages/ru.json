@@ -52,7 +52,8 @@
     "dataError": "Ошибка в данных",
     "wifiError": "Пожалуйста, сначала подключитесь к WIFI!",
     "emailPlaceholder": "email@example.com",
-    "passwordPlaceholder": "••••••••"
+    "passwordPlaceholder": "••••••••",
+    "backToLogin": ""
   },
   "ForgetPassword": {
     "title": "Восстановление пароля",

@@ -13,6 +13,11 @@ const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NODE_ENV === 'production' 
+      ? 'https://e-kitobxona.vercel.app' 
+      : 'http://localhost:3000'
+  ),
   title: "E-KITOBXONA | Системаи идоракунии китобҳои дарсӣ",
 
   description: "Системаи давлатии автоматикунонидашудаи баҳисобгирии китобҳои дарсии мактабӣ дар Ҷумҳурии Тоҷикистон. Назорат ва тақсимоти рақамии захираҳои таълимӣ.",

@@ -2,25 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BookOpen, Lock, Mail, Eye, EyeOff, KeyRound } from "lucide-react";
+import { BookOpen, Mail, } from "lucide-react";
 import Link from "next/link";
-import { useLoginUserMutation } from "@/api/api";
+import { useForgotPasswordMutation } from "@/api/api";
 import { useForm } from "react-hook-form";
-import { SaveToken } from "@/utils/axios";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from 'react-hot-toast';
-import { jwtDecode } from "jwt-decode";
-import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
 function Page() {
 
     const router = useRouter()
-    const locale = useLocale();
     const t = useTranslations('ForgetPassword')
     const l = useTranslations('LoginPage')
-    const [loginUser, { isLoading }] = useLoginUserMutation();
-    const [showPassword, setShowPassword] = useState(false);
+    const [ForgotPassword, { isLoading }] = useForgotPasswordMutation();
 
 
     const {
@@ -31,44 +26,12 @@ function Page() {
 
     const onSubmit = async (formData: any) => {
         try {
-            const result = await loginUser(formData).unwrap();
-
-            if (result.access_token) {
-                SaveToken(result.access_token, result.refresh_token);
-
-                const decoded = jwtDecode<any>(result.access_token);
-                const role = decoded.role;
-
-                localStorage.setItem("user", JSON.stringify({
-                    role: role,
-                    email: decoded.email,
-                    id: decoded.sub
-                }));
-
-                toast.success(l('welcomeMessage'));
-
-                setTimeout(() => {
-                    let path = '/dashboard';
-                    if (role === 'school') path = '/dashboard-school';
-                    else if (role === 'region') path = '/dashboard-region';
-                    else if (role === 'district') path = '/dashboard-district';
-
-                    router.push(`/${locale}${path}`);
-                }, 500);
-            }
+            await ForgotPassword(formData).unwrap();
+            toast.success('письмо будет отправлено на вашу почту');
+            router.push(`/Verify-Reset-Code`)
+            localStorage.setItem("ForgetPassword", JSON.stringify({ email: formData.email }));
         } catch (error: any) {
-            if (error.status === 401) {
-                toast.error(l('emailOrPasswordError'));
-                return;
-            }
-
-            const serverMessage = error.data?.detail?.[0]?.msg || error.data?.detail || null;
-
-            if (serverMessage) {
-                toast.error(typeof serverMessage === 'string' ? serverMessage : l('dataError'));
-            } else {
-                toast.error(l('wifiError'));
-            }
+            toast.success('Хатоги ҳангоми равон кардан!');
         }
     };
 

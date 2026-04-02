@@ -1,15 +1,23 @@
 import { GetToken } from '@/utils/axios';
 import { createApi, fetchBaseQuery, BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 
+
 interface ILoginRequest {
     email: string;
     password: string;
 }
-
 interface ILoginResponse {
     access_token: string;
     refresh_token: string;
     token_type: string;
+}
+
+interface IForgotPasswordRequest {
+    email: string;
+}
+export interface IVerifyResetCodeRequest {
+    email: string;
+    code: string;
 }
 
 interface IGetRegions {
@@ -308,6 +316,30 @@ export const Todo = createApi({
                 url: `auth/login`,
                 method: 'POST',
                 body: credentials,
+            }),
+            invalidatesTags: ['Todo'],
+        }),
+        ForgotPassword: builder.mutation<any, IForgotPasswordRequest>({
+            query: (email) => ({
+                url: `auth/forgot-password`,
+                method: 'POST',
+                body: email,
+            }),
+            invalidatesTags: ['Todo'],
+        }),
+        VerifyResetCode: builder.mutation<any, IVerifyResetCodeRequest>({
+            query: ({ email, code }) => ({
+                url: `auth/verify-reset-code`,
+                method: 'POST',
+                body: { email, code },
+            }),
+            invalidatesTags: ['Todo'],
+        }),
+        ResetPassword: builder.mutation<any, any>({
+            query: ({ email, code, new_password }) => ({
+                url: `auth/reset-password`,
+                method: 'POST',
+                body: { email, code,new_password },
             }),
             invalidatesTags: ['Todo'],
         }),
@@ -799,6 +831,9 @@ export const Todo = createApi({
 
 export const {
     useLoginUserMutation,
+    useForgotPasswordMutation,
+    useVerifyResetCodeMutation,
+    useResetPasswordMutation,
     useGetRegionsQuery,
     useGetTextbooksQuery,
     useGetStudentsQuery,

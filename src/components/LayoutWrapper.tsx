@@ -40,6 +40,8 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
     const isRegisterPage = pathname.includes("/register");
     const isforgotPasswordPage = pathname.includes("/forget-password");
+    const isVerifyResetCodePage = pathname.includes("/Verify-Reset-Code");
+    const isResetPasswordPage = pathname.includes("/Reset-Password");
 
 
     useEffect(() => {
@@ -69,7 +71,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
             pathname.endsWith('/ru') ||
             pathname.endsWith('/en') ||
             pathname.includes('/register') ||
-            pathname.includes('/forget-password');
+            pathname.includes('/forget-password') ||
+            pathname.includes('/Verify-Reset-Code') ||
+            pathname.includes('/Reset-Password');
 
         if (!token && !isAuthPage) {
             router.push('/');
@@ -114,7 +118,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
     return (
         <div className="flex min-h-screen w-full ">
-            {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && (
+            {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage && (
                 <>
                     <div className="lg:hidden fixed top-3.5 left-4 z-50">
                         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -200,8 +204,8 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                 </>
             )}
 
-            <main className={`flex-1 min-h-screen bg-slate-50 dark:bg-black transition-all duration-300 ease-in-out ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage ? (isSidebarOpen ? "lg:ml-64" : "ml-0") : ""}`}>
-                {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && (
+            <main className={`flex-1 min-h-screen bg-slate-50 dark:bg-black transition-all duration-300 ease-in-out ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage ? (isSidebarOpen ? "lg:ml-64" : "ml-0") : ""}`}>
+                {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage && (
                     <header className={`fixed md:w-auto  w-full top-0 right-0 z-20 h-16 bg-white/80 dark:bg-[#0f1115]/80 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64" : "left-0"}`}>
                         <div className="flex items-center gap-4">
                             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden lg:flex items-center justify-center size-9 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-500">
@@ -275,12 +279,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                     </header>
                 )}
 
-                <div className={`w-full ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage ? "pt-20  md:px-8 pb-8  dark:bg-black  bg-gray-50" : "h-full flex dark:bg-[#121a29] items-center justify-center  bg-gray-50"}`}>
+                <div className={`w-full ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage ? "pt-20  md:px-8 pb-8  dark:bg-black  bg-gray-50" : "h-full flex dark:bg-[#121a29] items-center justify-center  bg-gray-50"}`}>
                     <div className="max-w-7xl mx-auto w-full">
                         {children}
                     </div>
                 </div>
-                {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && (
+                {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage && (
                     <ChatAIComponent />
                 )}
             </main>
