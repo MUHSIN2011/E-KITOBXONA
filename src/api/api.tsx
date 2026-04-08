@@ -422,25 +422,35 @@ export const Todo = createApi({
             providesTags: ['Todo'],
         }),
         GetBooksSchool: builder.query<IGetbooksSchoolResponse, {
-            textbook_id?: number,
+            textbook_id?: number | 'all', 
             subject?: string,
             condition?: string,
             status?: string,
-            skip: number,
-            limit: number
-        }>({
-            query: ({ textbook_id, subject, condition, status, skip, limit }) => ({
-                url: `copies/`,
-                params: {
+            skip?: number,
+            limit?: number,
+        } | void>({query: (args) => {
+                const {
                     textbook_id,
-                    subject: subject !== 'all' ? subject : undefined,
-                    condition: condition !== 'all' ? condition : undefined,
-                    status_filter: status !== 'all' ? status : undefined,
-                    skip,
-                    limit
-                },
-                method: 'GET',
-            }),
+                    subject,
+                    condition,
+                    status,
+                    skip = 0,
+                    limit = 1000
+                } = args || {};
+
+                return {
+                    url: `copies/`,
+                    params: {
+                        textbook_id: (textbook_id && textbook_id !== 'all') ? textbook_id : undefined,
+                        subject: subject !== 'all' ? subject : undefined,
+                        condition: condition !== 'all' ? condition : undefined,
+                        status_filter: status !== 'all' ? status : undefined,
+                        skip,
+                        limit
+                    },
+                    method: 'GET',
+                };
+            },
             providesTags: ['Copies'],
         }),
         GetReportsOverview: builder.query<{

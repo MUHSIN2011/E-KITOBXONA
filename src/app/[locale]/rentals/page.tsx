@@ -55,10 +55,7 @@ export default function RentalsPage() {
     });
 
     const { data: studentsData } = useGetStudentsQuery({ search: searchTerm, skip: 0, limit: 20 });
-    const { data: booksSchool } = useGetBooksSchoolQuery({
-        skip: 0,
-        limit: 20
-    });
+    const { data: booksSchool } = useGetBooksSchoolQuery();
 
     const [rentBook, { isLoading: isRentLoading }] = useRentTextbookMutation();
     const [returnBook, { isLoading: isReturnLoading }] = useReturnBookMutation();
