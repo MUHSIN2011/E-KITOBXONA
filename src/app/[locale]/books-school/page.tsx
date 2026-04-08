@@ -21,16 +21,13 @@ function Page() {
     const [subject, setSubject] = useState<string>("all");
     const [search, setSearch] = useState<string>("");
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 10;
+    const limit = 100;
     const [condition, setCondition] = useState<string>("all");
     const [status, setStatus] = useState<string>("all");
     const [summery, setSummery] = useState<boolean>(true);
     const [Textbook_idx, setTextbook_idx] = useState<number>();
 
-    const { data: summaryData, isLoading } = useGetCopiesSummaryQuery({
-        skip: (currentPage - 1) * limit,
-        limit
-    });
+    const { data: summaryData, isLoading } = useGetCopiesSummaryQuery();
 
 
     const { data: books, isLoading: isLoadingbooks } = useGetBooksSchoolQuery(

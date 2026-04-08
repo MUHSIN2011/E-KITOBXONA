@@ -339,7 +339,7 @@ export const Todo = createApi({
             query: ({ email, code, new_password }) => ({
                 url: `auth/reset-password`,
                 method: 'POST',
-                body: { email, code,new_password },
+                body: { email, code, new_password },
             }),
             invalidatesTags: ['Todo'],
         }),
@@ -819,11 +819,18 @@ export const Todo = createApi({
             }),
             invalidatesTags: ['Payments'],
         }),
-        GetCopiesSummary: builder.query<any, { skip?: number; limit?: number }>({
-            query: ({ skip = 0, limit = 100 }) => ({
-                url: '/copies/summary',
-                params: { skip, limit },
-            }),
+        GetCopiesSummary: builder.query<any, { skip?: number; limit?: number } | void>({
+            query: (args) => {
+                const params: any = {};
+                if (args) {
+                    if (args.skip !== undefined) params.skip = args.skip;
+                    if (args.limit !== undefined) params.limit = args.limit;
+                }
+                return {
+                    url: '/copies/summary',
+                    params: params,
+                };
+            },
             providesTags: ['Copies'],
         }),
     }),
