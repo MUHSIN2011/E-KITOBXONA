@@ -3,14 +3,15 @@ import CardsStudent from '@/components/CardsStudent'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TextAnimate } from '@/components/ui/text-animate'
-import { Caravan, ArrowRightLeft, Clock, BadgeCheck, Funnel, SearchAlert, Info, CircleCheckBig, Calendar, ArrowRight, FileText, BookOpen, XCircle, CheckCircle2 } from 'lucide-react'
+import { Caravan, ArrowRightLeft, Clock, BadgeCheck, Funnel, SearchAlert, Info, CircleCheckBig, Calendar, ArrowRight, FileText, BookOpen, XCircle, CheckCircle2, Download } from 'lucide-react'
 import TransferDialog from '@/components/TransferDialog'
-import React, { useState } from 'react'
-import { useGetMeQuery, useLazyTransfersByIdQuery, useMyTransfersQuery, useTransfersCancelMutation } from '@/api/api'
+import React, { useState, useEffect } from 'react'
+import { useGetMeQuery, useGetTransferPdfQuery, useLazyTransfersByIdQuery, useMyTransfersQuery, useTransfersCancelMutation } from '@/api/api'
 import { XIcon } from 'lucide-react';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import toast, { Toaster } from 'react-hot-toast'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import { AiHelperProps } from '@/components/AiHelperProps'
 
 export default function Page() {
     const [infoTransfersById, setInfoTransfersById] = useState<any>(null);
@@ -19,6 +20,8 @@ export default function Page() {
     const { data: data, isLoading: isLoadingMyTransfers } = useMyTransfersQuery() as { data: { total: number; items: any[] } | undefined; isLoading: boolean }
     const [transfersCancel, { isLoading: isLoadingtransferscancel }] = useTransfersCancelMutation()
     const [triggerGetInfo, { isFetching }] = useLazyTransfersByIdQuery();
+    const [downloadTransferId, setDownloadTransferId] = useState<number | null>(null);
+    const { data: pdfData, isFetching: isDownloading } = useGetTransferPdfQuery(downloadTransferId || 0, { skip: !downloadTransferId });
     const totalTransfers = data?.total || 0;
     const pendingCount = data?.items?.filter((item: any) => item.status === 'pending').length || 0;
     const completedCount = data?.items?.filter((item: any) => item.status === 'accepted' || item.status === 'completed').length || 0;
@@ -42,6 +45,25 @@ export default function Page() {
             toast.error("Хатогӣ ҳангоми дидани интиқол");
         }
     }
+
+    const handleDownloadPdf = (id: number) => {
+        setDownloadTransferId(id);
+    };
+
+    // Effect to handle PDF download when data is ready
+    useEffect(() => {
+        if (pdfData && downloadTransferId) {
+            const url = window.URL.createObjectURL(pdfData);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `transfer-act-${downloadTransferId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            setDownloadTransferId(null);
+        }
+    }, [pdfData, downloadTransferId]);
 
     return (
         <div className='md:px-0 px-3'>
@@ -113,7 +135,7 @@ export default function Page() {
                                         {new Date(infoTransfersById?.created_at).toLocaleString('tg-TJ')}
                                     </div>
                                 </div>
-                                <div className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm border ${infoTransfersById?.status === 'pending'
+                                <div className={`flex mt-3 items-center gap-1.5 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm border ${infoTransfersById?.status === 'pending'
                                     ? 'bg-yellow-100/90 text-yellow-800 border-yellow-200 dark:bg-yellow-500/20 dark:text-yellow-400 dark:border-yellow-500/30'
                                     : infoTransfersById?.status === 'cancelled'
                                         ? 'bg-red-100/90 text-red-800 border-red-200 dark:bg-red-500/20 dark:text-red-400 dark:border-red-500/30'
@@ -135,89 +157,98 @@ export default function Page() {
                         </div>
 
                         <div className="p-6 space-y-6 bg-white dark:bg-[#1a1a1a] max-h-[70vh] overflow-y-auto custom-scrollbar">
-                            <DialogDescription className="space-y-6">
-
-                                <div className="relative flex items-center justify-between gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-[#262626] border border-gray-100 dark:border-gray-800">
-                                    <div className="flex-1">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Аз мактаби</p>
-                                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{infoTransfersById?.from_school_name}</p>
-                                    </div>
-                                    <div className="flex flex-col items-center">
-                                        <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                                            <ArrowRight className="w-4 h-4 text-[#0950c3]" />
+                            <DialogDescription asChild>
+                                <div className="space-y-6">
+                                    <div className="relative flex items-center justify-between gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-[#262626] border border-gray-100 dark:border-gray-800">
+                                        <div className="flex-1">
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Аз мактаби</p>
+                                            <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{infoTransfersById?.from_school_name}</p>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                                                <ArrowRight className="w-4 h-4 text-[#0950c3]" />
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 text-right">
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Ба мактаби</p>
+                                            <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{infoTransfersById?.to_school_name}</p>
                                         </div>
                                     </div>
-                                    <div className="flex-1 text-right">
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Ба мактаби</p>
-                                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{infoTransfersById?.to_school_name}</p>
-                                    </div>
-                                </div>
 
-                                {/* Сабаб */}
-                                <div className="flex items-start gap-3 p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50">
-                                    <div className="mt-1 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
-                                        <FileText className="w-3 h-3 text-blue-600" />
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-bold text-blue-400 uppercase">Сабаби интиқол</p>
-                                        <p className="text-sm italic text-blue-900 dark:text-blue-300">"{infoTransfersById?.reason}"</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-end">
-                                        <h3 className="text-sm font-bold flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                                            <BookOpen className="w-4 h-4 text-blue-500" />
-                                            Рӯйхати китобҳо
-                                        </h3>
-                                        <span className="text-[10px] font-medium px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-md">
-                                            Ҷамъ: {infoTransfersById?.items?.length} дона
-                                        </span>
+                                    <div className="flex items-start gap-3 p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50">
+                                        <div className="mt-1 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0">
+                                            <FileText className="w-3 h-3 text-blue-600" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] font-bold text-blue-400 uppercase">Сабаби интиқол</p>
+                                            <p className="text-sm italic text-blue-900 dark:text-blue-300">"{infoTransfersById?.reason}"</p>
+                                        </div>
                                     </div>
 
-                                    <div className="border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
-                                        <table className="w-full text-left text-sm">
-                                            <thead className="bg-gray-50 dark:bg-[#212121] border-b border-gray-100 dark:border-gray-800">
-                                                <tr>
-                                                    <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Ном ва Синф</th>
-                                                    <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Инв. №</th>
-                                                    <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Ҳолат</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
-                                                {infoTransfersById?.items?.map((item: any) => (
-                                                    <tr key={item.id} className="hover:bg-gray-50/50 dark:hover:bg-[#252525] transition-colors">
-                                                        <td className="px-4 py-3">
-                                                            <p className="font-semibold text-gray-800 dark:text-gray-200 leading-tight">{item.textbook_title}</p>
-                                                            <p className="text-[10px] text-gray-400 mt-0.5 font-medium">Синфи {item.grade} • {item.subject_name}</p>
-                                                        </td>
-                                                        <td className="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">{item.inventory_number}</td>
-                                                        <td className="px-4 py-3">
-                                                            <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-bold border ${item.condition === 'new'
-                                                                ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                                                                : 'bg-orange-50 text-orange-600 border-orange-100'
-                                                                }`}>
-                                                                {item.condition === 'new' ? 'НАВ' : 'КӮҲНА'}
-                                                            </span>
-                                                        </td>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-end">
+                                            <h3 className="text-sm font-bold flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                                                <BookOpen className="w-4 h-4 text-blue-500" />
+                                                Рӯйхати китобҳо
+                                            </h3>
+                                            <span className="text-[10px] font-medium px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-md">
+                                                Ҷамъ: {infoTransfersById?.items?.length} дона
+                                            </span>
+                                        </div>
+
+                                        <div className="border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+                                            <table className="w-full text-left text-sm">
+                                                <thead className="bg-gray-50 dark:bg-[#212121] border-b border-gray-100 dark:border-gray-800">
+                                                    <tr>
+                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Ном ва Синф</th>
+                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Инв. №</th>
+                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Ҳолат</th>
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                                                    {infoTransfersById?.items?.map((item: any) => (
+                                                        <tr key={item.id} className="hover:bg-gray-50/50 dark:hover:bg-[#252525] transition-colors">
+                                                            <td className="px-4 py-3">
+                                                                <p className="font-semibold text-gray-800 dark:text-gray-200 leading-tight">{item.textbook_title}</p>
+                                                                <p className="text-[10px] text-gray-400 mt-0.5 font-medium">Синфи {item.grade} • {item.subject_name}</p>
+                                                            </td>
+                                                            <td className="px-4 py-3 font-mono text-xs text-blue-600 dark:text-blue-400">{item.inventory_number}</td>
+                                                            <td className="px-4 py-3">
+                                                                <span className={`inline-flex px-2 py-0.5 rounded-lg text-[10px] font-bold border ${item.condition === 'new'
+                                                                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                                                    : 'bg-orange-50 text-orange-600 border-orange-100'
+                                                                    }`}>
+                                                                    {item.condition === 'new' ? 'НАВ' : 'КӮҲНА'}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </DialogDescription>
                         </div>
 
-                        <div className="p-4 bg-gray-50 dark:bg-[#1f1f1f] border-t border-gray-100 dark:border-gray-800 flex justify-end">
-                            <Button onClick={() => setInfoTransfersById(null)} className="bg-[#0950c3] hover:bg-blue-700 text-white rounded-xl px-8 py-2 font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
+                        <div className="p-4 bg-gray-50 dark:bg-[#1f1f1f] border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
+                            <AiHelperProps id={infoTransfersById?.id} type="transfer" />
+                            <Button
+                                onClick={() => handleDownloadPdf(infoTransfersById?.id)}
+                                disabled={isDownloading}
+                                className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-1 font-bold flex items-center gap-2 transition-all active:scale-95"
+                            >
+                                <Download className="w-4 h-4" />
+                                {isDownloading ? 'Дар ҳоли боргирӣ...' : 'Скачат PDF'}
+                            </Button>
+                            <Button onClick={() => setInfoTransfersById(null)} className="bg-[#0950c3] hover:bg-blue-700 text-white rounded-xl px-4 py-1 font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
                                 Фаҳмо
                             </Button>
                         </div>
                     </DialogContent>
                 </Dialog>
 
-                <div className="overflow-x-auto md:max-w-full max-w-84 border rounded-lg dark:border-gray-700">
+                <div className="overflow-x-auto md:max-w-full max-w-85 border rounded-lg dark:border-gray-700">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-[#2a2a2a] border-b dark:border-gray-700">

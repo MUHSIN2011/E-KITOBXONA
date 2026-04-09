@@ -2,14 +2,17 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot, Loader2 } from 'lucide-react';
 import { useSendQuestionToAiMutation } from '@/api/api';
 import ReactMarkdown from 'react-markdown';
+import { useParams, usePathname } from 'next/navigation';
 
 interface Message {
     role: 'user' | 'ai';
     text: string;
-    disclaimer?: string; // Майдони нав
+    disclaimer?: string
 }
 
 function ChatAIComponent() {
+    const params = useParams();
+    const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
@@ -18,14 +21,12 @@ function ChatAIComponent() {
 
     const [sendQuestion, { isLoading }] = useSendQuestionToAiMutation();
 
-    // Auto scroll to bottom
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages, isLoading]);
 
-    // Focus input when chat opens
     useEffect(() => {
         if (isOpen && inputRef.current) {
             setTimeout(() => {
@@ -34,19 +35,37 @@ function ChatAIComponent() {
         }
     }, [isOpen]);
 
+    const getContext = () => {
+        let context_type = "";
+        if (pathname.includes('books-school')) context_type = "book";
+        if (pathname.includes('transfer')) context_type = "transfer";
+        if (pathname.includes('supplies')) context_type = "supplies";
+        if (pathname.includes('inventory')) context_type = "inventory";
+        if (pathname.includes('dashboard')) context_type = "overview";
+
+        const context_id = params.GetById ? Number(params.GetById) : undefined;
+        console.log(params);
+
+
+        return { context_type, context_id };
+    };
+
     const handleSend = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!input.trim() || isLoading) return;
 
         const userText = input.trim();
         setInput('');
-
-        // Add user message
         setMessages(prev => [...prev, { role: 'user', text: userText }]);
+
+        const { context_type, context_id } = getContext();
 
         try {
             const response = await sendQuestion({
                 question: userText,
+                context_type: context_type,
+                context_id: context_id,
+                context_data: {}
             }).unwrap();
 
             if (response?.answer) {
@@ -57,12 +76,10 @@ function ChatAIComponent() {
                 }]);
             }
         } catch (err: any) {
-            if (err.status === 503) {
-                setMessages(prev => [...prev, {
-                    role: 'ai',
-                    text: "😔 Бубахшед, ёвари AI вақтинча дастнорас аст. Лутфан дертар кӯшиш кунед."
-                }]);
-            }
+            setMessages(prev => [...prev, {
+                role: 'ai',
+                text: "😔 Хатогӣ ҳангоми суҳбат бо AI."
+            }]);
         }
     };
 

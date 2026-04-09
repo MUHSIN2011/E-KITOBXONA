@@ -102,6 +102,137 @@
       }
     }
   },
+  "SchoolDashboard": {
+    "stats": {
+      "totalBooks": "Total Books",
+      "totalBooksDesc": "In school fund",
+      "rented": "Rented",
+      "rentedDesc": "In students' hands",
+      "lost": "Lost/Damaged",
+      "lostDesc": "Lost or damaged",
+      "students": "Students",
+      "studentsDesc": "Active in system"
+    },
+    "charts": {
+      "annualStatistics": "Annual Statistics",
+      "bookDistribution": "Book Distribution"
+    }
+  },
+  "SchoolFinancialStatus": {
+    "budget": {
+      "title": "Current Budget",
+      "description": "Total school balance"
+    },
+    "expenses": {
+      "title": "Expenses",
+      "description": "Spent amount"
+    },
+    "income": {
+      "title": "Income (Rental)",
+      "description": "Parents' payments"
+    },
+    "payback": {
+      "title": "Book Payback",
+      "fullCovered": "Book costs fully covered",
+      "notCovered": "Funds not yet fully recovered"
+    }
+  },
+  "DashboardFlow": {
+    "title": "Book Rental Dynamics",
+    "description": "Number of books issued in the last 12 months"
+  },
+  "ChartPieLabel": {
+    "title": "Book Fund Status",
+    "description": "Distribution by status",
+    "total": "Copies",
+    "totalLabel": "Total: {count} copies",
+    "status": {
+      "reserved": "Reserved",
+      "available": "Available",
+      "rented": "Rented",
+      "lost": "Lost",
+      "damaged": "Damaged"
+    }
+  },
+  "BooksSchoolPage": {
+    "title": "Book Management",
+    "subtitle": "Control and management of textbooks everywhere",
+    "addButton": "+ Add Book",
+    "stats": {
+      "totalBooks": "Total Books",
+      "new": "New",
+      "rented": "Rented",
+      "damaged": "Damaged"
+    },
+    "list": {
+      "title": "Textbooks",
+      "description": "Complete list of all textbooks in the system",
+      "searchPlaceholder": "Search...",
+      "condition": {
+        "placeholder": "Condition",
+        "all": "All Conditions",
+        "new": "New",
+        "good": "Good",
+        "fair": "Fair",
+        "poor": "Poor",
+        "damaged": "Damaged",
+        "written_off": "Written Off"
+      },
+      "status": {
+        "placeholder": "Status",
+        "all": "All Statuses",
+        "available": "In Stock",
+        "rented": "Rented",
+        "lost": "Lost",
+        "reserved": "Reserved"
+      },
+      "subject": {
+        "placeholder": "All",
+        "all": "All Subjects",
+        "math": "Mathematics",
+        "russian": "Russian Language",
+        "tajik": "Tajik Language",
+        "english": "English Language",
+        "physics": "Physics",
+        "chemistry": "Chemistry",
+        "biology": "Biology",
+        "history": "History",
+        "geography": "Geography",
+        "literature": "Literature",
+        "informatics": "Informatics",
+        "other": "Other"
+      },
+      "viewToggle": {
+        "card": "Card View",
+        "table": "Table View"
+      },
+      "table": {
+        "bookName": "Book Title / Inventory",
+        "id": "ID",
+        "grade": "Grade",
+        "publicationYear": "Publication Year",
+        "condition": "Condition",
+        "status": "Status",
+        "new": "New",
+        "old": "Old",
+        "rented": "Rented",
+        "stock": "Stock"
+      },
+      "noBooks": "No books found",
+      "loading": "Loading...",
+      "pagination": {
+        "showing": "Showing {count} of {total} books",
+        "prev": "Previous",
+        "next": "Next"
+      }
+    },
+    "summary": {
+      "grade": "Grade",
+      "subject": "Subject",
+      "quantity": "Quantity",
+      "rented": "Rented"
+    }
+  },
   "StudentsPage": {
     "title": "Students",
     "subtitle": "Manage students and their rentals",

@@ -42,6 +42,137 @@
       "settings": "Танзимот"
     }
   },
+  "SchoolDashboard": {
+    "stats": {
+      "totalBooks": "Ҳамагӣ Китобҳо",
+      "totalBooksDesc": "Дар фонди мактаб",
+      "rented": "Дар иҷора",
+      "rentedDesc": "Дар дасти хонандагон",
+      "lost": "Гумшуда/Зарардида",
+      "lostDesc": "Гумшуда ё зарардида",
+      "students": "Хонандагон",
+      "studentsDesc": "Фаъол дар система"
+    },
+    "charts": {
+      "annualStatistics": "Статистикаи солона",
+      "bookDistribution": "Тақсимоти китобҳо"
+    }
+  },
+  "SchoolFinancialStatus": {
+    "budget": {
+      "title": "Бюджети ҷорӣ",
+      "description": "Баланси умумии мактаб"
+    },
+    "expenses": {
+      "title": "Хароҷот",
+      "description": "Маблағи сарфшуда"
+    },
+    "income": {
+      "title": "Даромад (Иҷора)",
+      "description": "Ҳисоби волидайн"
+    },
+    "payback": {
+      "title": "Худмаблағгузории китобҳо",
+      "fullCovered": "Хароҷоти китобҳо пурра ҷуброн шуд",
+      "notCovered": "Маблағ то ҳол пурра барнагарштааст"
+    }
+  },
+  "DashboardFlow": {
+    "title": "Динамикаи иҷораи китобҳо",
+    "description": "Миқдори китобҳои додашуда дар 12 моҳи охир"
+  },
+  "ChartPieLabel": {
+    "title": "Ҳолати фонди китоб",
+    "description": "Тақсимот аз рӯи статус",
+    "total": "Нусха",
+    "totalLabel": "Ҳамагӣ: {count} адад",
+    "status": {
+      "reserved": "баргардонида",
+      "available": "Дастрас",
+      "rented": "Иҷорашуда",
+      "lost": "Гумшуда",
+      "damaged": "Вайроншуда"
+    }
+  },
+  "BooksSchoolPage": {
+    "title": "Идоракунии китобҳо",
+    "subtitle": "Назорат ва идоракунии китобҳои дарсӣ дар ҳамаи ҷойҳо",
+    "addButton": "+ Иловаи китоб",
+    "stats": {
+      "totalBooks": "Ҳамагӣ китобҳо",
+      "new": "Нав",
+      "rented": "Иҷорашуда",
+      "damaged": "Вайроншуда"
+    },
+    "list": {
+      "title": "Китобҳои дарсӣ",
+      "description": "Рӯйхати пурраи ҳамаи китобҳои дарсӣ дар система",
+      "searchPlaceholder": "Ҷустуҷӯ...",
+      "condition": {
+        "placeholder": "Ҳолат",
+        "all": "Ҳамаи ҳолатҳо",
+        "new": "Нав",
+        "good": "Хуб",
+        "fair": "Миёна",
+        "poor": "Бад",
+        "damaged": "Вайрон",
+        "written_off": "Аз ҳисоб баромада"
+      },
+      "status": {
+        "placeholder": "Статус",
+        "all": "Ҳамаи статусҳо",
+        "available": "Дар склад",
+        "rented": "Дар иҷора",
+        "lost": "Гумшуда",
+        "reserved": "Броншуда"
+      },
+      "subject": {
+        "placeholder": "Ҳама",
+        "all": "Ҳамаи фанҳо",
+        "math": "Математика",
+        "russian": "Забони русӣ",
+        "tajik": "Забони тоҷикӣ",
+        "english": "Забони англисӣ",
+        "physics": "Физика",
+        "chemistry": "Химия",
+        "biology": "Биология",
+        "history": "Таърих",
+        "geography": "География",
+        "literature": "Адабиёт",
+        "informatics": "Информатика",
+        "other": "Дигар"
+      },
+      "viewToggle": {
+        "card": "Намуди карточка",
+        "table": "Намуди ҷадвал"
+      },
+      "table": {
+        "bookName": "Номи китоб / Инвентар",
+        "id": "ID",
+        "grade": "Синф",
+        "publicationYear": "Соли нашр",
+        "condition": "Ҳолат",
+        "status": "Статус",
+        "new": "Нав",
+        "old": "Кӯҳна",
+        "rented": "Иҷора",
+        "stock": "Склад"
+      },
+      "noBooks": "Ягон китоб ёфт нашуд",
+      "loading": "Боргирӣ...",
+      "pagination": {
+        "showing": "Намоиши {count} аз {total} китоб",
+        "prev": "Қаблӣ",
+        "next": "Баъдӣ"
+      }
+    },
+    "summary": {
+      "grade": "Синф",
+      "subject": "Фанн",
+      "quantity": "Миқдор",
+      "rented": "Дар иҷора"
+    }
+  },
   "LoginPage": {
     "welcome": "Хуш омадед",
     "buttonForLogin": "Ворид шудан",

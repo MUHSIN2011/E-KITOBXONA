@@ -10,8 +10,11 @@ import { DashboardMainChart } from '@/components/ui/DashboardMainChart'
 import { SchoolFinancialStatus } from '@/components/ui/SchoolFinancialStatus'
 import DashboardFlow from '@/components/DashboardFlow'
 import ProtectedRoute from '@/components/ProtectedRoute'
+import { useTranslations } from 'next-intl'
 
 function Page() {
+    const t = useTranslations('SchoolDashboard')    
+
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
     const { data: me } = useGetMeQuery()
     const { data: activeYear } = useGetActiveYearQuery()
@@ -70,34 +73,34 @@ function Page() {
                     <Card
                         data-aos="fade-up" data-aos-delay="100"
                         path='/books-school'
-                        NameRole='Ҳамагӣ Китобҳо'
+                        NameRole={t('stats.totalBooks')}
                         cnt={items?.total_books?.toString() || '0'}
                         Icons={<Book className="text-blue-600" />}
-                        description='Дар фонди мактаб'
+                        description={t('stats.totalBooksDesc')}
                     />
                     <Card
                         path='/rentals'
                         data-aos="fade-up" data-aos-delay="200"
-                        NameRole='Дар иҷора'
+                        NameRole={t('stats.rented')}
                         cnt={items?.rented_books?.toString() || '0'}
                         Icons={<BookUser className="text-orange-400" />}
-                        description='Дар дасти хонандагон'
+                        description={t('stats.rentedDesc')}
                     />
                     <Card
                         path='/books-school'
                         data-aos="fade-up" data-aos-delay="300"
-                        NameRole='Гумшуда/Зарардида'
+                        NameRole={t('stats.lost')}
                         cnt={items?.lost_books?.toString() || '0'}
                         Icons={<BookXIcon className="text-red-600" />}
-                        description='Гумшуда ё зарардида'
+                        description={t('stats.lostDesc')}
                     />
                     <Card
                         data-aos="fade-up" data-aos-delay="400"
                         path='/students'
-                        NameRole='Хонандагон'
+                        NameRole={t('stats.students')}
                         cnt={students?.total?.toString() || '0'}
                         Icons={<GraduationCap className="text-purple-600" />}
-                        description='Фаъол дар система'
+                        description={t('stats.studentsDesc')}
                     />
                 </section>
 
@@ -114,11 +117,11 @@ function Page() {
 
                 <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-6">
                     <div className="lg:col-span-2 bg-white dark:bg-[#1a1a1a] p-4 rounded-xl border shadow-sm" data-aos="zoom-in">
-                        <h3 className="text-lg font-semibold mb-4">Статистикаи солона</h3>
+                        <h3 className="text-lg font-semibold mb-4">{t('charts.annualStatistics')}</h3>
                         <DashboardMainChart />
                     </div>
                     <div className="lg:col-span-1 bg-white dark:bg-[#1a1a1a] p-4 rounded-xl border shadow-sm" data-aos="zoom-in" data-aos-delay="200">
-                        <h3 className="text-lg font-semibold mb-4">Тақсимоти китобҳо</h3>
+                        <h3 className="text-lg font-semibold mb-4">{t('charts.bookDistribution')}</h3>
                         <ChartPieLabel />
                     </div>
                 </section>

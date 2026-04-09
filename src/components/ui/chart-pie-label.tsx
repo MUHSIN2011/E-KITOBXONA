@@ -19,8 +19,10 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from "@/components/ui/chart"
+import { useTranslations } from "next-intl"
 
 const chartConfig = {
+    reserved: { label: "баргардонида", color: "#8b5cf6" },
     available: { label: "Озод", color: "#22c55e" },
     rented: { label: "Дар иҷора", color: "#3b82f6" },
     damaged: { label: "Зарардида", color: "#eab308" },
@@ -29,6 +31,8 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function ChartPieLabel() {
+    const t = useTranslations('ChartPieLabel')
+
     const { data, isLoading } = useGetBooksSchoolQuery({
         skip: 0,
         limit: 1000
@@ -61,8 +65,8 @@ export function ChartPieLabel() {
     return (
         <Card className="flex flex-col border-none shadow-none bg-white dark:bg-[#1a1a1a]">
             <CardHeader className="items-center pb-0">
-                <CardTitle className="text-xl font-bold">Ҳолати фонди китоб</CardTitle>
-                <CardDescription>Тақсимот аз рӯи статус</CardDescription>
+                <CardTitle className="text-xl font-bold">{t('title')}</CardTitle>
+                <CardDescription>{t('description')}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
@@ -70,9 +74,9 @@ export function ChartPieLabel() {
                     className="mx-auto aspect-square max-h-50"
                 >
                     <PieChart>
-                        <ChartTooltip 
-                            cursor={false} 
-                            content={<ChartTooltipContent hideLabel />} 
+                        <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent hideLabel />}
                         />
                         <Pie
                             data={chartData}
@@ -86,7 +90,7 @@ export function ChartPieLabel() {
                             {chartData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.fill} />
                             ))}
-                            
+
                             <Label
                                 content={({ viewBox }) => {
                                     if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -96,7 +100,7 @@ export function ChartPieLabel() {
                                                     {data?.total || 0}
                                                 </tspan>
                                                 <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground text-sm">
-                                                    Нусха
+                                                    {t('total')}
                                                 </tspan>
                                             </text>
                                         )
@@ -107,20 +111,20 @@ export function ChartPieLabel() {
                     </PieChart>
                 </ChartContainer>
             </CardContent>
-            <CardFooter className="flex-col  text-sm">
-                <div className="grid grid-cols-2 gap-x-4 ">
+            <CardFooter className="flex-col text-sm">
+                <div className="grid grid-cols-2 gap-x-4">
                     {chartData.map((item) => (
                         <div key={item.status} className="flex items-center gap-2">
                             <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.fill }} />
                             <span className="text-muted-foreground italic">
-                                {chartConfig[item.status as keyof typeof chartConfig]?.label || item.status}:
+                                {t(`status.${item.status}`, { defaultValue: item.status })}:
                             </span>
                             <span className="font-bold">{item.count}</span>
                         </div>
                     ))}
                 </div>
                 <div className="mt-4 flex items-center gap-2 font-medium border-t pt-2 w-full justify-center">
-                    Ҳамагӣ: {data?.total || 0} адад <BookOpen className="h-4 w-4 text-blue-500" />
+                    {t('totalLabel', { count: data?.total || 0 })} <BookOpen className="h-4 w-4 text-blue-500" />
                 </div>
             </CardFooter>
         </Card>

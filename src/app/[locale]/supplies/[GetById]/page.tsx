@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input";
 
 export default function SupplyDetails() {
   const params = useParams();
-  const supplyId = params.supplyId;
+  const supplyId = params.GetById;
 
   const { data: supplyData, isLoading, isError } = useGetSupplyByIdQuery(supplyId);
 

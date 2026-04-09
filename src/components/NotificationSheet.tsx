@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
+import { AiHelperProps } from "./AiHelperProps";
 
 export function NotificationSheet({ user }: { user: any }) {
     const router = useRouter();
@@ -161,6 +162,7 @@ export function NotificationSheet({ user }: { user: any }) {
                                                         </span>
                                                     </div>
 
+
                                                     <div className="space-y-1">
                                                         <div className="flex items-center gap-2">
                                                             <span className="text-[11px] font-semibold bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">
@@ -281,9 +283,14 @@ export function NotificationSheet({ user }: { user: any }) {
                                                                 <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-none">
                                                                     {notif.textbook_title}
                                                                 </h4>
-                                                                <span className="text-[10px] font-bold bg-amber-100 text-amber-600 px-2 py-0.5 rounded uppercase shrink-0">
-                                                                    Интизорӣ
-                                                                </span>
+                                                                <div className="flex flex-col items-end gap-1">
+                                                                    <span className="text-[10px] font-bold bg-amber-100 text-amber-600 px-2 py-0.5 rounded uppercase shrink-0">
+                                                                        Интизорӣ
+                                                                    </span>
+                                                                    <span className="absolute mt-8">
+                                                                        <AiHelperProps id={notif.supply_id} type="supply" />
+                                                                    </span>
+                                                                </div>
                                                             </div>
 
                                                             <div className="space-y-1">

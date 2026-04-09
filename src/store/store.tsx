@@ -1,19 +1,30 @@
 import { Todo } from '@/api/api'
 import { configureStore } from '@reduxjs/toolkit'
-// Or from '@reduxjs/toolkit/query/react'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
 export const store = configureStore({
   reducer: {
-    // Add the generated reducer as a specific top-level slice
     [Todo.reducerPath]: Todo.reducer,
   },
-  // Adding the api middleware enables caching, invalidation, polling,
-  // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(Todo.middleware),
+    getDefaultMiddleware({
+      serializableCheck: {
+        // 1. Иҷозат додан ба Action-ҳои RTK Query
+        ignoredActions: [
+          'Todo/executeMutation/fulfilled',
+          'Todo/executeQuery/fulfilled',
+          'Todo/executeQuery/pending',
+        ],
+        // 2. Иҷозат додан ба майдонҳои махсусе, ки файл ё объектҳои браузер доранд
+        ignoredActionPaths: [
+          'payload', 
+          'meta.baseQueryMeta.request', 
+          'meta.baseQueryMeta.response'
+        ],
+        // 3. Иҷозат додан ба худи стейти API
+        ignoredPaths: [Todo.reducerPath],
+      },
+    }).concat(Todo.middleware),
 })
 
-// optional, but required for refetchOnFocus/refetchOnReconnect behaviors
-// see `setupListeners` docs - takes an optional callback as the 2nd arg for customization
 setupListeners(store.dispatch)

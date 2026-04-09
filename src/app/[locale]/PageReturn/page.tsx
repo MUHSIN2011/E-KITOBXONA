@@ -124,8 +124,8 @@ export default function Page() {
                     Рӯйхати баргардонидаҳо
                 </h1>
 
-                <div className="overflow-x-auto mt-3 sm:mt-4 border rounded-xl shadow-sm bg-white dark:bg-[#1a1a1a]">
-                    <table className="w-full text-left border-collapse min-w-[600px] sm:min-w-full">
+                <div className="overflow-x-auto md:max-w-full sm:max-w-full max-w-full mt-3 sm:mt-4 border rounded-xl shadow-sm bg-white dark:bg-[#1a1a1a]">
+                    <table className="text-left border-collapse min-w-[300px] md:min-w-full sm:min-w-full ">
                         <thead>
                             <tr className="bg-gray-50 dark:bg-[#2a2a2a] border-b">
                                 {/* <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">ID</th> */}
@@ -141,7 +141,6 @@ export default function Page() {
                             {isLoadingReturn ? (
                                 Array.from({ length: 5 }).map((_, i) => (
                                     <tr key={i} className="animate-pulse">
-                                        <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
                                         <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
                                         <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
                                         <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>

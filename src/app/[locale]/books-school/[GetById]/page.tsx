@@ -7,7 +7,7 @@ import Image from 'next/image';
 export default function BookDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const BookById = Number(params?.BookById);
+  const BookById = Number(params?.GetById);
 
   const { data: book, isLoading, error } = useGetCopiesByIdQuery(BookById, {
     skip: isNaN(BookById),
@@ -17,7 +17,7 @@ export default function BookDetailPage() {
     return (
       <div className="flex h-[85vh] items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-    </div>
+      </div>
     );
   }
 

@@ -206,7 +206,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
             <main className={`flex-1 min-h-screen bg-slate-50 dark:bg-black transition-all duration-300 ease-in-out ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage ? (isSidebarOpen ? "lg:ml-64" : "ml-0") : ""}`}>
                 {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage && (
-                    <header className={`fixed md:w-auto  w-full top-0 right-0 z-20 h-16 bg-white/80 dark:bg-[#0f1115]/80 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64" : "left-0"}`}>
+                    <header className={`fixed md:w-auto sm:w-full w-full top-0 right-0 z-20 h-16 bg-white/80 dark:bg-[#0f1115]/80 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64 sm:left-0" : "left-0"}`}>
                         <div className="flex items-center gap-4">
                             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden lg:flex items-center justify-center size-9 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-500">
                                 {isSidebarOpen ? <PanelRightClose size={20} /> : <PanelLeftClose size={20} />}
@@ -221,8 +221,6 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                         </div>
 
                         <div className="flex items-center gap-2">
-
-
                             <Menubar className="border-none bg-transparent shadow-none p-0">
                                 <MenubarMenu>
                                     <MenubarTrigger className="cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all focus:bg-slate-100 dark:focus:bg-slate-800 outline-none">

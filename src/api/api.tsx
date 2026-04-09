@@ -422,13 +422,14 @@ export const Todo = createApi({
             providesTags: ['Todo'],
         }),
         GetBooksSchool: builder.query<IGetbooksSchoolResponse, {
-            textbook_id?: number | 'all', 
+            textbook_id?: number | 'all',
             subject?: string,
             condition?: string,
             status?: string,
             skip?: number,
             limit?: number,
-        } | void>({query: (args) => {
+        } | void>({
+            query: (args) => {
                 const {
                     textbook_id,
                     subject,
@@ -843,6 +844,32 @@ export const Todo = createApi({
             },
             providesTags: ['Copies'],
         }),
+        getTransferPdf: builder.query<Blob, number>({
+            query: (transfer_id) => ({
+                url: `transfers/${transfer_id}/pdf`,
+                method: 'GET',
+                responseHandler: (response) => response.blob(),
+            }),
+        }),
+        getDamageReportPdf: builder.query<Blob, number>({
+            query: (report_id) => ({
+                url: `/damage-reports/${report_id}/pdf`,
+                method: 'GET',
+                responseHandler: (response) => response.blob(),
+            }),
+        }),
+        getAiTransferExplanation: builder.query<{ answer: string; disclaimer: string }, number>({
+            query: (transfer_id) => ({
+                url: `/ai/transfer/${transfer_id}`,
+                method: 'GET',
+            }),
+        }),
+        getAiSupplyExplanation: builder.query<{ answer: string; disclaimer: string }, number>({
+            query: (supply_id) => ({
+                url: `/ai/supply/${supply_id}`,
+                method: 'GET',
+            }),
+        })
     }),
 });
 
@@ -914,5 +941,9 @@ export const {
     useSendQuestionToAiMutation,
     useGetStudentFinanceQuery,
     useFinanceCompensationsPayMutation,
-    useGetCopiesSummaryQuery
+    useGetCopiesSummaryQuery,
+    useGetTransferPdfQuery,
+    useLazyGetDamageReportPdfQuery,
+    useLazyGetAiTransferExplanationQuery,
+    useGetAiSupplyExplanationQuery
 } = Todo;

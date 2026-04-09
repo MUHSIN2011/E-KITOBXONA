@@ -209,7 +209,7 @@ export default function RentalsPage() {
                                             <CommandEmpty>Хонанда ёфт нашуд.</CommandEmpty>
                                             <CommandGroup className="max-h-60 overflow-y-auto">
                                                 {studentsData?.items?.map((student) => (
-                                                    <CommandItem key={student.id} onSelect={() => setSelectedStudentId(student.id)} className="py-3 px-4 cursor-pointer">
+                                                    <CommandItem onWheel={(e) => e.stopPropagation()} key={student.id} onSelect={() => setSelectedStudentId(student.id)} className="py-3 px-4 cursor-pointer">
                                                         <Checks className={cn("mr-2 h-4 w-4 text-[#0950c3]", selectedStudentId === student.id ? "opacity-100" : "opacity-0")} />
                                                         <div>
                                                             <div className="font-medium">{student.first_name} {student.last_name}</div>
@@ -249,6 +249,7 @@ export default function RentalsPage() {
                                                             key={item.id}
                                                             value={searchLabel} // Акнун поиск ҳам ном ва ҳам рақамро мебинад
                                                             onSelect={() => toggleBookSelection(item.id)}
+                                                            onWheel={(e) => e.stopPropagation()}
                                                             className={cn(
                                                                 "flex items-center justify-between p-3 rounded-xl cursor-pointer mb-1",
                                                                 isSelected ? "bg-blue-50" : ""

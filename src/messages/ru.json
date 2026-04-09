@@ -36,6 +36,137 @@
     "refreshButton": "Обновить",
     "refreshing": "Обновление..."
   },
+  "SchoolDashboard": {
+    "stats": {
+      "totalBooks": "Всего Книг",
+      "totalBooksDesc": "В фонде школы",
+      "rented": "В аренде",
+      "rentedDesc": "У учащихся",
+      "lost": "Потеряно/Повреждено",
+      "lostDesc": "Потеряно или повреждено",
+      "students": "Учащиеся",
+      "studentsDesc": "Активны в системе"
+    },
+    "charts": {
+      "annualStatistics": "Годовая статистика",
+      "bookDistribution": "Распределение книг"
+    }
+  },
+  "SchoolFinancialStatus": {
+    "budget": {
+      "title": "Текущий бюджет",
+      "description": "Общий баланс школы"
+    },
+    "expenses": {
+      "title": "Расходы",
+      "description": "Потраченная сумма"
+    },
+    "income": {
+      "title": "Доход (Аренда)",
+      "description": "Счета родителей"
+    },
+    "payback": {
+      "title": "Окупаемость книг",
+      "fullCovered": "Расходы на книги полностью покрыты",
+      "notCovered": "Средства еще не полностью возвращены"
+    }
+  },
+  "DashboardFlow": {
+    "title": "Динамика аренды книг",
+    "description": "Количество выданных книг за последние 12 месяцев"
+  },
+  "ChartPieLabel": {
+    "title": "Состояние книжного фонда",
+    "description": "Распределение по статусу",
+    "total": "Экземпляров",
+    "totalLabel": "Всего: {count} шт",
+    "status": {
+      "reserved": "Зарезервировано",
+      "available": "Доступно",
+      "rented": "Арендовано",
+      "lost": "Потеряно",
+      "damaged": "Повреждено"
+    }
+  },
+  "BooksSchoolPage": {
+    "title": "Управление книгами",
+    "subtitle": "Контроль и управление учебниками во всех местах",
+    "addButton": "+ Добавить книгу",
+    "stats": {
+      "totalBooks": "Всего книг",
+      "new": "Новые",
+      "rented": "Арендовано",
+      "damaged": "Повреждено"
+    },
+    "list": {
+      "title": "Учебники",
+      "description": "Полный список всех учебников в системе",
+      "searchPlaceholder": "Поиск...",
+      "condition": {
+        "placeholder": "Состояние",
+        "all": "Все состояния",
+        "new": "Новое",
+        "good": "Хорошее",
+        "fair": "Среднее",
+        "poor": "Плохое",
+        "damaged": "Поврежденное",
+        "written_off": "Списанное"
+      },
+      "status": {
+        "placeholder": "Статус",
+        "all": "Все статусы",
+        "available": "На складе",
+        "rented": "В аренде",
+        "lost": "Потеряно",
+        "reserved": "Забронировано"
+      },
+      "subject": {
+        "placeholder": "Все",
+        "all": "Все предметы",
+        "math": "Математика",
+        "russian": "Русский язык",
+        "tajik": "Таджикский язык",
+        "english": "Английский язык",
+        "physics": "Физика",
+        "chemistry": "Химия",
+        "biology": "Биология",
+        "history": "История",
+        "geography": "География",
+        "literature": "Литература",
+        "informatics": "Информатика",
+        "other": "Другое"
+      },
+      "viewToggle": {
+        "card": "Вид карточки",
+        "table": "Вид таблицы"
+      },
+      "table": {
+        "bookName": "Название книги / Инвентарь",
+        "id": "ID",
+        "grade": "Класс",
+        "publicationYear": "Год издания",
+        "condition": "Состояние",
+        "status": "Статус",
+        "new": "Новый",
+        "old": "Старый",
+        "rented": "Аренда",
+        "stock": "Склад"
+      },
+      "noBooks": "Книги не найдены",
+      "loading": "Загрузка...",
+      "pagination": {
+        "showing": "Показано {count} из {total} книг",
+        "prev": "Назад",
+        "next": "Вперед"
+      }
+    },
+    "summary": {
+      "grade": "Класс",
+      "subject": "Предмет",
+      "quantity": "Количество",
+      "rented": "В аренде"
+    }
+  },
   "LoginPage": {
     "welcome": "Добро пожаловать",
     "buttonForLogin": "Логин",

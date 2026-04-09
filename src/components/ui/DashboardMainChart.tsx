@@ -17,6 +17,7 @@ import {
     ChartTooltipContent,
     type ChartConfig,
 } from "@/components/ui/chart"
+import { useTranslations } from "next-intl"
 
 const chartConfig = {
     rentals: {
@@ -26,6 +27,7 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function DashboardMainChart() {
+    const t = useTranslations('DashboardFlow')
     const { data, isLoading } = useGetRentalsQuery({ skip: 0, limit: 1000 })
 
     const chartData = React.useMemo(() => {
@@ -47,7 +49,7 @@ export function DashboardMainChart() {
                     const parts = book.rent_start.split("-");
                     const monthIndex = parseInt(parts[1], 10) - 1;
                     const monthName = monthsInternal[monthIndex];
-                    
+
                     if (monthName) {
                         counts[monthName] += 1;
                     }
@@ -62,7 +64,7 @@ export function DashboardMainChart() {
 
         const currentMonth = new Date().getMonth();
         const last6Months = [];
-        
+
         for (let i = 11; i >= 0; i--) {
             let idx = currentMonth - i;
             if (idx < 0) idx += 12;
@@ -85,8 +87,8 @@ export function DashboardMainChart() {
     return (
         <Card className="border-none shadow-none bg-white dark:bg-[#1a1a1a]">
             <CardHeader>
-                <CardTitle>Динамикаи иҷораи китобҳо</CardTitle>
-                <CardDescription>Миқдори китобҳои додашуда дар 12 моҳи охир</CardDescription>
+                <CardTitle>{t('title')}</CardTitle>
+                <CardDescription>{t('description')}</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig} className="h-[320px] w-full">

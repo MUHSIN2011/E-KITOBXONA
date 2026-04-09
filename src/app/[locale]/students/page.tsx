@@ -1,9 +1,9 @@
 "use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { TextAnimate } from '@/components/ui/text-animate'
-import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useDeleteStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useGetStudentFinanceQuery, useUpdateStudentMutation, useFinanceCompensationsPayMutation } from '@/api/api'
+import { IAddNewStudentRequest, IGetStudents, useAddNewStudentMutation, useDeleteStudentMutation, useGetStudentByIdQuery, useGetStudentsQuery, useGetStudentFinanceQuery, useUpdateStudentMutation, useFinanceCompensationsPayMutation, useLazyGetDamageReportPdfQuery } from '@/api/api'
 import CardsStudent from '@/components/CardsStudent'
-import { AlertCircle, Book, BookOpen, Calendar, DollarSign, FileText, Funnel, Hash, Phone, Search, SearchCheck, SearchX, User, Users } from 'lucide-react'
+import { AlertCircle, Book, BookOpen, Calendar, DollarSign, Download, FileText, Funnel, Hash, Phone, Search, SearchCheck, SearchX, User, Users } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input';
 import {
@@ -72,6 +72,7 @@ function StudentsPage() {
         search: search
     });
 
+    const [triggerDownload, { isLoading: isDownloading }] = useLazyGetDamageReportPdfQuery();
 
     const totalItems = students?.total || 0;
     const startItem = page * limit + 1;
@@ -163,6 +164,23 @@ function StudentsPage() {
             setIsEditOpen(false);
         } catch (error) {
             toast.error("Хатогӣ ҳангоми навсозӣ!");
+        }
+    };
+
+    const handleDownloadPdf = async (id: number) => {
+        try {
+            const result = await triggerDownload(id).unwrap();
+            const url = window.URL.createObjectURL(result);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `damage_report_${id}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+
+            link.parentNode?.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Хатогӣ ҳангоми зеркашии PDF:", error);
         }
     };
 
@@ -432,7 +450,7 @@ function StudentsPage() {
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
                                         <span className='text-xl font-semibold font-sans'>
-                                            Опши сума:
+                                            Ҳамаги:
                                         </span>
                                         <span className="text-lg   font-semibold font-sans">
                                             {totalDebt} - <span className=''>Сомони</span>
@@ -471,60 +489,70 @@ function StudentsPage() {
                                                 </div>
                                             </div>
                                             {debt.status !== 'Paid'}
-                                            <Dialog open={openPayment} onOpenChange={setOpenPayment}>
-                                                <DialogTrigger asChild>
-                                                    <div className='border-t pt-1.5 border-red-300/80'>
+                                            <div className="grid grid-cols-2 gap-2 mt-3 border-t pt-1.5 border-red-300/80'">
+                                                <Button
+                                                    onClick={() => handleDownloadPdf(debt.damage_report_id)}
+                                                    variant="outline"
+                                                    disabled={isDownloading}
+                                                    className="border-blue-600 text-blue-600 hover:bg-blue-50 h-9 rounded-xl"
+                                                >
+                                                    <Download className="w-4 h-4 mr-2" />
+                                                    {isDownloading ? 'Дар холи боргири...' : 'Боргири PDF'}
+                                                </Button>
+
+                                                <Dialog open={openPayment} onOpenChange={setOpenPayment}>
+                                                    <DialogTrigger asChild>
                                                         <button className='bg-blue-600 font-sans cursor-pointer focus:translate-y-2 duration-300 hover:shadow-xl rounded-xl py-1.5 text-white w-full'>
                                                             Пардохт Кардан
                                                         </button>
-                                                    </div>
-                                                </DialogTrigger>
+                                                    </DialogTrigger>
 
-                                                <DialogContent className="sm:max-w-[425px]">
-                                                    <DialogHeader>
-                                                        <DialogTitle>Қабули пардохт: {studentbyid ? `${studentbyid.last_name} ${studentbyid.first_name}` : '?'}</DialogTitle>
-                                                    </DialogHeader>
-                                                    <div className="grid gap-4 py-4">
-                                                        <div className="space-y-2">
-                                                            <label className="text-sm font-medium">Маблағи супоридашуда (TJS)</label>
-                                                            <Input
-                                                                type="number"
-                                                                placeholder="Миқдор"
-                                                                max={debt.amount_remaining}
-                                                                value={amount}
-                                                                onChange={(e) => setAmount(e.target.value)}
-                                                            />
-                                                            <p className="text-xs text-muted-foreground">
-                                                                Қарзи боқимонда: {debt.amount_remaining} сомон
-                                                            </p>
+                                                    <DialogContent className="sm:max-w-[425px]">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Қабули пардохт: {studentbyid ? `${studentbyid.last_name} ${studentbyid.first_name}` : '?'}</DialogTitle>
+                                                        </DialogHeader>
+                                                        <div className="grid gap-4 py-4">
+                                                            <div className="space-y-2">
+                                                                <label className="text-sm font-medium">Маблағи супоридашуда (TJS)</label>
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="Миқдор"
+                                                                    max={debt.amount_remaining}
+                                                                    value={amount}
+                                                                    onChange={(e) => setAmount(e.target.value)}
+                                                                />
+                                                                <p className="text-xs text-muted-foreground">
+                                                                    Қарзи боқимонда: {debt.amount_remaining} сомон
+                                                                </p>
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <label className="text-sm font-medium italic">Санаи пардохт</label>
+                                                                <Input
+                                                                    type="date"
+                                                                    value={paidDate}
+                                                                    onChange={(e) => setPaidDate(e.target.value)}
+                                                                    className="cursor-pointer"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <label className="text-sm font-medium">Эзоҳ (Notes)</label>
+                                                                <Input
+                                                                    placeholder={`Масалан: ${amount ? amount : debt.amount_remaining} сомонашро супорид`}
+                                                                    value={note}
+                                                                    onChange={(e) => setNote(e.target.value)}
+                                                                />
+                                                            </div>
                                                         </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-sm font-medium italic">Санаи пардохт</label>
-                                                            <Input
-                                                                type="date"
-                                                                value={paidDate}
-                                                                onChange={(e) => setPaidDate(e.target.value)}
-                                                                className="cursor-pointer"
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-sm font-medium">Эзоҳ (Notes)</label>
-                                                            <Input
-                                                                placeholder={`Масалан: ${amount ? amount : debt.amount_remaining} сомонашро супорид`}
-                                                                value={note}
-                                                                onChange={(e) => setNote(e.target.value)}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <Button
-                                                        onClick={() => handlePay(debt)}
-                                                        disabled={isFinancePay}
-                                                        className="w-full bg-blue-600 hover:bg-blue-700"
-                                                    >
-                                                        {isFinancePay ? "Дар ҳоли иҷро..." : "Тасдиқи пардохт"}
-                                                    </Button>
-                                                </DialogContent>
-                                            </Dialog>
+                                                        <Button
+                                                            onClick={() => handlePay(debt)}
+                                                            disabled={isFinancePay}
+                                                            className="w-full bg-blue-600 hover:bg-blue-700"
+                                                        >
+                                                            {isFinancePay ? "Дар ҳоли иҷро..." : "Тасдиқи пардохт"}
+                                                        </Button>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
 
                                             {debt.notes && (
                                                 <div className="pt-2 border-t border-red-100 dark:border-red-900/20 text-[11px] text-red-600 italic">
