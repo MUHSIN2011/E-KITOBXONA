@@ -20,6 +20,10 @@ export interface IVerifyResetCodeRequest {
     code: string;
 }
 
+export interface IUpdateMeRequest {
+    email: string;
+}
+
 interface IGetRegions {
     name: string;
     id: number;
@@ -500,6 +504,21 @@ export const Todo = createApi({
             query: () => 'auth/me',
             providesTags: ['Todo'],
         }),
+        patchMe: builder.mutation<any, IUpdateMeRequest>({
+            query: (body) => ({
+                url: 'auth/me',
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Todo'],
+        }),
+        deleteMe: builder.mutation<any, void>({
+            query: () => ({
+                url: 'auth/me',
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Todo'],
+        }),
         addRegion: builder.mutation<any, { name: string }>({
             query: (body) => ({ url: 'territories/regions', method: 'POST', body }),
             invalidatesTags: ['Region'],
@@ -894,6 +913,8 @@ export const {
     useGetSchoolsByDistrictQuery,
     useGetOverviewQuery,
     useGetMeQuery,
+    usePatchMeMutation,
+    useDeleteMeMutation,
     useAddRegionMutation,
     useAddDistrictMutation,
     useAddSchoolMutation,

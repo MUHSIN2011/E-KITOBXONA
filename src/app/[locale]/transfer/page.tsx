@@ -12,8 +12,10 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import toast, { Toaster } from 'react-hot-toast'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { AiHelperProps } from '@/components/AiHelperProps'
+import { useTranslations } from 'next-intl'
 
 export default function Page() {
+    const t = useTranslations('TransferBooksPage')
     const [infoTransfersById, setInfoTransfersById] = useState<any>(null);
     const { data: DataMe, isLoading: isLoadingMe } = useGetMeQuery();
     const userRole = DataMe?.role;
@@ -71,49 +73,49 @@ export default function Page() {
             <div className='flex md:flex-row flex-col md:gap-0 gap-2 justify-between items-center'>
                 <div>
                     <TextAnimate className='md:text-2xl text-xl font-bold' animation="slideUp" by="word">
-                        Интиқоли китобҳо
+                        {t('title')}
                     </TextAnimate>
                     <TextAnimate className='text-foreground text-sm' animation="slideUp" by="word">
-                        Фиристодани китобҳо аз як мактаб ба мактаби дигар
+                        {t('subtitle')}
                     </TextAnimate>
                 </div>
-                <TransferDialog>
-                    <Button className='bg-[#0950c3] dark:bg-[#2563eb] hover:bg-blue-700 dark:hover:bg-blue-600 flex gap-2 text-white md:py-5 py-2 px-4 md:w-50 w-full rounded-sm text-sm font-medium'>
-                        <Caravan className='w-6 h-6' /> Равон кардан
-                    </Button>
-                </TransferDialog>
+                {userRole !== 'ministry' &&
+                    <TransferDialog>
+                        <Button className='bg-[#0950c3] dark:bg-[#2563eb] hover:bg-blue-700 dark:hover:bg-blue-600 flex gap-2 text-white md:py-5 py-2 px-4 md:w-50 w-full rounded-sm text-sm font-medium'>
+                            <Caravan className='w-6 h-6' /> {t('sendButton')}
+                        </Button>
+                    </TransferDialog>
+                }
             </div>
+
             <div className='grid grid-cols-1 md:grid-cols-4 gap-4 my-5'>
-                <CardsStudent Icons={<ArrowRightLeft className="text-blue-500 dark:text-blue-400" />} NameRole='Ҳамаи интиқолҳо' cnt={totalTransfers} />
-                <CardsStudent
-                    Icons={<Clock className="text-yellow-500 dark:text-yellow-400" />}
-                    NameRole='Дар ҳоли интизорӣ'
-                    cnt={pendingCount}
-                />
-                <CardsStudent Icons={<BadgeCheck className="text-green-500 dark:text-green-400" />} NameRole='Иҷрошуда' cnt={completedCount} />
-                <CardsStudent Icons={<XCircle className="text-red-500 dark:text-red-400" />} NameRole='Рад Шуда' cnt={cancelledCount} />
+                <CardsStudent Icons={<ArrowRightLeft className="text-blue-500 dark:text-blue-400" />} NameRole={t('stats.allTransfers')} cnt={totalTransfers} />
+                <CardsStudent Icons={<Clock className="text-yellow-500 dark:text-yellow-400" />} NameRole={t('stats.pending')} cnt={pendingCount} />
+                <CardsStudent Icons={<BadgeCheck className="text-green-500 dark:text-green-400" />} NameRole={t('stats.completed')} cnt={completedCount} />
+                <CardsStudent Icons={<XCircle className="text-red-500 dark:text-red-400" />} NameRole={t('stats.cancelled')} cnt={cancelledCount} />
             </div>
-            <section className='py-5 px-3 bg-white dark:bg-[#1f1f1f] rounded-xl border shadow-sm dark:border-gray-700'>
-                <h1 className='text-xl font-bold dark:text-gray-100'>Рӯйхати интиқолҳо</h1>
-                <p className='text-muted-foreground text-sm mb-4 dark:text-gray-400'>Ҳамаи интиқолҳо бақайдгирифташуда</p>
+
+            <section className='py-5 px-3 bg-white dark:bg-gray-800 rounded-xl border shadow-sm dark:border-gray-700'>
+                <h1 className='text-xl font-bold dark:text-gray-100'>{t('list.title')}</h1>
+                <p className='text-muted-foreground text-sm mb-4 dark:text-gray-400'>{t('list.description')}</p>
 
                 <div className='grid grid-cols-1 md:grid-cols-5 gap-3 mb-4'>
                     <input
-                        className='md:col-span-4 rounded-xl px-4 py-2 border focus:cursor-progress bg-[#f9fafb] dark:bg-[#2d2d2d] dark:border-gray-600 dark:text-gray-200 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 outline-none transition-all'
-                        placeholder='Ҷустуҷӯи хонандагон...'
+                        className='md:col-span-4 rounded-xl px-4 py-2 border focus:cursor-progress bg-[#f9fafb] dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 outline-none transition-all'
+                        placeholder={t('list.searchPlaceholder')}
                         type="search"
                     />
                     <div className="relative md:col-span-1">
                         <Funnel className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground dark:text-gray-400 z-10" />
                         <Select>
-                            <SelectTrigger className="w-full bg-[#f9fafb] cursor-pointer dark:bg-[#2d2d2d] dark:border-gray-600 dark:text-gray-200 pl-10 h-10 rounded-xl border-gray-200">
-                                <SelectValue placeholder="Хама" />
+                            <SelectTrigger className="w-full bg-[#f9fafb] cursor-pointer dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200 pl-10 h-10 rounded-xl border-gray-200">
+                                <SelectValue placeholder={t('list.filterPlaceholder')} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">Ҳама</SelectItem>
-                                <SelectItem value="10">Кабул Шуда</SelectItem>
-                                <SelectItem value="11">Дар ҳоли интизорӣ</SelectItem>
-                                <SelectItem value="12">Рад шуда</SelectItem>
+                                <SelectItem value="all">{t('list.filterAll')}</SelectItem>
+                                <SelectItem value="10">{t('list.filterAccepted')}</SelectItem>
+                                <SelectItem value="11">{t('list.filterPending')}</SelectItem>
+                                <SelectItem value="12">{t('list.filterRejected')}</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -123,12 +125,12 @@ export default function Page() {
                     open={!!infoTransfersById}
                     onOpenChange={(open) => !open && setInfoTransfersById(null)}
                 >
-                    <DialogContent className="max-w-2xl border border-gray-600 shadow-2xl p-0 overflow-hidden rounded-3xl">
+                    <DialogContent className="max-w-2xl border border-gray-600 shadow-2xl dark:bg-gray-900 p-0 overflow-hidden rounded-3xl">
                         <div className="bg-gradient-to-r from-[#063888] to-blue-700 p-6 text-white">
                             <div className="flex justify-between items-start">
                                 <div className="space-y-1">
                                     <DialogTitle className="text-2xl font-bold tracking-tight">
-                                        Интиқоли №{infoTransfersById?.id}
+                                        {t('dialog.title', { id: infoTransfersById?.id })}
                                     </DialogTitle>
                                     <div className="flex items-center gap-2 opacity-90 text-xs">
                                         <Calendar className="w-3.5 h-3.5" />
@@ -144,24 +146,23 @@ export default function Page() {
                                     {infoTransfersById?.status === 'pending' && <Clock className="w-3 h-3 animate-pulse" />}
                                     {infoTransfersById?.status === 'cancelled' && <XCircle className="w-3 h-3" />}
                                     {infoTransfersById?.status !== 'pending' && infoTransfersById?.status !== 'cancelled' && <CheckCircle2 className="w-3 h-3" />}
-
                                     <span>
                                         {infoTransfersById?.status === 'pending'
-                                            ? 'Дар интизорӣ'
+                                            ? t('dialog.status.pending')
                                             : infoTransfersById?.status === 'cancelled'
-                                                ? 'Рад шуд'
-                                                : 'Қабул шуд'}
+                                                ? t('dialog.status.cancelled')
+                                                : t('dialog.status.accepted')}
                                     </span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="p-6 space-y-6 bg-white dark:bg-[#1a1a1a] max-h-[70vh] overflow-y-auto custom-scrollbar">
+                        <div className="p-6  bg-white dark:bg-gray-900 max-h-[70vh] overflow-y-auto custom-scrollbar">
                             <DialogDescription asChild>
                                 <div className="space-y-6">
-                                    <div className="relative flex items-center justify-between gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-[#262626] border border-gray-100 dark:border-gray-800">
+                                    <div className="relative flex items-center justify-between gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-800">
                                         <div className="flex-1">
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Аз мактаби</p>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('dialog.fromSchool')}</p>
                                             <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{infoTransfersById?.from_school_name}</p>
                                         </div>
                                         <div className="flex flex-col items-center">
@@ -170,7 +171,7 @@ export default function Page() {
                                             </div>
                                         </div>
                                         <div className="flex-1 text-right">
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Ба мактаби</p>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t('dialog.toSchool')}</p>
                                             <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{infoTransfersById?.to_school_name}</p>
                                         </div>
                                     </div>
@@ -180,7 +181,7 @@ export default function Page() {
                                             <FileText className="w-3 h-3 text-blue-600" />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] font-bold text-blue-400 uppercase">Сабаби интиқол</p>
+                                            <p className="text-[10px] font-bold text-blue-400 uppercase">{t('dialog.reason')}</p>
                                             <p className="text-sm italic text-blue-900 dark:text-blue-300">"{infoTransfersById?.reason}"</p>
                                         </div>
                                     </div>
@@ -189,20 +190,20 @@ export default function Page() {
                                         <div className="flex justify-between items-end">
                                             <h3 className="text-sm font-bold flex items-center gap-2 text-gray-700 dark:text-gray-300">
                                                 <BookOpen className="w-4 h-4 text-blue-500" />
-                                                Рӯйхати китобҳо
+                                                {t('dialog.booksList')}
                                             </h3>
                                             <span className="text-[10px] font-medium px-2 py-0.5 bg-gray-100 dark:bg-gray-800 rounded-md">
-                                                Ҷамъ: {infoTransfersById?.items?.length} дона
+                                                {t('dialog.total', { count: infoTransfersById?.items?.length })}
                                             </span>
                                         </div>
 
                                         <div className="border border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm">
                                             <table className="w-full text-left text-sm">
-                                                <thead className="bg-gray-50 dark:bg-[#212121] border-b border-gray-100 dark:border-gray-800">
+                                                <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-800">
                                                     <tr>
-                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Ном ва Синф</th>
-                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Инв. №</th>
-                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">Ҳолат</th>
+                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">{t('dialog.table.nameAndGrade')}</th>
+                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">{t('dialog.table.inventory')}</th>
+                                                        <th className="px-4 py-3 font-bold text-gray-500 text-[11px] uppercase">{t('dialog.table.condition')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
@@ -218,7 +219,7 @@ export default function Page() {
                                                                     ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
                                                                     : 'bg-orange-50 text-orange-600 border-orange-100'
                                                                     }`}>
-                                                                    {item.condition === 'new' ? 'НАВ' : 'КӮҲНА'}
+                                                                    {item.condition === 'new' ? t('dialog.table.new') : t('dialog.table.old')}
                                                                 </span>
                                                             </td>
                                                         </tr>
@@ -231,7 +232,7 @@ export default function Page() {
                             </DialogDescription>
                         </div>
 
-                        <div className="p-4 bg-gray-50 dark:bg-[#1f1f1f] border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
+                        <div className="p-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 flex justify-end gap-3">
                             <AiHelperProps id={infoTransfersById?.id} type="transfer" />
                             <Button
                                 onClick={() => handleDownloadPdf(infoTransfersById?.id)}
@@ -239,10 +240,10 @@ export default function Page() {
                                 className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-1 font-bold flex items-center gap-2 transition-all active:scale-95"
                             >
                                 <Download className="w-4 h-4" />
-                                {isDownloading ? 'Дар ҳоли боргирӣ...' : 'Скачат PDF'}
+                                {isDownloading ? t('dialog.buttons.downloading') : t('dialog.buttons.downloadPdf')}
                             </Button>
                             <Button onClick={() => setInfoTransfersById(null)} className="bg-[#0950c3] hover:bg-blue-700 text-white rounded-xl px-4 py-1 font-bold shadow-lg shadow-blue-500/20 transition-all hover:-translate-y-0.5">
-                                Фаҳмо
+                                {t('dialog.buttons.close')}
                             </Button>
                         </div>
                     </DialogContent>
@@ -251,13 +252,13 @@ export default function Page() {
                 <div className="overflow-x-auto md:max-w-full max-w-85 border rounded-lg dark:border-gray-700">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-[#2a2a2a] border-b dark:border-gray-700">
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">АЗ Мактаби</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Ба Мактаби</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Китоб</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 ">Синфи</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Сана</th>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">Статус</th>
+                            <tr className="bg-gray-50 dark:bg-gray-900/60 border-b dark:border-gray-700">
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">{t('list.table.fromSchool')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">{t('list.table.toSchool')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">{t('list.table.book')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">{t('list.table.grade')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">{t('list.table.date')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400">{t('list.table.status')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -277,14 +278,14 @@ export default function Page() {
                                     <td colSpan={8} className="p-10 text-center dark:text-gray-300">
                                         <div className="flex flex-col items-center justify-center gap-3 text-gray-400 w-full">
                                             <SearchAlert size={48} className="opacity-50" />
-                                            <p className="text-lg font-medium">Ягон Трансфер ёфт нашуд!</p>
-                                            <span className="text-sm">Рӯйхат ҳоло холӣ аст.</span>
+                                            <p className="text-lg font-medium">{t('list.empty')}</p>
+                                            <span className="text-sm">{t('list.emptySub')}</span>
                                         </div>
                                     </td>
                                 </tr>
                             ) : (
                                 data?.items?.map((trans: any) => (
-                                    <tr key={trans.id} onClick={() => handleInfo(trans.id)} className="hover:bg-gray-50 dark:hover:bg-[#2a2a2a]  transition-colors">
+                                    <tr key={trans.id} onClick={() => handleInfo(trans.id)} className="hover:bg-gray-50 dark:hover:bg-gray-900  transition-colors">
                                         <td className="p-4 text-sm dark:text-gray-300">{trans.from_school_name}</td>
                                         <td className="p-4 text-sm dark:text-gray-300">{trans.to_school_name}</td>
                                         <td className="p-4 text-sm dark:text-gray-300">
@@ -299,9 +300,9 @@ export default function Page() {
                                                 {trans.items?.length > 1 ? (
                                                     <span className="text-[10px] text-blue-500 font-bold uppercase mt-0.5">
                                                         {trans.items[0].textbook_title === trans.items[1].textbook_title
-                                                            ? `+ ${trans.items.length - 1} нусхаи дигар`
+                                                            ? t('list.otherCopies', { count: trans.items.length - 1 })
                                                             : trans.items.length > 2
-                                                                ? `+ ${trans.items.length - 2} китоби дигар`
+                                                                ? t('list.otherBooks', { count: trans.items.length - 2 })
                                                                 : null
                                                         }
                                                     </span>
@@ -311,11 +312,11 @@ export default function Page() {
                                         <td className="p-4 text-sm dark:text-gray-300">
                                             <span className="font-medium text-gray-900 dark:text-gray-100 line-clamp-1">
                                                 {trans.items?.length > 1 && trans.items[0].grade === trans.items[1].grade ? (
-                                                    `Синфи ${trans.items[0].grade}`
+                                                    t('list.classLabel', { grade: trans.items[0].grade })
                                                 ) : (
                                                     <>
-                                                        Синфи {trans.items?.[0]?.grade}
-                                                        {trans.items?.length > 1 && `, Синфи ${trans.items?.[1]?.grade}`}
+                                                        {t('list.classLabel', { grade: trans.items?.[0]?.grade })}
+                                                        {trans.items?.length > 1 && t('list.classSeparator', { grade: trans.items?.[1]?.grade })}
                                                     </>
                                                 )}
                                             </span>
@@ -345,33 +346,30 @@ export default function Page() {
                                                                             <XIcon className="w-3 h-3 text-red-700 dark:text-red-200 group-hover:text-white" />
                                                                         </div>
                                                                         <span className="text-xs font-semibold text-yellow-600 dark:text-red-400">
-                                                                            Интизор
+                                                                            {t('statusBadges.pending')}
                                                                         </span>
                                                                     </div>
                                                                 </AlertDialogTrigger>
 
                                                                 <AlertDialogContent className="rounded-2xl">
                                                                     <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Тасдиқ кунед</AlertDialogTitle>
+                                                                        <AlertDialogTitle>{t('alertDialog.title')}</AlertDialogTitle>
                                                                         <AlertDialogDescription>
-                                                                            Оё шумо мутмаин ҳастед, ки китобҳои равонкардаро возврат (бекор) мекунед?
+                                                                            {t('alertDialog.description')}
                                                                         </AlertDialogDescription>
                                                                     </AlertDialogHeader>
                                                                     <AlertDialogFooter>
-                                                                        <AlertDialogCancel className="rounded-xl">Не</AlertDialogCancel>
-                                                                        <AlertDialogAction
-                                                                            onClick={() => handleCancel(trans.id)}
-                                                                            className="bg-red-500 hover:bg-red-600 rounded-xl text-white"
-                                                                        >
-                                                                            Бале, возврат шавад
+                                                                        <AlertDialogCancel className="rounded-xl">{t('alertDialog.cancel')}</AlertDialogCancel>
+                                                                        <AlertDialogAction onClick={() => handleCancel(trans.id)} className="bg-red-500 hover:bg-red-600 rounded-xl text-white">
+                                                                            {t('alertDialog.confirm')}
                                                                         </AlertDialogAction>
                                                                     </AlertDialogFooter>
                                                                 </AlertDialogContent>
                                                             </AlertDialog>
                                                         ) : (
-                                                            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-600 border border-yellow-100">
+                                                            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-600 border border-yellow-100 dark:bg-yellow-700 dark:text-yellow-400 dark:border-yellow-700">
                                                                 <Clock className="w-2.5 h-2.5" />
-                                                                <span className="text-[10px] sm:text-xs font-semibold">Дар баррасӣ</span>
+                                                                <span className="text-[10px] sm:text-xs font-semibold">{t('statusBadges.underReview')}</span>
                                                             </div>
                                                         )
                                                     ) : trans.status === 'cancelled' ? (
@@ -380,7 +378,7 @@ export default function Page() {
                                                                 <Info className="w-3 h-3 text-red-700 cursor-pointer dark:text-red-200 group-hover:text-white" />
                                                             </div>
                                                             <span className="text-xs font-semibold text-red-600 dark:text-red-400">
-                                                                Рад шуд
+                                                                {t('statusBadges.cancelled')}
                                                             </span>
                                                         </div>
                                                     ) : (
@@ -389,7 +387,7 @@ export default function Page() {
                                                                 <CircleCheckBig className="w-3 h-3 text-green-700 cursor-pointer dark:text-green-200 group-hover:text-white" />
                                                             </div>
                                                             <span className="text-xs font-semibold text-green-600 dark:text-green-400">
-                                                                Кабул Шуд
+                                                                {t('statusBadges.accepted')}
                                                             </span>
                                                         </div>
                                                     )}
@@ -404,7 +402,7 @@ export default function Page() {
                                                         : <CircleCheckBig className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                                     }
                                                     <span className="text-[10px] sm:text-xs font-semibold">
-                                                        {trans.status === 'cancelled' ? 'Рад шуд' : 'Қабул шуд'}
+                                                        {trans.status === 'cancelled' ? t('statusBadges.cancelled') : t('statusBadges.accepted')}
                                                     </span>
                                                 </div>
                                             )}
@@ -416,25 +414,16 @@ export default function Page() {
                     </table>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 mt-4 border-t dark:border-gray-700 bg-gray-50/50 dark:bg-[#252525] rounded-b-xl">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 mt-4 border-t dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30 rounded-b-xl">
                     <div className="text-sm text-gray-600 dark:text-gray-300">
-                        Нишон дода шудааст: <span className="font-bold text-gray-900 dark:text-gray-100">1-6</span> аз <span className="font-bold text-gray-900 dark:text-gray-100">12</span>
+                        {t('list.pagination.showing', { start: '1-6', total: '12' , end: '1' })}
                     </div>
-
                     <div className="flex gap-2">
-                        <button
-                            // onClick={() => setPage((prev) => Math.max(0, prev - 1))}
-                            // disabled={Page === 0}
-                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-[#2d2d2d] dark:border-gray-600 dark:text-gray-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#3d3d3d] disabled:opacity-50 transition-all shadow-sm"
-                        >
-                            Пештара
+                        <button className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#3d3d3d] disabled:opacity-50 transition-all shadow-sm">
+                            {t('list.pagination.prev')}
                         </button>
-                        <button
-                            // onClick={() => setPage((prev) => prev + 1)}
-                            // disabled={endItem >= totalItems}
-                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-[#2d2d2d] dark:border-gray-600 dark:text-gray-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#3d3d3d] disabled:opacity-50 transition-all shadow-sm"
-                        >
-                            Баъдӣ
+                        <button className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#3d3d3d] disabled:opacity-50 transition-all shadow-sm">
+                            {t('list.pagination.next')}
                         </button>
                     </div>
                 </div>

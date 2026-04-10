@@ -127,7 +127,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                                     <Menu size={20} />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="p-0 w-72 bg-slate-900 dark:bg-black border-r-slate-800 text-white">
+                            <SheetContent side="left" className="p-0 w-72 bg-slate-900 dark:bg-gray-900 border-r-slate-800 text-white">
                                 <div className="flex flex-col h-full">
                                     <div className="px-4 py-6">
                                         <div className="flex items-center gap-3 mb-8">
@@ -160,7 +160,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                         </Sheet>
                     </div>
 
-                    <aside className={`hidden lg:block bg-slate-900 dark:bg-[#0f1115] text-white fixed h-full z-30 border-r border-slate-800 transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-64 translate-x-0" : "w-0 -translate-x-full"}`}>
+                    <aside className={`hidden lg:block bg-slate-900 dark:bg-gray-900  text-white fixed h-full z-30 border-r border-slate-800 transition-all duration-300 ease-in-out ${isSidebarOpen ? "w-64 translate-x-0" : "w-0 -translate-x-full"}`}>
                         <div className={`p-6 flex flex-col h-full transition-opacity duration-300 ${isSidebarOpen ? "opacity-100" : "opacity-0"}`}>
                             <div className="flex items-center gap-3 mb-10">
                                 <div className="w-10 h-10 bg-blue-600 rounded flex items-center justify-center shadow-lg shadow-blue-900/20">
@@ -204,9 +204,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                 </>
             )}
 
-            <main className={`flex-1 min-h-screen bg-slate-50 dark:bg-black transition-all duration-300 ease-in-out ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage ? (isSidebarOpen ? "lg:ml-64" : "ml-0") : ""}`}>
+            <main className={`flex-1 min-h-screen bg-slate-50 dark:bg-gray-900 transition-all duration-300 ease-in-out ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage ? (isSidebarOpen ? "lg:ml-64" : "ml-0") : ""}`}>
                 {!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage && (
-                    <header className={`fixed md:w-auto sm:w-full w-full top-0 right-0 z-20 h-16 bg-white/80 dark:bg-[#0f1115]/80 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64 sm:left-0" : "left-0"}`}>
+                    <header className={`fixed md:w-auto sm:w-full w-full top-0 right-0 z-20 h-16 bg-white/80 dark:bg-gray-900/50 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64 sm:left-0" : "left-0"}`}>
                         <div className="flex items-center gap-4">
                             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden lg:flex items-center justify-center size-9 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-500">
                                 {isSidebarOpen ? <PanelRightClose size={20} /> : <PanelLeftClose size={20} />}
@@ -277,7 +277,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                     </header>
                 )}
 
-                <div className={`w-full ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage ? "pt-20  md:px-8 pb-8  dark:bg-black  bg-gray-50" : "h-full flex dark:bg-[#121a29] items-center justify-center  bg-gray-50"}`}>
+                <div className={`w-full ${!isLoginPage && !isRegisterPage && !isforgotPasswordPage && !isVerifyResetCodePage && !isResetPasswordPage ? "pt-20  md:px-8 pb-8  dark:bg-gray-900  bg-gray-50" : "h-full flex dark:bg-gray-900 items-center justify-center  bg-gray-50"}`}>
                     <div className="max-w-7xl mx-auto w-full">
                         {children}
                     </div>

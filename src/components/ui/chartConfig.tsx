@@ -43,7 +43,7 @@ export function ChartRadialLabel() {
     </div>
 
     return (
-        <Card className="flex flex-col border-none shadow-none ">
+        <Card className="flex flex-col py-4 border-none shadow-none  dark:bg-gray-800">
             <CardHeader className="items-center pb-0">
                 <CardTitle>{t('title')}</CardTitle>
                 <CardDescription>{t('description')}</CardDescription>

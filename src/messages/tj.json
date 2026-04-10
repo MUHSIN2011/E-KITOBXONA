@@ -552,5 +552,201 @@
         "confirm": "Нест кардан"
       }
     }
+  },
+  "TransferPage": {
+    "title": "Интиқоли китобҳо",
+    "subtitle": "Системаи марказонидашудаи тақсимоти китобҳои дарсӣ",
+    "location": {
+      "title": "Маълумот дар бораи макон",
+      "description": "Вилоят, ноҳия ва мактаби таълимӣ",
+      "region": {
+        "label": "Вилоят / Минтақа",
+        "placeholder": "Вилоятро интихоб кунед..."
+      },
+      "district": {
+        "label": "Шаҳр / Ноҳия",
+        "placeholder": "Ноҳияро интихоб кунед..."
+      },
+      "school": {
+        "label": "Мактаби таълимӣ",
+        "placeholder": "Мактабро интихоб кунед..."
+      }
+    },
+    "book": {
+      "title": "Маълумот дар бораи нашр ва миқдор",
+      "description": "Китоби дарсӣ ва ҳолати техникӣ",
+      "bookType": {
+        "label": "Намуди китоб",
+        "new": "Китобҳои нав (воридоти инвентар аз тарафи мактаб)",
+        "old": "Китобҳои кӯҳна (бо инвентари мавҷуда)",
+        "newBadge": "НАВ",
+        "oldBadge": "КӮҲНА"
+      },
+      "bookSelect": {
+        "label": "Номи китоби дарсӣ",
+        "placeholder": "Китобро интихоб кунед...",
+        "grade": "Синфи {grade} • {author}"
+      },
+      "quantity": {
+        "label": "Миқдор"
+      },
+      "notes": {
+        "label": "Эзоҳ",
+        "placeholder": "Маълумоти иловагӣ..."
+      },
+      "copies": {
+        "label": "Интихоби нусхаҳои мушаххас:",
+        "notFound": "Нусхаҳо ёфт нашуданд",
+        "selected": "Ҷамъ: {count} нусха интихоб шуд",
+        "inventory": "№ {number}"
+      }
+    },
+    "button": "ТАСДИҚИ ИНТИҚОЛ",
+    "loading": "Боргузорӣ..."
+  },
+  "ReturnPage": {
+    "title": "Баргардонидани китобҳо",
+    "subtitle": "Баргардонидани китобҳо ба мақомотҳои болоӣ",
+    "returnButton": "Баргардонидан",
+    "stats": {
+      "allTransfers": "Ҳамаи интиқолҳо",
+      "pending": "Дар интизорӣ",
+      "completed": "Иҷрошуда",
+      "cancelled": "Рад Шуда"
+    },
+    "list": {
+      "title": "Рӯйхати баргардонидаҳо",
+      "table": {
+        "bookInfo": "Китоб, Синф, (Инв. №)",
+        "from": "Равон кунанда",
+        "to": "Қабулкунанда",
+        "date": "Сана",
+        "reason": "Сабаб",
+        "status": "Статус",
+        "noReason": "Сабаб зикр нашудааст",
+        "pendingBadge": "Интизор",
+        "underReview": "Дар баррасӣ",
+        "cancelled": "Рад шуд",
+        "accepted": "Қабул шуд",
+        "toMinistry": "Маориф",
+        "toDistrict": "Ноҳия",
+        "toRegion": "Вилоят"
+      },
+      "empty": "Рӯйхат холӣ аст",
+      "inventory": "Инв: {number}",
+      "otherBooks": "+{count} дигар",
+      "pagination": {
+        "page": "Саҳифаи {current} аз {total}",
+        "previous": "Пештара",
+        "next": "Баъдӣ"
+      }
+    },
+    "dialog": {
+      "title": "Маълумоти интиқол #{id}",
+      "subtitle": "Тафсилоти пурраи дархости баргардонидан",
+      "loading": "Дар ҳоли ҷустуҷӯ...",
+      "notFound": "Маълумот ёфт нашуд",
+      "status": {
+        "pending": "Интизор",
+        "cancelled": "Рад шуд",
+        "accepted": "Қабул шуд"
+      },
+      "requestDate": "Санаи дархост",
+      "from": "Равон Кунанда",
+      "to": "Қабул Кунанда",
+      "reason": "Сабаби баргардонидан",
+      "reasonPlaceholder": "Сабаб қайд нашудааст",
+      "booksList": "Рӯйхати китобҳо ({count})",
+      "inventory": "Инвентар: {number}",
+      "buttons": {
+        "accept": "Қабул кардан",
+        "cancelTransfer": "Бекор кардани интиқол",
+        "close": "Пӯшидан"
+      }
+    },
+    "alertDialog": {
+      "cancelTitle": "Бекор кардани интиқол",
+      "cancelDescription": "Оё шумо мутмаин ҳастед, ки интиқоли №{id}-ро бекор кардан мехоҳед?",
+      "no": "Не",
+      "yes": "Бале, бекор шавад"
+    }
+  },
+  "TransferBooksPage": {
+    "title": "Интиқоли китобҳо",
+    "subtitle": "Фиристодани китобҳо аз як мактаб ба мактаби дигар",
+    "sendButton": "Равон кардан",
+    "stats": {
+      "allTransfers": "Ҳамаи интиқолҳо",
+      "pending": "Дар ҳоли интизорӣ",
+      "completed": "Иҷрошуда",
+      "cancelled": "Рад Шуда"
+    },
+    "list": {
+      "title": "Рӯйхати интиқолҳо",
+      "description": "Ҳамаи интиқолҳо бақайдгирифташуда",
+      "searchPlaceholder": "Ҷустуҷӯи хонандагон...",
+      "filterPlaceholder": "Хама",
+      "filterAll": "Ҳама",
+      "filterAccepted": "Қабул Шуда",
+      "filterPending": "Дар ҳоли интизорӣ",
+      "filterRejected": "Рад шуда",
+      "table": {
+        "fromSchool": "АЗ Мактаби",
+        "toSchool": "Ба Мактаби",
+        "book": "Китоб",
+        "grade": "Синфи",
+        "date": "Сана",
+        "status": "Статус"
+      },
+      "empty": "Ягон Трансфер ёфт нашуд!",
+      "emptySub": "Рӯйхат ҳоло холӣ аст.",
+      "loading": "Боргирӣ...",
+      "otherCopies": "+ {count} нусхаи дигар",
+      "otherBooks": "+ {count} китоби дигар",
+      "classLabel": "Синфи {grade}",
+      "classSeparator": ", Синфи {grade}",
+      "pagination": {
+        "showing": "Нишон дода шудааст: {start}-{end} аз {total}",
+        "prev": "Пештара",
+        "next": "Баъдӣ"
+      }
+    },
+    "dialog": {
+      "title": "Интиқоли №{id}",
+      "status": {
+        "pending": "Дар интизорӣ",
+        "cancelled": "Рад шуд",
+        "accepted": "Қабул шуд"
+      },
+      "fromSchool": "Аз мактаби",
+      "toSchool": "Ба мактаби",
+      "reason": "Сабаби интиқол",
+      "booksList": "Рӯйхати китобҳо",
+      "total": "Ҷамъ: {count} дона",
+      "table": {
+        "nameAndGrade": "Ном ва Синф",
+        "inventory": "Инв. №",
+        "condition": "Ҳолат",
+        "new": "НАВ",
+        "old": "КӮҲНА"
+      },
+      "buttons": {
+        "downloadPdf": "Скачат PDF",
+        "downloading": "Дар ҳоли боргирӣ...",
+        "close": "Фаҳмо"
+      }
+    },
+    "alertDialog": {
+      "title": "Тасдиқ кунед",
+      "description": "Оё шумо мутмаин ҳастед, ки китобҳои равонкардаро возврат (бекор) мекунед?",
+      "cancel": "Не",
+      "confirm": "Бале, возврат шавад"
+    },
+    "statusBadges": {
+      "pending": "Интизор",
+      "underReview": "Дар баррасӣ",
+      "cancelled": "Рад шуд",
+      "accepted": "Қабул Шуд"
+    }
   }
 }

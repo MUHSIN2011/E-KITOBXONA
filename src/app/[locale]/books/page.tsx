@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import { useForm } from "react-hook-form"
-import { ExternalLink, Funnel, Plus, BookOpen, Loader2, Check, Copy, ImageIcon, CheckCircle2, Boxes, Search } from 'lucide-react'
+import { ExternalLink, Funnel, Plus, BookOpen, Loader2, Check, Copy, ImageIcon, CheckCircle2, Boxes, Search, TextAlignJustify, TextAlignJustifyIcon } from 'lucide-react'
 
 import {
     IGetTextbooks,
@@ -46,7 +46,6 @@ function Page() {
     const [isSubjectsDialogOpen, setIsSubjectsDialogOpen] = useState(false);
 
     const { data: books, isFetching, isLoading: booksLoading } = useGetTextbooksQuery(subject);
-    console.log(books);
 
 
     const { data: subjectsData } = useGetSubjectsQuery();
@@ -129,9 +128,9 @@ function Page() {
     };
 
     return (
-        <main className="">
+        <main className="px-4 min-h-screen bg-white dark:bg-gray-900">
             <Toaster />
-            <div className='flex md:flex-row flex-col md:gap-0 gap-6 items-center md:justify-between mb-6'>
+            <div className='flex  md:flex-row flex-col md:gap-0 gap-6 items-center md:justify-between mb-6'>
                 <div className='flex flex-col gap-2 items-center'>
                     <TextAnimate className='md:text-2xl text-xl font-bold' animation="slideUp" by="word">
                         {t('title')}
@@ -147,7 +146,7 @@ function Page() {
                             <Plus className="h-5 w-5 " /> {t('addButton')}
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className=" max-h-[95vh] overflow-y-auto">
+                    <DialogContent className=" max-h-[95vh]  dark:bg-gray-900 overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle className="flex items-center gap-2 text-2xl">
                                 <BookOpen className="text-blue-600 " /> {t('dialog.title')}
@@ -216,7 +215,7 @@ function Page() {
 
                             <div className="grid gap-2">
                                 <Label className="text-xs font-bold uppercase text-slate-500 ml-1">{t('dialog.labels.bookImage')}</Label>
-                                <label className="group relative flex flex-col items-center justify-center w-full h-[90px] border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50 hover:border-blue-400 transition-all overflow-hidden">
+                                <label className="group relative flex flex-col items-center justify-center w-full h-[90px] border-2 border-dashed border-slate-200 rounded-2xl cursor-pointer hover:bg-slate-50  dark:bg-gray-800 hover:border-blue-400 transition-all overflow-hidden">
                                     <div className="flex flex-col items-center justify-center pt-4 pb-4">
                                         <ImageIcon className="w-8 h-8 text-slate-300 group-hover:text-blue-500 transition-colors" />
 
@@ -284,27 +283,27 @@ function Page() {
 
 
             <section
-                className='p-4 my-4 bg-white dark:bg-[#1a1a1a] rounded-2xl border shadow-sm hover:shadow-md transition-shadow duration-300 max-w-full overflow-x-auto'
-                data-aos="zoom-in"
-                data-aos-delay="100"
+                className='p-4 my-4 bg-white dark:bg-gray-800 rounded-2xl border shadow-sm hover:shadow-md transition-shadow duration-300 max-w-full overflow-x-auto'
+            // data-aos="zoom-in"
+            // data-aos-delay="100"
             >
                 <h1 className='md:text-2xl text-xl font-bold'>{t('list.title')}</h1>
                 <p className='text-muted-foreground md:w-full w-[80%] text-sm'>{t('list.description')}</p>
 
                 <div className='grid grid-cols-1 md:grid-cols-6 my-4 gap-3'>
-                    <div className="relative max-w-full col-span-1 md:col-span-4" data-aos="fade-right" data-aos-delay="200">
+                    <div className="relative max-w-full dark:bg-gray-800 col-span-1 md:col-span-4" data-aos="fade-right" data-aos-delay="200">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                         <input
-                            className='max-w-full w-full rounded-xl pl-10 pr-4 py-2.5 border bg-[#f9fafb] dark:bg-[#242424] dark:border-zinc-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition-all duration-200 outline-none'
+                            className='max-w-full w-full rounded-xl pl-10 pr-4 py-2.5 border bg-[#f9fafb] dark:bg-gray-900 dark:border-zinc-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition-all duration-200 outline-none'
                             placeholder={t('list.searchPlaceholder')}
                             type="search"
                         />
                     </div>
 
-                    <div className="relative max-w-full col-span-1 md:col-span-1" data-aos="fade-up" data-aos-delay="300">
+                    <div className="relative max-w-full col-span-1 md:col-span-1  dark:bg-gray-800" data-aos="fade-up" data-aos-delay="300">
                         <Funnel className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
                         <Select onValueChange={(value) => setSubject(value)}>
-                            <SelectTrigger className="w-full bg-[#f9fafb] dark:bg-[#242424] dark:border-zinc-800 py-5 pl-9 h-11 rounded-xl border">
+                            <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-gray-900 dark:border-zinc-800 py-5 pl-9 h-11 rounded-xl border">
                                 <SelectValue placeholder={t('list.filterAll')} />
                             </SelectTrigger>
                             <SelectContent>
@@ -329,7 +328,7 @@ function Page() {
                                 <span>{t('list.addSubjectButton')}</span>
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-h-[90vh] overflow-y-auto rounded-[24px]">
+                        <DialogContent className="max-h-[90vh] dark:bg-gray-900 overflow-y-auto rounded-[24px]">
                             <DialogHeader>
                                 <DialogTitle className="flex items-center gap-2 text-2xl">
                                     <BookOpen className="text-blue-600" /> {t('subjectDialog.title')}
@@ -341,7 +340,7 @@ function Page() {
                                     <Input placeholder={t('subjectDialog.placeholder')} {...registerSubject("name", { required: t('subjectDialog.error') })} />
                                 </div>
                                 <DialogFooter>
-                                    <Button type="submit" disabled={isCreatingSubject} className="w-full hover:bg-blue-700 bg-blue-600 h-11 rounded-xl">
+                                    <Button type="submit" disabled={isCreatingSubject} className="w-full text-white hover:bg-blue-700 bg-blue-600 h-11 rounded-xl">
                                         {isCreatingSubject ? <Loader2 className="animate-spin" /> : t('subjectDialog.button')}
                                     </Button>
                                 </DialogFooter>
@@ -351,7 +350,7 @@ function Page() {
                 </div>
 
                 <Sheet open={isDetailOpen} onOpenChange={setIsDetailOpen}>
-                    <SheetContent className="max-h-screen md:max-w-112.5 w-full overflow-y-auto px-4 py-2 border-l-4 border-blue-600 dark:bg-[#1a1a1a]">
+                    <SheetContent className="max-h-screen md:max-w-112.5 w-full overflow-y-auto px-4 py-2 border-l-4 border-blue-600  dark:bg-gray-900">
                         <SheetHeader className="mb-4">
                             <SheetTitle className="text-2xl font-black leading-tight">
                                 {isDetailLoading ? t('sheet.loading') : bookDetail?.title}
@@ -388,7 +387,7 @@ function Page() {
                                 <hr className="dark:border-zinc-800" />
 
                                 <div className="grid grid-cols-3 gap-3">
-                                    <div className="bg-slate-50 dark:bg-zinc-900 p-3 rounded-xl border dark:border-zinc-800 text-center">
+                                    <div className="bg-slate-50  dark:bg-gray-800 p-3 rounded-xl border dark:border-zinc-800 text-center">
                                         <p className="text-[10px] text-slate-500 uppercase font-bold">{t('sheet.stats.total')}</p>
                                         <p className="text-xl font-black">{bookDetail.total_copies}</p>
                                     </div>
@@ -402,7 +401,7 @@ function Page() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-y-4 gap-x-8 bg-white dark:bg-[#242424] p-4 rounded-2xl border dark:border-zinc-800 shadow-sm">
+                                <div className="grid grid-cols-2 gap-y-4 gap-x-8 bg-white  dark:bg-gray-800 p-4 rounded-2xl border dark:border-zinc-800 shadow-sm">
                                     <div>
                                         <Label className="text-slate-400">{t('sheet.details.grade')}</Label>
                                         <p className="font-semibold">{bookDetail.grade}-ум</p>
@@ -416,7 +415,7 @@ function Page() {
                                         <p className="font-semibold">{bookDetail.publisher}</p>
                                     </div>
                                     <div className="col-span-2">
-                                        <Label className="text-slate-400">{t('sheet.details.isbn')}</Label>
+                                        <Label className="text-slate-400 mb-1 "><TextAlignJustifyIcon className='size-5' /> {t('sheet.details.isbn')}</Label>
                                         <div className="flex items-center gap-2 group">
                                             <p className="font-mono text-sm bg-slate-100 dark:bg-zinc-800 p-1.5 rounded border dark:border-zinc-700 w-fit">
                                                 {bookDetail.isbn}
@@ -468,16 +467,16 @@ function Page() {
                 </Sheet>
 
                 <div
-                    className={`w-full sm:max-w-max max-w-85 md:max-w-full 
-        ${isFetching ? "opacity-50" : "opacity-100"} 
+                    className={`w-full sm:max-w-full max-w-85 md:max-w-full 
+        ${isFetching ? "opacity-50  dark:bg-gray-900" : "opacity-100"} 
         overflow-x-auto overflow-y-clip rounded-xl border border-gray-200 
-        dark:border-zinc-800 bg-white dark:bg-[#1a1a1a] 
+        dark:border-gray-800 bg-white  dark:bg-gray-900
         transition-opacity duration-200`}
                 >
                     <table className="w-full text-left border-collapse border border-gray-200 dark:border-zinc-800 min-w-212.5">
-                        <thead className="bg-gray-50 dark:bg-[#141212]">
+                        <thead className="bg-gray-50  dark:bg-gray-900">
                             <tr>
-                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-[#141212] border-b dark:border-zinc-800">{t('list.table.bookName')}</th>
+                                <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 bg-gray-50  dark:bg-gray-900 border-b dark:border-gray-800">{t('list.table.bookName')}</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">{t('list.table.grade')}</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">{t('list.table.rental')}</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-400 border-b dark:border-zinc-800">{t('list.table.status')}</th>
@@ -491,7 +490,7 @@ function Page() {
                                     onClick={() => handleRowClick(book.id)}
                                     className="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors cursor-pointer group"
                                 >
-                                    <td className="p-4 font-semibold text-gray-800 dark:text-zinc-100 bg-white dark:bg-[#1a1a1a] group-hover:bg-blue-50/50 dark:group-hover:bg-[#1e1e1e] transition-colors">
+                                    <td className="p-4 font-semibold text-gray-800 dark:text-zinc-100 bg-white  dark:bg-gray-900 group-hover:bg-blue-50/50 dark:group-hover:bg-gray-900 transition-colors">
                                         {book.title}
                                     </td>
                                     <td className="p-4 text-gray-600 dark:text-zinc-400">{book.grade}</td>

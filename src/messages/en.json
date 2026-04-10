@@ -639,5 +639,150 @@
         "confirm": "Delete"
       }
     }
+  },
+  "ReturnPage": {
+    "title": "Book Return",
+    "subtitle": "Return books to higher authorities",
+    "returnButton": "Return",
+    "stats": {
+      "allTransfers": "All Transfers",
+      "pending": "Pending",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "list": {
+      "title": "Returns List",
+      "table": {
+        "bookInfo": "Book, Grade, (Inv. No.)",
+        "from": "Sender",
+        "to": "Receiver",
+        "date": "Date",
+        "reason": "Reason",
+        "status": "Status",
+        "noReason": "No reason specified",
+        "pendingBadge": "Pending",
+        "underReview": "Under review",
+        "cancelled": "Cancelled",
+        "accepted": "Accepted",
+        "toMinistry": "Ministry",
+        "toDistrict": "District",
+        "toRegion": "Region"
+      },
+      "empty": "List is empty",
+      "inventory": "Inv: {number}",
+      "otherBooks": "+{count} more",
+      "pagination": {
+        "page": "Page {current} of {total}",
+        "previous": "Previous",
+        "next": "Next"
+      }
+    },
+    "dialog": {
+      "title": "Transfer Information #{id}",
+      "subtitle": "Complete details of the return request",
+      "loading": "Searching...",
+      "notFound": "No data found",
+      "status": {
+        "pending": "Pending",
+        "cancelled": "Cancelled",
+        "accepted": "Accepted"
+      },
+      "requestDate": "Request Date",
+      "from": "Sender",
+      "to": "Receiver",
+      "reason": "Reason for return",
+      "reasonPlaceholder": "No reason specified",
+      "booksList": "Book List ({count})",
+      "inventory": "Inventory: {number}",
+      "buttons": {
+        "accept": "Accept",
+        "cancelTransfer": "Cancel Transfer",
+        "close": "Close"
+      }
+    },
+    "alertDialog": {
+      "cancelTitle": "Cancel Transfer",
+      "cancelDescription": "Are you sure you want to cancel transfer #{id}?",
+      "no": "No",
+      "yes": "Yes, cancel"
+    }
+  },
+  "TransferBooksPage": {
+    "title": "Book Transfer",
+    "subtitle": "Send books from one school to another",
+    "sendButton": "Send",
+    "stats": {
+      "allTransfers": "All Transfers",
+      "pending": "Pending",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "list": {
+      "title": "Transfers List",
+      "description": "All registered transfers",
+      "searchPlaceholder": "Search students...",
+      "filterPlaceholder": "All",
+      "filterAll": "All",
+      "filterAccepted": "Accepted",
+      "filterPending": "Pending",
+      "filterRejected": "Rejected",
+      "table": {
+        "fromSchool": "FROM School",
+        "toSchool": "TO School",
+        "book": "Book",
+        "grade": "Grade",
+        "date": "Date",
+        "status": "Status"
+      },
+      "empty": "No Transfer found!",
+      "emptySub": "The list is currently empty.",
+      "loading": "Loading...",
+      "otherCopies": "+ {count} more copies",
+      "otherBooks": "+ {count} more books",
+      "classLabel": "Grade {grade}",
+      "classSeparator": ", Grade {grade}",
+      "pagination": {
+        "showing": "Showing {start}-{end} of {total}",
+        "prev": "Previous",
+        "next": "Next"
+      }
+    },
+    "dialog": {
+      "title": "Transfer #{id}",
+      "status": {
+        "pending": "Pending",
+        "cancelled": "Cancelled",
+        "accepted": "Accepted"
+      },
+      "fromSchool": "From School",
+      "toSchool": "To School",
+      "reason": "Transfer Reason",
+      "booksList": "Books List",
+      "total": "Total: {count} items",
+      "table": {
+        "nameAndGrade": "Name and Grade",
+        "inventory": "Inv. No.",
+        "condition": "Condition",
+        "new": "NEW",
+        "old": "OLD"
+      },
+      "buttons": {
+        "downloadPdf": "Download PDF",
+        "downloading": "Downloading...",
+        "close": "Close"
+      }
+    },
+    "alertDialog": {
+      "title": "Confirm Action",
+      "description": "Are you sure you want to cancel the book transfer?",
+      "cancel": "No",
+      "confirm": "Yes, cancel"
+    },
+    "statusBadges": {
+      "pending": "Pending",
+      "underReview": "Under Review",
+      "cancelled": "Cancelled",
+      "accepted": "Accepted"
+    }
   }
 }

@@ -26,7 +26,7 @@ export default function RegisterPage() {
                     <p className="text-muted-foreground mt-1">Системаи идоракунии китобхона</p>
                 </div>
 
-                <div className="bg-white dark:bg-slate-950 rounded-2xl px-8 py-5 border border-border shadow-xl">
+                <div className="bg-white dark:bg-gray-800/50 rounded-2xl px-8 py-5 border border-border shadow-xl">
                     <div className="text-center mb-5">
                         <h2 className="text-xl font-semibold text-foreground">Хуш омадед!</h2>
                         <p className="text-sm text-muted-foreground mt-1">Барои бақайдгирӣ маълумотро пур кунед</p>

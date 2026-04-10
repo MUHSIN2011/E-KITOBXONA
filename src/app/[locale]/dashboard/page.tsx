@@ -94,7 +94,7 @@ function Page() {
         <ProtectedRoute allowedRoles={["ministry"]}>
             <div className="px-3 py-3">
                 <Toaster />
-                <div className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white dark:bg-[#1a1a1a] p-4 rounded-2xl border border-blue-100 dark:border-0 shadow-sm gap-4" data-aos="fade-down">
+                <div className="flex flex-col md:flex-row justify-between items-center mb-6 bg-white dark:bg-gray-800 p-4 rounded-2xl border border-blue-100 dark:border-0 shadow-sm gap-4" data-aos="fade-down">
                     <div>
                         <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800 dark:text-white">
                             <CalendarDays className="text-blue-600" /> {t('academicYear')} {getyears?.name}
@@ -115,7 +115,7 @@ function Page() {
                                     {t('addNewYear')}
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogContent className='dark:bg-gray-900'>
                                 <DialogHeader>
                                     <DialogTitle>{t('addAcademicYear')}</DialogTitle>
                                 </DialogHeader>
@@ -137,7 +137,7 @@ function Page() {
                                         </div>
                                     </div>
 
-                                    <Button type="submit" className="w-full hover:bg-blue-500 cursor-pointer bg-blue-600" disabled={isLoading}>
+                                    <Button type="submit" className="w-full hover:bg-blue-500 cursor-pointer bg-blue-600 text-white" disabled={isLoading}>
                                         {isLoadingcreateYear ? t('adding') : t('save')}
                                     </Button>
                                 </form>
@@ -195,7 +195,7 @@ function Page() {
                 </section>
 
                 <section
-                    className='border rounded-xl p-3 bg-white dark:bg-[#1a1a1a]'
+                    className='border rounded-xl p-3 bg-white dark:bg-gray-800'
                 >
                     <h1 className='text-2xl font-semibold '>{t('returnProcess')}</h1>
                     <p className='text-foreground text-sm mb-3'>{t('returnProgress')}</p>

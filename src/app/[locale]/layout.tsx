@@ -100,7 +100,7 @@ export default async function RootLayout({
             <LayoutWrapper>
               <ThemeProvider
                 attribute="class"
-                defaultTheme="light"
+                defaultTheme="system"
                 enableSystem
                 disableTransitionOnChange
               >

@@ -24,7 +24,7 @@ const RegionsTable: React.FC = () => {
     );
 
     return (
-        <div className="rounded-xl border border-gray-100 dark:border-slate-800 bg-white dark:bg-[#1a1a1a] shadow-sm overflow-hidden transition-colors">
+        <div className="rounded-xl border border-gray-100  dark:bg-gray-800 dark:border-slate-800 bg-white shadow-sm overflow-hidden transition-colors">
             <div className="p-5 border-b border-gray-50 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h3 className="font-bold text-gray-800 dark:text-slate-100 text-lg">Ҳисоботи минтақавӣ</h3>

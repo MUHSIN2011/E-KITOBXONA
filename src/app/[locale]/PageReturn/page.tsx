@@ -18,8 +18,10 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
+import { useTranslations } from 'next-intl'
 
 export default function Page() {
+    const t = useTranslations('ReturnPage')
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
     const router = useRouter()
@@ -74,67 +76,43 @@ export default function Page() {
 
             <div className='flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0'>
                 <div className='text-center md:text-left'>
-                    <TextAnimate
-                        className='text-xl md:text-2xl font-bold'
-                        animation="slideUp"
-                        by="word"
-                    >
-                        Баргардонидани китобҳо
+                    <TextAnimate className='text-xl md:text-2xl font-bold' animation="slideUp" by="word">
+                        {t('title')}
                     </TextAnimate>
                     <p className='text-foreground text-xs sm:text-sm'>
-                        Баргардонидани китобҳо ба мақомотҳои болоӣ
+                        {t('subtitle')}
                     </p>
                 </div>
                 {userRole == "school" && (
-                    <Button
-                        onClick={() => router.push('/PageReturn/Return')}
-                        className='bg-blue-600 hover:bg-blue-800 text-white cursor-pointer flex gap-2 py-2 sm:py-3 md:py-5 px-4 w-full md:w-auto rounded-lg sm:rounded-md'
-                    >
+                    <Button onClick={() => router.push('/PageReturn/Return')} className='bg-blue-600 hover:bg-blue-800 text-white cursor-pointer flex gap-2 py-2 sm:py-3 md:py-5 px-4 w-full md:w-auto rounded-lg sm:rounded-md'>
                         <Caravan className='w-5 h-5 sm:w-6 sm:h-6' />
-                        Баргардонидан
+                        {t('returnButton')}
                     </Button>
                 )}
             </div>
 
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 my-4 sm:my-5'>
-                <CardsStudent
-                    Icons={<ArrowRightLeft className="text-blue-500" />}
-                    NameRole='Ҳамаи интиқолҳо'
-                    cnt={totalTransfers}
-                />
-                <CardsStudent
-                    Icons={<Clock className="text-yellow-500" />}
-                    NameRole='Дар интизорӣ'
-                    cnt={pendingCount}
-                />
-                <CardsStudent
-                    Icons={<BadgeCheck className="text-green-500" />}
-                    NameRole='Иҷрошуда'
-                    cnt={completedCount}
-                />
-                <CardsStudent
-                    Icons={<XCircle className="text-red-500" />}
-                    NameRole='Рад Шуда'
-                    cnt={cancelledCount}
-                />
+                <CardsStudent Icons={<ArrowRightLeft className="text-blue-500" />} NameRole={t('stats.allTransfers')} cnt={totalTransfers} />
+                <CardsStudent Icons={<Clock className="text-yellow-500" />} NameRole={t('stats.pending')} cnt={pendingCount} />
+                <CardsStudent Icons={<BadgeCheck className="text-green-500" />} NameRole={t('stats.completed')} cnt={completedCount} />
+                <CardsStudent Icons={<XCircle className="text-red-500" />} NameRole={t('stats.cancelled')} cnt={cancelledCount} />
             </div>
 
-            <section className='py-4 sm:py-5 px-3 sm:px-4 bg-white dark:bg-[#1f1f1f] rounded-xl border shadow-sm'>
+            <section className='py-4 sm:py-5 px-3 sm:px-4 bg-white dark:bg-gray-800 rounded-xl border shadow-sm'>
                 <h1 className='text-lg sm:text-xl font-bold'>
                     Рӯйхати баргардонидаҳо
                 </h1>
 
-                <div className="overflow-x-auto md:max-w-full sm:max-w-full max-w-full mt-3 sm:mt-4 border rounded-xl shadow-sm bg-white dark:bg-[#1a1a1a]">
+                <div className="overflow-x-auto md:max-w-full sm:max-w-full max-w-full mt-3 sm:mt-4 border rounded-xl shadow-sm bg-white dark:bg-gray-900">
                     <table className="text-left border-collapse min-w-[300px] md:min-w-full sm:min-w-full ">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-[#2a2a2a] border-b">
-                                {/* <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">ID</th> */}
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Китоб, Синфи , (Инв. №)</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Равон кунанда</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Қабулкунанда</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Сана</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 hidden sm:table-cell">Сабаб</th>
-                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500">Статус</th>
+                            <tr className="bg-gray-50 dark:bg-gray-700 border-b">
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-200">{t('list.table.bookInfo')}</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-200">{t('list.table.from')}</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-200">{t('list.table.to')}</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-200">{t('list.table.date')}</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-200 hidden sm:table-cell">{t('list.table.reason')}</th>
+                                <th className="p-3 sm:p-4 text-xs font-bold uppercase text-gray-500 dark:text-gray-200">{t('list.table.status')}</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
@@ -153,7 +131,7 @@ export default function Page() {
                                     <td colSpan={6} className="p-8 sm:p-10 hover:bg-gray-50 duration-300 transition-colors">
                                         <div className="flex flex-col items-center justify-center gap-2 text-gray-400">
                                             <SearchAlertIcon className="w-10 h-10 mb-2 opacity-50" />
-                                            <span className="text-sm font-medium">Рӯйхат холӣ аст</span>
+                                            <span className="text-sm font-medium">{t('list.empty')}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -162,17 +140,16 @@ export default function Page() {
                                     <tr
                                         key={item.id}
                                         onClick={() => handleInfo(item.id)}
-                                        className="hover:bg-gray-50 dark:hover:bg-[#2a2a2a] cursor-pointer transition-colors"
+                                        className="hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors"
                                     >
 
-                                        {/* <td className="p-3 sm:p-4 text-xs sm:text-sm font-bold">#{item.id}</td> */}
                                         <td className="p-3 sm:p-4 text-xs sm:text-sm">
                                             <div className="flex flex-col gap-y-1">
                                                 {item.items.length > 0 && (
                                                     <>
                                                         <div className={`flex flex-col pb-1 ${item.items.length > 1 ? 'border-b border-gray-200' : ''}`}>
-                                                            <span className="font-medium text-gray-900">
-                                                                {item.items[0].textbook_title} <span className="text-gray-500 font-normal">- Синфи {item.items[0].textbook_grade}</span>
+                                                            <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                                {item.items[0].textbook_title} <span className="text-gray-500 dark:text-gray-200 font-normal">- Синфи {item.items[0].textbook_grade}</span>
                                                             </span>
                                                             <span className="text-[10px] text-blue-500 font-bold">
                                                                 Инв: {item.items[0].inventory_number}
@@ -229,7 +206,7 @@ export default function Page() {
                                                                 <div className='hover:bg-yellow-200 rounded-full w-5 h-5 p-1 duration-200 transition-colors hover:animate-pulse'>
                                                                     <XIcon className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-yellow-600 " />
                                                                 </div>
-                                                                <span className="text-[10px] sm:text-xs font-semibold text-yellow-600">Интизор</span>
+                                                                <span className="text-[10px] sm:text-xs font-semibold text-yellow-600">{t('list.table.pendingBadge')}</span>
                                                             </div>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent>
@@ -250,7 +227,7 @@ export default function Page() {
                                                 ) : (
                                                     <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-600 border border-yellow-100">
                                                         <Clock className="w-2.5 h-2.5" />
-                                                        <span className="text-[10px] sm:text-xs font-semibold">Дар баррасӣ</span>
+                                                        <span className="text-[10px] sm:text-xs font-semibold">{t('list.table.underReview')}</span>
                                                     </div>
                                                 )
                                             ) : (
@@ -263,7 +240,7 @@ export default function Page() {
                                                         : <CircleCheckBig className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                                                     }
                                                     <span className="text-[10px] sm:text-xs font-semibold">
-                                                        {item.status === 'cancelled' ? 'Рад шуд' : 'Қабул шуд'}
+                                                        {item.status === 'cancelled' ? t('list.table.cancelled') : t('list.table.approved')}
                                                     </span>
                                                 </div>
                                             )}
@@ -308,7 +285,7 @@ export default function Page() {
                     </Pagination>
 
                     <p className="text-center text-xs text-gray-500 mt-2">
-                        Саҳифаи {currentPage} аз {totalPages}
+                        {t('list.pagination.page', { current: currentPage, total: totalPages })}
                     </p>
                 </div>
             </section >
@@ -317,7 +294,7 @@ export default function Page() {
                 setIsDialogOpen(open);
                 if (!open) setSelectedReturnId(null);
             }}>
-                <DialogContent className="max-w-[95%] sm:max-w-lg rounded-2xl overflow-hidden border-none p-0 bg-white dark:bg-[#1f1f1f]">
+                <DialogContent className="max-w-[95%] sm:max-w-lg rounded-2xl overflow-hidden border-none p-0 bg-white dark:bg-gray-900">
                     <DialogHeader className="p-6 bg-[#0950c3] text-white">
                         <div className="flex items-center gap-3">
                             <div className="p-2 bg-white/20 rounded-lg">
@@ -342,7 +319,7 @@ export default function Page() {
                         ) : infoTransfersById ? (
                             <div className="space-y-6">
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-[#2a2a2a] border">
+                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border">
                                         <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Статус</p>
                                         <div className="flex items-center gap-2">
                                             {infoTransfersById.status === 'pending' ? (
@@ -360,7 +337,7 @@ export default function Page() {
                                             )}
                                         </div>
                                     </div>
-                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-[#2a2a2a] border">
+                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border">
                                         <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Санаи дархост</p>
                                         <div className="flex items-center gap-2 text-sm font-semibold">
                                             <Calendar className="w-4 h-4 text-blue-500" />
@@ -369,13 +346,13 @@ export default function Page() {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-[#2a2a2a] border">
+                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border">
                                         <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Равон Кунанда</p>
                                         <div className="flex items-center gap-2">
                                             {infoTransfersById?.from_school_title}
                                         </div>
                                     </div>
-                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-[#2a2a2a] border">
+                                    <div className="p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border">
                                         <p className="text-[10px] uppercase font-bold text-gray-400 mb-1">Кабул Кунанда</p>
                                         <div className="flex items-center gap-2 text-sm font-semibold">
                                             Ба {infoTransfersById?.to_entity_type == 'ministry' ? 'Маориф' : infoTransfersById?.to_entity_type == 'district' ? 'Ноҳия' : infoTransfersById?.to_entity_type == 'region' ? 'Вилоят' : infoTransfersById?.to_entity_type}
@@ -387,7 +364,7 @@ export default function Page() {
                                     <h4 className="text-xs font-bold text-gray-500 uppercase flex items-center gap-2">
                                         <FileText className="w-3.5 h-3.5" /> Сабаби баргардонидан
                                     </h4>
-                                    <div className="p-3 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 text-sm italic text-gray-700 dark:text-gray-300">
+                                    <div className="p-3 rounded-lg bg-blue-50/50 dark:bg-gray-700/20 border border-blue-100 dark:border-gray-900/30 text-sm italic text-gray-700 dark:text-gray-300">
                                         "{infoTransfersById.notes || infoTransfersById.reason || 'Сабаб қайд нашудааст'}"
                                     </div>
                                 </div>
@@ -398,7 +375,7 @@ export default function Page() {
                                     </h4>
                                     <div className="max-h-[200px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
                                         {infoTransfersById.items?.map((item: any) => (
-                                            <div key={item.id || item.textbook_copy_id} className="flex items-center justify-between p-3 rounded-lg border bg-white dark:bg-[#252525] hover:border-blue-300 transition-colors">
+                                            <div key={item.id || item.textbook_copy_id} className="flex items-center justify-between p-3 rounded-lg border bg-white dark:bg-gray-800 hover:border-blue-300 transition-colors">
                                                 <div className="flex flex-col">
                                                     <span className="text-sm font-bold">
                                                         {item.textbook_title || `Китоби №${item.textbook_copy_id}`}
@@ -407,7 +384,7 @@ export default function Page() {
                                                         Инвентар: {item.inventory_number || '---'}
                                                     </span>
                                                 </div>
-                                                <div className="p-1.5 bg-gray-100 dark:bg-[#333] rounded-md">
+                                                <div className="p-1.5 bg-gray-100 dark:bg-gray-900 hover:border-blue-600 border rounded-md">
                                                     <ArrowRightLeft className="w-3.5 h-3.5 text-gray-500" />
                                                 </div>
                                             </div>
@@ -423,7 +400,7 @@ export default function Page() {
                         )}
                     </div>
 
-                    <DialogFooter className="p-4 bg-gray-100 dark:bg-[#2a2a2a] border-t gap-2">
+                    <DialogFooter className="p-4 bg-gray-100 dark:bg-gray-800 border-t gap-2">
                         {infoTransfersById?.status === 'pending' &&
                             userRole === infoTransfersById.to_entity_type && (
                                 <Button
@@ -465,7 +442,7 @@ export default function Page() {
                         )}
 
                         <DialogClose asChild>
-                            <Button variant="default" className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 font-semibold">
+                            <Button variant="default" className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 font-semibold">
                                 Пӯшидан
                             </Button>
                         </DialogClose>

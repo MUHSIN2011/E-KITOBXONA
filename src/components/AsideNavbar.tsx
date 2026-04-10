@@ -79,6 +79,12 @@ function AsideNavbar() {
                             <TextAnimate animation="slideUp" by="word">{t('transfer')}</TextAnimate>
                         </div>
                     </Link>
+                    <Link href="/ministry">
+                        <div className={getLinkStyle("/ministry")}>
+                            <Landmark className="w-5 h-5" />
+                            <TextAnimate animation="slideUp" by="word">{t('schools')}</TextAnimate>
+                        </div>
+                    </Link>
                 </>
             )}
 

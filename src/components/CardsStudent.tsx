@@ -13,11 +13,10 @@ interface CardProps {
 
 function CardsStudent({ NameRole, cnt, Icons, className, description }: CardProps) {
     return (
-        <div className={`flex  gap-5 items-center   group   ${className}  bg-white dark:bg-[#1a1a1a] border rounded-sm py-5 px-5`}>
+        <div className={`flex  gap-5 items-center   group   ${className}  bg-white dark:bg-gray-800 border rounded-sm py-5 px-5`}>
             <aside>
                 {Icons && (
-                    <div className="inline-block bg-[#e6edf8] dark:bg-black group-hover:scale-100 group-hover:rotate-12 group-hover:-translate-y-1 transition-all duration-300 text-[#0950c3] p-2 rounded-xl">
-
+                    <div className="inline-block bg-[#e6edf8] dark:bg-gray-900 group-hover:scale-100 group-hover:rotate-12 group-hover:-translate-y-1 transition-all duration-300 text-[#0950c3] p-2 rounded-xl">
                         {Icons}
                     </div>
                 )}

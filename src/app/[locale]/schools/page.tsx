@@ -32,6 +32,7 @@ function DeliveryPage() {
     const searchParams = useSearchParams()
     const [selectedRegion, setSelectedRegion] = useState<string>(searchParams.get('region_id') || '')
     const [selectedDistrict, setSelectedDistrict] = useState<string>('')
+    const [selectedSchool, setSelectedSchool] = useState<string>('')
 
     const { data: regions, isLoading: regionsLoading } = useGetRegionsQuery()
     const { data: districts, isLoading: districtsLoading } = useGetDistrictsQuery(Number(selectedRegion), { skip: !selectedRegion })
@@ -110,7 +111,6 @@ function DeliveryPage() {
                 setSelectedRegion('')
                 setSelectedDistrict('')
             }, 4000)
-            toast.success("Поставка бо муваффақият эҷод шуд!")
             return () => clearTimeout(timer)
         }
     }, [isSuccess, reset])
@@ -151,7 +151,9 @@ function DeliveryPage() {
 
         try {
             const supplyResponse = await createSupply(payload).unwrap();
+            toast.success("Дархост бо муваффақият иҷро шуд!")
 
+            
             if (requestIdFromUrl && requestIdFromUrl !== 'undefined') {
                 await fulfillRequest({
                     requestId: Number(requestIdFromUrl),
@@ -168,194 +170,222 @@ function DeliveryPage() {
 
 
     return (
-        <div className="min-h-screen p-4 md:p-3 max-w-6xl mx-auto space-y-8">
-            <Toaster />
-            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4">
-                <div className="inline-flex items-center justify-center gap-4 bg-white/80 dark:bg-[#1a1a1a] dark:border-[#1a1a1a] backdrop-blur-sm px-8 py-4 rounded-2xl shadow-lg border border-blue-100">
-                    <div className="p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full shadow-lg">
-                        <Truck className="text-white" size={32} />
+        <div className="min-h-screen p-3 sm:p-4 md:p-6 max-w-6xl mx-auto space-y-4 sm:space-y-6 md:space-y-8">
+            <Toaster position="top-center" />
+
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-3 sm:space-y-4">
+                <div className="inline-flex items-center justify-center gap-3 sm:gap-4 bg-white/80 dark:bg-gray-800 backdrop-blur-sm px-4 sm:px-6 md:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl shadow-lg border border-blue-100 dark:border-gray-700">
+                    <div className="p-2 sm:p-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full shadow-lg">
+                        <Truck className="text-white w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
                     </div>
                     <div className="text-left">
-                        <h1 className="text-3xl font-black tracking-tight text-slate-900 bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">
                             {t('title')}
                         </h1>
-                        <p className="text-slate-500 font-medium text-sm">{t('subtitle')}</p>
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 font-medium">
+                            {t('subtitle')}
+                        </p>
                     </div>
                 </div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-                <Card className="border border-blue-100 dark:bg-[#1a1a1a] py-0 shadow-xl overflow-hidden dark:border-none bg-white/90 backdrop-blur-md">
-                    <CardHeader className="bg-gradient-to-r from-slate-900 to-blue-900 dark:to-blue-600 text-white p-6">
-                        <CardTitle className="text-xl font-bold flex items-center gap-3">
-                            <div className="p-2 bg-white/20 rounded-lg">
-                                <MapPin size={20} className="text-blue-300" />
+                <Card className="border border-blue-100 dark:border-gray-700 py-0 shadow-xl overflow-hidden bg-white/90 dark:bg-gray-800 backdrop-blur-md">
+                    <CardHeader className="bg-gradient-to-r from-slate-900 to-blue-900 text-white p-4 sm:p-5 md:p-6">
+                        <CardTitle className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2 sm:gap-3">
+                            <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
+                                <MapPin size={16} className="sm:w-5 sm:h-5 text-blue-300" />
                             </div>
                             <div>
                                 <span>{t('location.title')}</span>
-                                <p className="text-sm font-normal text-blue-200 mt-1">{t('location.description')}</p>
-                            </div>
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="space-y-3">
-                            <Label className="text-slate-700 dark:text-white/80 font-semibold flex items-center gap-2">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                {t('location.region.label')}
-                            </Label>
-                            <Select
-                                value={selectedRegion}
-                                onValueChange={(v) => {
-                                    setSelectedRegion(v);
-                                    setSelectedDistrict('');
-                                }}
-                            >
-                                <SelectTrigger className='dark:border-gray-600'>
-                                    <SelectValue placeholder={t('location.region.placeholder')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {regionsLoading ? (
-                                        <SelectContent>
-                                            <SelectItem
-                                                value="loading-test"
-                                                disabled
-                                                className="w-full flex justify-center items-center py-3"
-                                            >
-                                                <div className="flex items-center justify-center w-full min-w-[150px]">
-                                                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
-                                                </div>
-                                            </SelectItem>
-                                            <SelectItem value="1">{t('loading')}</SelectItem>
-                                        </SelectContent>
-                                    ) : (
-                                        regions?.map((r: Region) => (
-                                            <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>
-                                        ))
-                                    )}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-3">
-                            <Label className="text-slate-700 dark:text-white/70 font-semibold flex items-center gap-2">
-                                <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
-                                {t('location.district.label')}
-                            </Label>
-                            <Select
-                                disabled={!selectedRegion}
-                                value={selectedDistrict}
-                                onValueChange={(v) => { setSelectedDistrict(v); setFormData({ ...formData, to_school_id: '' }) }}
-                            >
-                                <SelectTrigger className="h-12 border-slate-200 focus:ring-2 dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
-                                    <SelectValue placeholder={t('location.district.placeholder')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {districts?.map((d: any) => (
-                                        <SelectItem key={d.id} value={d.id.toString()}>{d.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="space-y-3">
-                            <Label className="font-semibold flex items-center gap-2 text-blue-800">
-                                <School size={16} />
-                                {t('location.school.label')}
-                            </Label>
-                            <Select
-                                disabled={!selectedDistrict}
-                                value={formData.to_school_id || ''}
-                                onValueChange={(v) => setFormData({ ...formData, to_school_id: v })}
-                            >
-                                <SelectTrigger className="h-12 border-blue-200 focus:ring-2 dark:border-gray-600 focus:ring-blue-500 bg-white shadow-sm">
-                                    <SelectValue placeholder={t('location.school.placeholder')} />
-                                </SelectTrigger>
-                                <SelectContent className="max-h-[300px]">
-                                    {schools?.map((s: any) => (
-                                        <SelectItem key={s.id} value={s.id.toString()}>{s.name}</SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </CardContent>
-                </Card>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-                <Card className="border border-blue-100 py-0 shadow-xl overflow-hidden bg-white/90 dark:bg-[#1a1a1a] dark:border-[#1a1a1a] backdrop-blur-md">
-                    <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6">
-                        <CardTitle className="text-xl font-bold flex items-center gap-3">
-                            <div className="p-2 bg-white/20 rounded-lg">
-                                <Book size={20} />
-                            </div>
-                            <div>
-                                <span>{t('book.title')}</span>
-                                <p className="text-sm font-normal text-blue-100">{t('book.description')}</p>
-                            </div>
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6 space-y-6">
-                        <div className="flex items-center justify-between p-4 bg-blue-50/50 rounded-xl border dark:bg-blue-700 dark:border-[#1a1a1a] border-blue-100">
-                            <div className="space-y-1">
-                                <Label className="text-base font-bold dark:text-white text-slate-800">{t('book.bookType.label')}</Label>
-                                <p className="text-sm text-slate-500 dark:text-white/70">
-                                    {formData.is_new_books ? t('book.bookType.new') : t('book.bookType.old')}
+                                <p className="text-xs sm:text-sm font-normal text-blue-200 mt-0.5 sm:mt-1">
+                                    {t('location.description')}
                                 </p>
                             </div>
-                            <div className="flex items-center gap-3 bg-white dark:bg-[#1a1a1a]/40 p-2 rounded-lg shadow-sm border">
-                                <span className={`text-xs font-bold ${!formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>{t('book.bookType.oldBadge')}</span>
-                                <Switch checked={formData.is_new_books} onCheckedChange={(v) => setFormData({ ...formData, is_new_books: v, textbook_copy_ids: [] })} />
-                                <span className={`text-xs font-bold ${formData.is_new_books ? 'text-blue-600' : 'text-slate-400 dark:text-white'}`}>{t('book.bookType.newBadge')}</span>
-                            </div>
-                        </div>
+                        </CardTitle>
+                    </CardHeader>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="space-y-4">
-                                <Label className="text-slate-700 dark:text-white font-semibold flex items-center gap-2">
-                                    <Book size={16} className="text-blue-500" />
-                                    {t('book.bookSelect.label')}
+                    <CardContent className="p-4 sm:p-5 md:p-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+                            {/* Region Select */}
+                            <div className="space-y-2 sm:space-y-3">
+                                <Label className="text-slate-700 dark:text-gray-300 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    {t('location.region.label')}
                                 </Label>
-                                <Select value={formData.textbook_id} onValueChange={(v) => setFormData({ ...formData, textbook_id: v, textbook_copy_ids: [] })}>
-                                    <SelectTrigger className="min-h-[60px] h-auto border-slate-200 dark:border-gray-600 bg-white shadow-sm">
-                                        <SelectValue placeholder={t('book.bookSelect.placeholder')} />
+                                <Select
+                                    value={selectedRegion}
+                                    onValueChange={(v) => {
+                                        setSelectedRegion(v);
+                                        setSelectedDistrict('');
+                                        setSelectedSchool('');
+                                    }}
+                                >
+                                    <SelectTrigger className="h-10 sm:h-11 md:h-12 dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                        <SelectValue placeholder={t('location.region.placeholder')} />
                                     </SelectTrigger>
-                                    <SelectContent className="max-h-[400px]">
-                                        {textbooks?.items?.map((book: any) => (
-                                            <SelectItem key={book.id} value={book.id.toString()}>
-                                                <div className="flex flex-col">
-                                                    <span className="font-bold">{book.title}</span>
-                                                    <span className="text-xs text-slate-500">{t('book.bookSelect.grade', { grade: book.grade, author: book.author })}</span>
-                                                </div>
-                                            </SelectItem>
+                                    <SelectContent>
+                                        {regionsLoading ? (
+                                            <div className="flex justify-center py-4">
+                                                <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-2 border-blue-600 border-t-transparent"></div>
+                                            </div>
+                                        ) : (
+                                            regions?.map((r: Region) => (
+                                                <SelectItem key={r.id} value={r.id.toString()}>{r.name}</SelectItem>
+                                            ))
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {/* District Select */}
+                            <div className="space-y-2 sm:space-y-3">
+                                <Label className="text-slate-700 dark:text-gray-300 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                                    <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                                    {t('location.district.label')}
+                                </Label>
+                                <Select
+                                    disabled={!selectedRegion}
+                                    value={selectedDistrict}
+                                    onValueChange={(v) => {
+                                        setSelectedDistrict(v);
+                                        setSelectedSchool('');
+                                    }}
+                                >
+                                    <SelectTrigger className="h-10 sm:h-11 md:h-12 dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                        <SelectValue placeholder={t('location.district.placeholder')} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {districts?.map((d: any) => (
+                                            <SelectItem key={d.id} value={d.id.toString()}>{d.name}</SelectItem>
                                         ))}
                                     </SelectContent>
                                 </Select>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-4">
-                                    <Label className="text-slate-700 dark:text-white font-semibold flex items-center gap-2">
-                                        <Hash size={16} className="text-blue-500" />
+                            {/* School Select */}
+                            <div className="space-y-2 sm:space-y-3">
+                                <Label className="font-semibold flex items-center gap-2 text-blue-800 dark:text-blue-400 text-sm sm:text-base">
+                                    <School size={14} className="sm:w-4 sm:h-4" />
+                                    {t('location.school.label')}
+                                </Label>
+                                <Select
+                                    disabled={!selectedDistrict}
+                                    value={selectedSchool}
+                                    onValueChange={(v) => setFormData({ ...formData, to_school_id: v })}
+                                >
+                                    <SelectTrigger className="h-10 sm:h-11 md:h-12 dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                        <SelectValue placeholder={t('location.school.placeholder')} />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-[300px]">
+                                        {schools?.map((s: any) => (
+                                            <SelectItem key={s.id} value={s.id.toString()}>{s.name}</SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+            </motion.div>
+
+            {/* Book Section */}
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+                <Card className="border border-blue-100 dark:border-gray-700 py-0 shadow-xl overflow-hidden bg-white/90 dark:bg-gray-800 backdrop-blur-md">
+                    <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-5 md:p-6">
+                        <CardTitle className="text-base sm:text-lg md:text-xl font-bold flex items-center gap-2 sm:gap-3">
+                            <div className="p-1.5 sm:p-2 bg-white/20 rounded-lg">
+                                <Book size={16} className="sm:w-5 sm:h-5" />
+                            </div>
+                            <div>
+                                <span>{t('book.title')}</span>
+                                <p className="text-xs sm:text-sm font-normal text-blue-100 mt-0.5 sm:mt-1">
+                                    {t('book.description')}
+                                </p>
+                            </div>
+                        </CardTitle>
+                    </CardHeader>
+
+                    <CardContent className="p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-5 md:space-y-6">
+                        {/* Book Type Switch */}
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 bg-blue-50/50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 gap-3 sm:gap-0">
+                            <div className="space-y-0.5 sm:space-y-1">
+                                <Label className="text-sm sm:text-base font-bold dark:text-white text-slate-800">
+                                    {t('book.bookType.label')}
+                                </Label>
+                                <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400">
+                                    {formData.is_new_books ? t('book.bookType.new') : t('book.bookType.old')}
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-2 sm:gap-3 bg-white dark:bg-gray-800 p-1.5 sm:p-2 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+                                <span className={`text-[10px] sm:text-xs font-bold ${!formData.is_new_books ? 'text-blue-600' : 'text-slate-400'}`}>
+                                    {t('book.bookType.oldBadge')}
+                                </span>
+                                <Switch
+                                    checked={formData.is_new_books}
+                                    onCheckedChange={(v) => setFormData({ ...formData, is_new_books: v, textbook_copy_ids: [] })}
+                                />
+                                <span className={`text-[10px] sm:text-xs font-bold ${formData.is_new_books ? 'text-blue-600' : 'text-slate-400'}`}>
+                                    {t('book.bookType.newBadge')}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Book Selection Grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+                            {/* Book Select */}
+                            <div className="space-y-2 sm:space-y-3">
+                                <Label className="text-slate-700 dark:text-gray-300 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                                    <Book size={14} className="sm:w-4 sm:h-4 text-blue-500" />
+                                    {t('book.bookSelect.label')}
+                                </Label>
+                                <Select value={formData.textbook_id} onValueChange={(v) => setFormData({ ...formData, textbook_id: v, textbook_copy_ids: [] })}>
+                                    <SelectTrigger className="min-h-[50px] sm:min-h-[60px] h-auto dark:border-gray-600 dark:bg-gray-900 text-sm">
+                                        <SelectValue placeholder={t('book.bookSelect.placeholder')} />
+                                    </SelectTrigger>
+                                    <SelectContent className="max-h-[400px]">
+                                        <SelectContent className="max-h-[400px]">
+                                            {textbooks?.items
+                                                ?.filter((book: any) => book.is_new === formData.is_new_books)
+                                                ?.map((book: any) => (
+                                                    <SelectItem key={book.id} value={book.id.toString()}>
+                                                        <div className="flex flex-col py-1">
+                                                            <span className="font-bold text-sm">{book.title}</span>
+                                                            <span className="text-[10px] sm:text-xs text-slate-500">
+                                                                {t('book.bookSelect.grade', { grade: book.grade, author: book.author })}
+                                                            </span>
+                                                        </div>
+                                                    </SelectItem>
+                                                ))}
+                                        </SelectContent>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            {formData.is_new_books && (
+                                <div className="space-y-2 sm:space-y-3">
+                                    <Label className="text-slate-700 dark:text-gray-300 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                                        <Hash size={14} className="sm:w-4 sm:h-4 text-blue-500" />
                                         {t('book.quantity.label')}
                                     </Label>
                                     <Input
                                         type="number"
-                                        disabled={!formData.is_new_books}
                                         min="1"
-                                        className="h-14 text-lg font-bold dark:border-gray-600 border-slate-200"
+                                        className="h-10 sm:h-11 md:h-12 text-base sm:text-lg font-bold dark:border-gray-600 dark:bg-gray-900"
                                         value={formData.total_quantity}
                                         onChange={(e) => setFormData({ ...formData, total_quantity: Math.max(1, Number(e.target.value)) })}
                                     />
                                 </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label className="text-slate-700 dark:text-white font-semibold flex items-center gap-2">
-                                    <MessageSquare size={16} className="text-blue-500" />
+                            )}
+
+                            <div className="space-y-2 sm:space-y-3 lg:col-span-1">
+                                <Label className="text-slate-700 dark:text-gray-300 font-semibold flex items-center gap-2 text-sm sm:text-base">
+                                    <MessageSquare size={14} className="sm:w-4 sm:h-4 text-blue-500" />
                                     {t('book.notes.label')}
                                 </Label>
                                 <Input
                                     placeholder={t('book.notes.placeholder')}
-                                    className="h-12 border-slate-200 dark:border-gray-600"
+                                    className="h-10 sm:h-11 md:h-12 dark:border-gray-600 dark:bg-gray-900 text-sm"
                                     value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                                 />
@@ -370,39 +400,46 @@ function DeliveryPage() {
                                     exit={{ opacity: 0, height: 0 }}
                                     className="space-y-3 border-t pt-4"
                                 >
-                                    <Label className="flex items-center gap-2 text-blue-700 font-bold">
-                                        <ListChecks size={18} /> {t('book.copies.label')}
+                                    <Label className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-bold text-sm">
+                                        <ListChecks size={16} /> {t('book.copies.label')}
                                     </Label>
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-[200px] overflow-y-auto p-3 bg-slate-50 rounded-xl border border-dashed border-blue-200 shadow-inner">
-                                        {copiesData?.items?.map((copy: any) => (
-                                            <div
-                                                key={copy.id}
-                                                onClick={() => handleCopyToggle(copy.id)}
-                                                className={`p-2 border rounded-lg cursor-pointer text-xs flex justify-between items-center transition-all duration-200 ${formData.textbook_copy_ids.includes(copy.id)
-                                                    ? 'bg-blue-600 text-white border-blue-700 shadow-md transform scale-[0.98]'
-                                                    : 'bg-white hover:bg-blue-50 text-slate-700 border-slate-200'
-                                                    }`}
-                                            >
-                                                <span className="truncate">{t('book.copies.inventory', { number: copy.inventory_number || copy.id })}</span>
-                                                {formData.textbook_copy_ids.includes(copy.id) && <CheckCircle2 size={12} />}
-                                            </div>
-                                        ))}
-                                        {(!copiesData?.items || copiesData.items.length === 0) && (
-                                            <p className="col-span-full text-center text-slate-400 py-4 italic text-sm">{t('book.copies.notFound')}</p>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 max-h-[200px] overflow-y-auto p-3 bg-slate-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-blue-200 dark:border-blue-800 shadow-inner">
+                                        {textbooks?.items?.filter((e) => e.is_new == false)
+                                            .map((copy: any) => (
+                                                <div
+                                                    key={copy.id}
+                                                    onClick={() => handleCopyToggle(copy.id)}
+                                                    className={`p-2 border rounded-lg cursor-pointer text-[10px] sm:text-xs flex justify-between items-center transition-all duration-200 ${formData.textbook_copy_ids.includes(copy.id)
+                                                        ? 'bg-blue-600 text-white border-blue-700 shadow-md transform scale-[0.98]'
+                                                        : 'bg-white dark:bg-gray-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-slate-700 dark:text-gray-300 border-slate-200 dark:border-gray-700'
+                                                        }`}
+                                                >
+                                                    <span className="truncate">
+                                                        {t('book.copies.inventory', { number: copy.inventory_number || copy.id })}
+                                                    </span>
+                                                    {formData.textbook_copy_ids.includes(copy.id) && <CheckCircle2 size={12} />}
+                                                </div>
+                                            ))}
+                                        {(!textbooks?.items || textbooks.items.length === 0) && (
+                                            <p className="col-span-full text-center text-slate-400 py-4 italic text-xs sm:text-sm">
+                                                {t('book.copies.notFound')}
+                                            </p>
                                         )}
                                     </div>
-                                    <p className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">{t('book.copies.selected', { count: formData.textbook_copy_ids.length })}</p>
+                                    <p className="text-[9px] sm:text-[10px] text-slate-400 uppercase tracking-wider font-bold">
+                                        {t('book.copies.selected', { count: formData.textbook_copy_ids.length })}
+                                    </p>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        <div className="pt-4">
+                        <div className="pt-3 sm:pt-4">
                             <Button
                                 onClick={handleDelivery}
                                 disabled={!isValid || isPosting}
-                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-16 text-xl font-black shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
+                                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 h-12 sm:h-14 md:h-16 text-base sm:text-lg md:text-xl font-black shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
                             >
-                                {isPosting ? <Loader2 className="animate-spin mr-2" /> : <span>{t('button')}</span>}
+                                {isPosting ? <Loader2 className="animate-spin mr-2 w-4 h-4 sm:w-5 sm:h-5" /> : <span>{t('button')}</span>}
                             </Button>
                         </div>
                     </CardContent>

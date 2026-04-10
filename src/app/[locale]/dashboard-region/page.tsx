@@ -35,12 +35,12 @@ function Page() {
 
     return (
         <div className="px-4 py-3 overflow-hidden">
-            <div className="mb-6 bg-white p-5 rounded-2xl border border-blue-50 shadow-sm flex justify-between items-center" data-aos="fade-down">
+            <div className="mb-6 bg-white dark:bg-gray-800 p-5 rounded-2xl border border-blue-50 dark:border-gray-700 shadow-sm flex justify-between items-center" data-aos="fade-down">
                 <div>
-                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
                         <MapPin className="text-blue-600" /> Саҳифаи назорати вилоятӣ
                     </h2>
-                    <p className="text-sm text-slate-500">Назорати фондҳои китоб дар ноҳияҳо ва мактабҳо</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Назорати фондҳои китоб дар ноҳияҳо ва мактабҳо</p>
                 </div>
             </div>
 
@@ -79,23 +79,23 @@ function Page() {
             <DashboardFlow />
 
             <section className='my-8 grid gap-5 grid-cols-1 lg:grid-cols-3'>
-                <div className="lg:col-span-2 bg-white p-4 rounded-xl border " data-aos="fade-right">
+                <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-4 rounded-xl border " data-aos="fade-right">
                     <MyBarChart />
                 </div>
-                <div className="lg:col-span-1 bg-white p-4 rounded-xl border" data-aos="fade-left">
+                <div className="lg:col-span-1 bg-white  dark:bg-gray-800 p-4 rounded-xl border" data-aos="fade-left">
                     <ChartRadialLabel />
                 </div>
             </section>
 
-            <section className='border rounded-xl p-5 my-5 bg-white shadow-sm' data-aos="fade-up">
-                <h2 className='text-2xl font-bold text-slate-800'>Вазъият дар ноҳияҳо</h2>
-                <p className='text-slate-500 text-sm mb-5'>Нишондиҳандаҳои асосии ҳар як ноҳияи вилоят</p>
+            <section className='border rounded-xl p-5 my-5 bg-white  dark:bg-gray-800 shadow-sm' data-aos="fade-up">
+                <h2 className='text-2xl font-bold text-slate-800 dark:text-white'>Вазъият дар ноҳияҳо</h2>
+                <p className='text-slate-500 text-sm mb-5 dark:text-slate-400'>Нишондиҳандаҳои асосии ҳар як ноҳияи вилоят</p>
                 <RegionsTable />
             </section>
 
-            <section className='border rounded-xl p-5 bg-white shadow-sm' data-aos="fade-up">
-                <h2 className='text-2xl font-bold text-slate-800'>Динамикаи бозпардохт</h2>
-                <p className='text-slate-500 text-sm mb-5'>Пешрафти бозпардохт дар сатҳи вилоят</p>
+            <section className='border rounded-xl p-5 bg-white  dark:bg-gray-800 shadow-sm' data-aos="fade-up">
+                <h2 className='text-2xl font-bold text-slate-800 dark:text-white'>Динамикаи бозпардохт</h2>
+                <p className='text-slate-500 text-sm mb-5 dark:text-slate-400'>Пешрафти бозпардохт дар сатҳи вилоят</p>
                 <MyLineChart />
             </section>
 

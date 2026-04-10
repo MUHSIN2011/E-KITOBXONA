@@ -147,7 +147,7 @@ const MyBarChart = () => {
     };
 
     return (
-        <div className="relative overflow-hidden bg-white dark:bg-[#111111] p-6 rounded-[24px] border border-slate-100 dark:border-slate-800/50 transition-all hover:shadow-blue-500/5">
+        <div className="relative overflow-hidden bg-white dark:bg-gray-800 p-6 rounded-[24px] border border-slate-100 dark:border-slate-800/50 transition-all hover:shadow-blue-500/5">
             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
 
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">

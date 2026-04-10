@@ -82,7 +82,7 @@ export default function LoginPage() {
           <p className="text-muted-foreground mt-1">{l('systemDescription')}</p>
         </div>
 
-        <div className="bg-white dark:bg-slate-950 rounded-2xl p-8 border border-border shadow-xl">
+        <div className="bg-white dark:bg-gray-800/50 rounded-2xl p-8 border border-border shadow-xl">
           <div className="text-center mb-8">
             <h2 className="text-xl font-semibold text-foreground">{l('welcome')}</h2>
             <p className="text-sm text-muted-foreground mt-1">{l('subtitle')}</p>
@@ -112,16 +112,16 @@ export default function LoginPage() {
 
                 <Input
                   {...register("password", { required: l('passwordRequired') })}
-                  type={showPassword ? "text" : "password"}
+                  type={showPassword ? "text":"password"}
                   placeholder={l('passwordPlaceholder')}
 
-                  className={`pl-10 pr-10 h-12 rounded-xl ${errors.password ? "border-red-500" : ""}`}
+                  className={`pl-10  h-12 rounded-xl ${errors.password ? "border-red-500" : ""}`}
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-4 top-6.5 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? (
                     <EyeOff className="w-5 h-5" />

@@ -597,5 +597,150 @@
         "confirm": "Удалить"
       }
     }
+  },
+  "ReturnPage": {
+    "title": "Возврат книг",
+    "subtitle": "Возврат книг в вышестоящие органы",
+    "returnButton": "Вернуть",
+    "stats": {
+      "allTransfers": "Все трансферы",
+      "pending": "В ожидании",
+      "completed": "Выполнено",
+      "cancelled": "Отклонено"
+    },
+    "list": {
+      "title": "Список возвратов",
+      "table": {
+        "bookInfo": "Книга, Класс, (Инв. №)",
+        "from": "Отправитель",
+        "to": "Получатель",
+        "date": "Дата",
+        "reason": "Причина",
+        "status": "Статус",
+        "noReason": "Причина не указана",
+        "pendingBadge": "Ожидание",
+        "underReview": "На рассмотрении",
+        "cancelled": "Отклонён",
+        "accepted": "Принят",
+        "toMinistry": "Министерство",
+        "toDistrict": "Район",
+        "toRegion": "Область"
+      },
+      "empty": "Список пуст",
+      "inventory": "Инв: {number}",
+      "otherBooks": "+{count} других",
+      "pagination": {
+        "page": "Страница {current} из {total}",
+        "previous": "Назад",
+        "next": "Вперёд"
+      }
+    },
+    "dialog": {
+      "title": "Информация о трансфере #{id}",
+      "subtitle": "Полная информация о запросе на возврат",
+      "loading": "Загрузка...",
+      "notFound": "Данные не найдены",
+      "status": {
+        "pending": "Ожидание",
+        "cancelled": "Отклонён",
+        "accepted": "Принят"
+      },
+      "requestDate": "Дата запроса",
+      "from": "Отправитель",
+      "to": "Получатель",
+      "reason": "Причина возврата",
+      "reasonPlaceholder": "Причина не указана",
+      "booksList": "Список книг ({count})",
+      "inventory": "Инвентарь: {number}",
+      "buttons": {
+        "accept": "Принять",
+        "cancelTransfer": "Отменить трансфер",
+        "close": "Закрыть"
+      }
+    },
+    "alertDialog": {
+      "cancelTitle": "Отмена трансфера",
+      "cancelDescription": "Вы уверены, что хотите отменить трансфер №{id}?",
+      "no": "Нет",
+      "yes": "Да, отменить"
+    }
+  },
+  "TransferBooksPage": {
+    "title": "Передача книг",
+    "subtitle": "Отправка книг из одной школы в другую",
+    "sendButton": "Отправить",
+    "stats": {
+      "allTransfers": "Все передачи",
+      "pending": "В ожидании",
+      "completed": "Выполнено",
+      "cancelled": "Отклонено"
+    },
+    "list": {
+      "title": "Список передач",
+      "description": "Все зарегистрированные передачи",
+      "searchPlaceholder": "Поиск учеников...",
+      "filterPlaceholder": "Все",
+      "filterAll": "Все",
+      "filterAccepted": "Принято",
+      "filterPending": "В ожидании",
+      "filterRejected": "Отклонено",
+      "table": {
+        "fromSchool": "ИЗ Школы",
+        "toSchool": "В Школу",
+        "book": "Книга",
+        "grade": "Класс",
+        "date": "Дата",
+        "status": "Статус"
+      },
+      "empty": "Трансфер не найден!",
+      "emptySub": "Список пока пуст.",
+      "loading": "Загрузка...",
+      "otherCopies": "+ {count} других экземпляров",
+      "otherBooks": "+ {count} других книг",
+      "classLabel": "Класс {grade}",
+      "classSeparator": ", Класс {grade}",
+      "pagination": {
+        "showing": "Показано {start}-{end} из {total}",
+        "prev": "Назад",
+        "next": "Вперед"
+      }
+    },
+    "dialog": {
+      "title": "Передача №{id}",
+      "status": {
+        "pending": "В ожидании",
+        "cancelled": "Отклонено",
+        "accepted": "Принято"
+      },
+      "fromSchool": "Из школы",
+      "toSchool": "В школу",
+      "reason": "Причина передачи",
+      "booksList": "Список книг",
+      "total": "Всего: {count} шт",
+      "table": {
+        "nameAndGrade": "Название и Класс",
+        "inventory": "Инв. №",
+        "condition": "Состояние",
+        "new": "НОВЫЙ",
+        "old": "СТАРЫЙ"
+      },
+      "buttons": {
+        "downloadPdf": "Скачать PDF",
+        "downloading": "Загрузка...",
+        "close": "Понятно"
+      }
+    },
+    "alertDialog": {
+      "title": "Подтвердите действие",
+      "description": "Вы уверены, что хотите отменить отправку книг?",
+      "cancel": "Нет",
+      "confirm": "Да, отменить"
+    },
+    "statusBadges": {
+      "pending": "Ожидание",
+      "underReview": "На рассмотрении",
+      "cancelled": "Отклонено",
+      "accepted": "Принято"
+    }
   }
 }

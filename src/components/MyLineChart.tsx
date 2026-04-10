@@ -87,7 +87,7 @@ const MyLineChart = () => {
   </div>;
 
   return (
-    <div className="w-full overflow-hidden bg-white dark:bg-[#111111] p-2 rounded-[15px] border border-slate-100 dark:border-slate-800/50 shadow-sm">
+    <div className="w-full overflow-hidden bg-white  dark:bg-gray-800 p-2 rounded-[15px] border border-slate-100 dark:border-slate-800/50 shadow-sm">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
@@ -112,19 +112,19 @@ const MyLineChart = () => {
 
       {summary && summary.length > 0 && (
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-100 dark:border-slate-800 pt-6">
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('stats.bestRate')}</p>
             <p className="text-lg font-bold text-slate-800 dark:text-white">
               {t('stats.bestRateValue', { value: Math.max(...summary.map(s => s.return_rate)) })}
             </p>
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900">
             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{t('stats.averageBooks')}</p>
             <p className="text-lg font-bold text-slate-800 dark:text-white">
               {t('stats.averageBooksValue', { value: summary[summary.length - 1].avg_books_per_student })}
             </p>
           </div>
-          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+          <div className="p-4 rounded-2xl bg-blue-500/5 dark:bg-gray-900 border border-blue-500/10">
             <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">{t('stats.yearStatus')}</p>
             <p className="text-lg font-bold text-blue-600">
               {summary[0]?.year_name}
