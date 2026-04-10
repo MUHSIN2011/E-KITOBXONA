@@ -266,11 +266,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                             <AnimatedThemeToggler className=" cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all" />
                             <NotificationSheet user={user} />
 
-                            <div className="relative hidden sm:block focus:cursor-wait">
+                            <div className="relative hidden sm:block focus:cursor-wait ">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                                 <Input
                                     placeholder="Ҷустуҷӯ..."
-                                    className="pl-9 h-9 w-48 md:w-64 focus:cursor-wait bg-slate-100/50 dark:bg-slate-900/50 border-transparent focus:bg-white dark:focus:bg-slate-900 rounded-lg text-sm transition-all"
+                                    className="pl-9 h-9 w-48 md:w-64 focus:cursor-wait bg-slate-100/50 dark:bg-slate-900/50 border-transparent dark:border-gray-700 focus:bg-white dark:focus:bg-slate-900 rounded-lg text-sm transition-all"
                                 />
                             </div>
                         </div>

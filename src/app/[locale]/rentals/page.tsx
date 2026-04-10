@@ -168,7 +168,7 @@ export default function RentalsPage() {
 
 
     return (
-        <div className="px-4 space-y-6 bg-[#f8fafc] dark:bg-black">
+        <div className="px-4 space-y-6 bg-[#f8fafc] dark:bg-gray-900">
             <Toaster />
             <div className="flex justify-between items-center">
                 <div>
@@ -178,11 +178,11 @@ export default function RentalsPage() {
 
                 <Dialog open={open} onOpenChange={setOpen}>
                     <DialogTrigger asChild>
-                        <Button className='bg-[#0950c3] text-white py-2 px-3 rounded-sm hover:bg-[#0a45a5] transition-colors duration-200'>
+                        <Button className='bg-[#0950c3] text-white  py-2 px-3 rounded-sm hover:bg-[#0a45a5] transition-colors duration-200'>
                             + Иҷораи нав
                         </Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-125 bg-white dark:bg-[#1a1a1a] rounded-2xl border-0 shadow-xl">
+                    <DialogContent className="sm:max-w-125 bg-white dark:bg-gray-900 rounded-2xl border-0 shadow-xl">
                         <DialogHeader className="space-y-3">
                             <DialogTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">Додани китоби нав</DialogTitle>
                             <DialogDescription>Маълумоти хонанда ва китобро интихоб кунед.</DialogDescription>
@@ -247,7 +247,7 @@ export default function RentalsPage() {
                                                     return (
                                                         <CommandItem
                                                             key={item.id}
-                                                            value={searchLabel} // Акнун поиск ҳам ном ва ҳам рақамро мебинад
+                                                            value={searchLabel}
                                                             onSelect={() => toggleBookSelection(item.id)}
                                                             onWheel={(e) => e.stopPropagation()}
                                                             className={cn(
@@ -307,7 +307,7 @@ export default function RentalsPage() {
                 <div><Card NameRole={'Гумшуда'} textColor='red-600' cnt={items?.lost_books?.toString() || '0'} /></div>
             </div>
 
-            <div className="flex flex-col gap-4 bg-white dark:bg-[#1a1a1a] p-4 rounded-2xl border shadow-sm">
+            <div className="flex flex-col gap-4 bg-white dark:bg-gray-800 p-4 rounded-2xl border shadow-sm">
                 <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-2'>
                     <div className="relative md:col-span-2 col-span-1">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -340,9 +340,9 @@ export default function RentalsPage() {
                     <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="rounded-xl bg-[#f9fafb] border-none h-11" />
                 </div>
 
-                <div className="rounded-2xl overflow-hidden overflow-x-auto bg-white dark:bg-[#1a1a1a]">
+                <div className="rounded-2xl overflow-hidden overflow-x-auto bg-white dark:bg-gray-800">
                     <Table>
-                        <TableHeader className="bg-gray-50/50 dark:bg-black">
+                        <TableHeader className="bg-gray-50/50 dark:bg-gray-900">
                             <TableRow className="border-b">
                                 <TableHead className="font-bold py-4 pl-4">Хонанда</TableHead>
                                 <TableHead className="font-bold">Синфи</TableHead>
@@ -373,8 +373,8 @@ export default function RentalsPage() {
                                     </TableCell>
                                     <TableCell>{rental.class_name}</TableCell>
                                     <TableCell>{rental.total_books_taken}</TableCell>
-                                    <TableCell className="text-center">
-                                        <Badge variant={rental.status === 'active' ? 'default' : 'secondary'} className={rental.status === 'active' ? "bg-green-100 text-green-700" : ""}>
+                                    <TableCell className="text-center ">
+                                        <Badge variant={rental.status === 'active' ? 'default' : 'secondary'} className={rental.status === 'active' ? "bg-green-100 text-green-700 " : "dark:bg-gray-900"}>
                                             {rental.status === 'active' ? 'Дар даст' : 'Бозгашт'}
                                         </Badge>
                                     </TableCell>

@@ -90,7 +90,7 @@ export function NotificationSheet({ user }: { user: any }) {
                     </div>
                 </SheetTrigger>
 
-                <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-white dark:bg-[#0f1115] border-l-slate-200 dark:border-l-slate-800">
+                <SheetContent side="right" className="w-full sm:max-w-md p-0 bg-white dark:bg-gray-900 border-l-slate-200 dark:border-l-slate-800">
                     <div className="flex flex-col h-full">
                         <SheetHeader className="p-6 border-b border-slate-100 dark:border-slate-800">
                             <SheetTitle className="text-xl font-black flex items-center gap-2">
