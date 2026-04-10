@@ -201,7 +201,7 @@ function StudentsPage() {
                         {t("addButton")}
                     </DialogTrigger>
 
-                    <DialogContent className='max-h-[95vh] dark:bg-[#1a1a1a] h-auto bg-gray-50 overflow-y-auto sm:max-w-[500px]'>
+                    <DialogContent className='max-h-[95vh] dark:bg-gray-900 h-auto bg-gray-50 overflow-y-auto sm:max-w-[500px]'>
                         <DialogHeader>
                             <DialogTitle>{t("dialogTitle")}</DialogTitle>
                             <DialogDescription>{t("dialogDescription")}</DialogDescription>
@@ -412,7 +412,6 @@ function StudentsPage() {
                         </div>
                     ) : studentbyid && (
                         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6 md:space-y-8">
-                            {/* Header Card */}
                             <div className="flex items-center gap-3 sm:gap-5 p-3 sm:p-4 bg-slate-50 dark:bg-slate-900/50 rounded-xl sm:rounded-2xl border border-slate-100 dark:border-slate-800">
                                 <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 border-4 border-white dark:border-slate-800 shadow-sm rounded-full flex items-center justify-center text-white text-xl sm:text-2xl md:text-3xl font-black">
                                     {studentbyid ? `${studentbyid.last_name?.[0]?.toUpperCase()}${studentbyid.first_name?.[0]?.toUpperCase()}` : '?'}
@@ -614,7 +613,6 @@ function StudentsPage() {
                                 </div>
                             </div>
 
-                            {/* Notes Section */}
                             <div className="space-y-2 sm:space-y-3">
                                 <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
                                     <FileText className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
@@ -802,13 +800,13 @@ function StudentsPage() {
                 </DialogContent>
             </Dialog>
 
-            <section className='py-5 px-3 bg-white dark:bg-[#1a1a1a] rounded-xl border shadow-sm'>
+            <section className='py-5 px-3 bg-white dark:bg-gray-800 rounded-xl border shadow-sm'>
                 <h1 className='text-xl font-bold'>{t('list.title')}</h1>
                 <p className='text-muted-foreground text-sm mb-4'>{t('list.description')}</p>
 
                 <div className='grid grid-cols-1 md:grid-cols-5 gap-3 mb-4'>
                     <input
-                        className='md:col-span-4 rounded-xl px-4 py-2 border focus:cursor-progress bg-[#f9fafb] dark:bg-[#1a1a1a] focus:ring-2 focus:ring-blue-500 outline-none transition-all'
+                        className='md:col-span-4 rounded-xl px-4 py-2 border focus:cursor-progress bg-[#f9fafb] dark:bg-gray-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all'
                         placeholder={t('list.searchPlaceholder')}
                         type="search"
                         value={search}
@@ -817,7 +815,7 @@ function StudentsPage() {
                     <div className="relative md:col-span-1">
                         <Funnel className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
                         <Select>
-                            <SelectTrigger className="w-full bg-[#f9fafb] cursor-pointer dark:bg-[#1a1a1a] dark:border-gray-500 pl-10 h-10 rounded-xl border-gray-200">
+                            <SelectTrigger className="w-full bg-[#f9fafb] cursor-pointer dark:bg-gray-900 dark:border-gray-500 pl-10 h-10 rounded-xl border-gray-200">
                                 <SelectValue placeholder={t('list.filterPlaceholder')} />
                             </SelectTrigger>
                             <SelectContent>
@@ -841,7 +839,7 @@ function StudentsPage() {
                 <div className="overflow-x-auto md:max-w-full sm:max-w-full max-w-87  border rounded-lg">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-gray-50 dark:bg-[#121212] border-b">
+                            <tr className="bg-gray-50 dark:bg-gray-900/50 border-b">
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500">{t('list.table.name')}</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500">{t('list.table.class')}</th>
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500 text-center">{t('list.table.rentals')}</th>
@@ -852,18 +850,18 @@ function StudentsPage() {
                         <tbody className="divide-y divide-gray-100">
                             {students?.items && students.items.length > 0 ? (
                                 students.items.map((student: IGetStudents) => (
-                                    <tr key={student.id} onClick={() => setIdx(student.id)} className="hover:bg-gray-50/50 transition-colors">
+                                    <tr key={student.id} onClick={() => setIdx(student.id)} className="hover:bg-gray-50/50 dark:bg-gray-900/30 dark:hover:bg-gray-900 transition-colors">
                                         <td className="p-4">
-                                            <div className="font-semibold text-gray-800">{student.first_name} {student.last_name}</div>
-                                            <div className="text-xs text-gray-400">{student.middle_name}</div>
+                                            <div className="font-semibold text-gray-800 dark:text-white">{student.first_name} {student.last_name}</div>
+                                            <div className="text-xs text-gray-400 dark:text-gray-400">{student.middle_name}</div>
                                         </td>
-                                        <td className="p-4 text-gray-600">{student.class_name || t('list.table.noData')}</td>
+                                        <td className="p-4 text-gray-600 dark:text-gray-300">{student.class_name || t('list.table.noData')}</td>
                                         <td className="p-4 text-center">
-                                            <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-md text-xs font-bold">{student.total_rentals_count}</span>
+                                            <span className="bg-blue-50 dark:bg-gray-900/40 text-blue-700 dark:text-blue-400 px-2 py-1 rounded-md text-xs font-bold">{student.total_rentals_count}</span>
                                         </td>
                                         <td className="p-4 text-gray-600 text-sm">{student.parent_phone || t('list.table.noData')}</td>
                                         <td className="p-4">
-                                            <span className="text-xs py-1 px-2 bg-gray-100 rounded text-gray-500 truncate max-w-[150px] inline-block">
+                                            <span className="text-xs py-1 px-2 bg-gray-100 dark:bg-gray-800 rounded text-gray-500 dark:text-gray-300 truncate max-w-[150px] inline-block">
                                                 {student.notes || t('list.table.noNotes')}
                                             </span>
                                         </td>
@@ -883,7 +881,7 @@ function StudentsPage() {
                     </table>
                 </div>
 
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 mt-4 border-t bg-gray-50/50 dark:bg-[#131212] rounded-b-xl">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 mt-4 border-t bg-gray-50/50 dark:bg-gray-900/40 rounded-b-xl">
                     <div className="text-sm text-gray-600 dark:text-gray-300">
                         {t('list.pagination.showing')} <span className="font-bold text-gray-900 dark:text-gray-600">{startItem}-{endItem}</span> {t('list.pagination.from')} <span className="font-bold text-gray-900 dark:text-gray-600">{totalItems}</span>
                     </div>
@@ -892,14 +890,14 @@ function StudentsPage() {
                         <button
                             onClick={() => setPage((prev) => Math.max(0, prev - 1))}
                             disabled={page === 0}
-                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-[#1a1a1a] cursor-pointer hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
+                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-gray-900 cursor-pointer hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
                         >
                             {t('list.pagination.prev')}
                         </button>
                         <button
                             onClick={() => setPage((prev) => prev + 1)}
                             disabled={endItem >= totalItems}
-                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-[#1a1a1a] cursor-pointer hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
+                            className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-gray-900 cursor-pointer hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm"
                         >
                             {t('list.pagination.next')}
                         </button>
