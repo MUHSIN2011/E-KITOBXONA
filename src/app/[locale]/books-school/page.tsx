@@ -131,9 +131,9 @@ function Page() {
             </div>
 
             <section
-                className='p-3 my-3 bg-white dark:bg-[#1a1a1a] rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-300'
-                data-aos="zoom-in"
-                data-aos-delay="100"
+                className='p-3 my-3 bg-white dark:bg-gray-800 rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-300'
+                // data-aos="zoom-in"
+                // data-aos-delay="100"
             >
                 <div className="flex items-center gap-4 mb-4">
                     {!summery && (
@@ -158,7 +158,7 @@ function Page() {
                             <input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
-                                className='w-full  rounded-xl  dark:bg-[#1a1a1a] px-5 py-2 border bg-[#f9fafb] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 outline-none text-sm'
+                                className='w-full  rounded-xl  dark:bg-gray-900/30 px-5 py-2 border bg-[#f9fafb] focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200 outline-none text-sm'
                                 placeholder={t('list.searchPlaceholder')}
                                 type="search"
                             />
@@ -167,7 +167,7 @@ function Page() {
                             <>
                                 <div className="md:col-span-1">
                                     <Select onValueChange={(v) => { setCondition(v); setCurrentPage(1); }}>
-                                        <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-[#1a1a1a] py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
+                                        <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-gray-900/30 py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
                                             <div className='flex items-center gap-2 overflow-hidden'>
                                                 <SlidersHorizontal size={16} className="shrink-0" />
                                                 <SelectValue placeholder={t('list.condition.placeholder')} />
@@ -187,7 +187,7 @@ function Page() {
 
                                 <div className="md:col-span-1">
                                     <Select onValueChange={(v) => { setStatus(v); setCurrentPage(1); }}>
-                                        <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-[#1a1a1a] py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
+                                        <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-gray-900/30 py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
                                             <div className='flex items-center gap-2 overflow-hidden'>
                                                 <Funnel size={16} className="shrink-0" />
                                                 <SelectValue placeholder={t('list.status.placeholder')} />
@@ -204,7 +204,7 @@ function Page() {
                                 </div>
                                 <div className="md:col-span-1">
                                     <Select onValueChange={(value) => setSubject(value)}>
-                                        <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-[#1a1a1a] py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
+                                        <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-gray-900/30 py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
                                             <SelectValue placeholder={t('list.subject.placeholder')} />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -225,25 +225,25 @@ function Page() {
                                     </Select>
                                 </div>
 
-                                <div className="md:hidden flex bg-gray-100 dark:bg-black p-1 rounded-xl gap-1">
-                                    <button onClick={() => setViewType('grid')} className={`flex-1 flex justify-center py-1.5 rounded-lg ${viewType === 'grid' ? 'bg-white dark:bg-[#1a1a1a] shadow text-blue-600' : 'text-gray-500'}`}><LayoutGrid size={18} /></button>
-                                    <button onClick={() => setViewType('table')} className={`flex-1  flex justify-center py-1.5 rounded-lg ${viewType === 'table' ? 'bg-white dark:bg-[#1a1a1a] shadow text-blue-600' : 'text-gray-500'}`}><TableIcon size={18} /></button>
+                                <div className="md:hidden flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl gap-1">
+                                    <button onClick={() => setViewType('grid')} className={`flex-1 flex justify-center py-1.5 rounded-lg ${viewType === 'grid' ? 'bg-white dark:bg-gray-900/30 shadow text-blue-600' : 'text-gray-500'}`}><LayoutGrid size={18} /></button>
+                                    <button onClick={() => setViewType('table')} className={`flex-1  flex justify-center py-1.5 rounded-lg ${viewType === 'table' ? 'bg-white dark:bg-gray-900/30 shadow text-blue-600' : 'text-gray-500'}`}><TableIcon size={18} /></button>
                                 </div>
                             </>)}
                     </div>
                     {
                         !summery && (
-                            <div className="hidden md:flex bg-gray-100 dark:bg-black p-1 rounded-xl gap-1 shrink-0">
+                            <div className="hidden md:flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl gap-1 shrink-0">
                                 <button
                                     onClick={() => setViewType('grid')}
-                                    className={`p-2 rounded-lg transition-all ${viewType === 'grid' ? 'bg-white  dark:bg-[#1a1a1a] shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`p-2 rounded-lg transition-all ${viewType === 'grid' ? 'bg-white  dark:bg-gray-900 shadow text-blue-600' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 dark:text-gray-400'}`}
                                     title={t('list.viewToggle.card')}
                                 >
                                     <LayoutGrid size={20} />
                                 </button>
                                 <button
                                     onClick={() => setViewType('table')}
-                                    className={`p-2 rounded-lg transition-all ${viewType === 'table' ? 'bg-white dark:bg-[#1a1a1a] shadow text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                    className={`p-2 rounded-lg transition-all ${viewType === 'table' ? 'bg-white dark:bg-gray-900 shadow text-blue-600' : 'text-gray-500 hover:text-gray-700  dark:hover:text-gray-300 dark:text-gray-400'}`}
                                     title={t('list.viewToggle.table')}
                                 >
                                     <TableIcon size={20} />
@@ -260,30 +260,30 @@ function Page() {
                                 ? item.cover_image_url
                                 : `https://student4.softclub.tj${item?.cover_image_url}`;
                             return (
-                                <div data-aos="fade-left" data-aos-delay="300" key={item.textbook_id} onClick={() => {
+                                 <div 
+                                // data-aos="fade-left" 
+                                // data-aos-delay="300" 
+                                 key={item.textbook_id} onClick={() => {
                                     setTextbook_idx(item.textbook_id);
                                     setSummery(false);
-                                }} className="bg-white  dark:bg-[#1a1a1a] dark:border-gray-950 p-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 rounded-xl border border-gray-200 shadow-sm  " >
+                                }} className="bg-white  dark:bg-gray-900/80 backdrop-blur-md dark:border-gray-800 p-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 rounded-xl border border-gray-200 shadow-sm  " >
                                     <div
                                         className="flex justify-between items-start mb-3 p-3 rounded-lg h-70 bg-cover bg-center relative overflow-hidden shadow-inner"
                                         style={{
                                             backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0)), url('${imageUrl}')`
                                         }}
                                     >
-                                        <span className="text-[10px]  font-bold text-blue-700 dark:text-white dark:bg-gray-950 dark:bg-opacity-50 dark:border-0 bg-white/90 backdrop-blur-sm px-2 py-1 rounded shadow-sm uppercase border border-blue-100">
-                                            {item.id}
-                                        </span>
 
-                                        <span className="text-[10px] font-medium text-white dark:text-white bg-black/40 backdrop-blur-md px-1.5 py-0.5 rounded">
+                                        <span className="text-[10px] font-medium text-white dark:text-white bg-gray-800/40 backdrop-blur-md px-1.5 py-0.5 rounded">
                                             #{item.textbook_id}
                                         </span>
                                     </div>
-                                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-1">{item.textbook_title}</h3>
+                                    <h3 className="font-bold text-gray-900 dark:text-gray-200 mb-2 line-clamp-1">{item.textbook_title}</h3>
                                     <div className="grid grid-cols-2 gap-2 text-sm border-t-2 border-gray-100 pt-3">
-                                        <div className="text-gray-500">Фанн: <br /><span className="font-bold text-gray-900">{item.subject_name}</span></div>
-                                        <div className="text-gray-500">Синф: <br /><span className="font-bold text-gray-900">{item.grade}</span></div>
-                                        <div className="text-gray-500">Миқдор: <br /><span className="font-bold text-gray-900">{item.total_copies}</span></div>
-                                        <div className="text-gray-500">Дар иҷора: <br /><span className="font-bold text-gray-900">{item.rented_copies}</span></div>
+                                        <div className="text-gray-500 dark:text-gray-400">Фанн: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.subject_name}</span></div>
+                                        <div className="text-gray-500 dark:text-gray-400">Синф: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.grade}</span></div>
+                                        <div className="text-gray-500 dark:text-gray-400">Миқдор: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.total_copies}</span></div>
+                                        <div className="text-gray-500 dark:text-gray-400">Дар иҷора: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.rented_copies}</span></div>
                                     </div>
                                 </div>
                             )
@@ -295,7 +295,7 @@ function Page() {
                 {!summery && (
                     <div className="space-y-4">
                         {filteredBooks.length === 0 && !isLoadingbooks ? (
-                            <div className="bg-white dark:bg-[#1a1a1a] p-20 rounded-xl border border-dashed border-gray-300 text-center">
+                            <div className="bg-white dark:bg-gray-900 p-20 rounded-xl border border-dashed border-gray-300 text-center">
                                 <div className="flex flex-col items-center gap-3 text-gray-400">
                                     <SearchAlert size={48} />
                                     <p>{t('list.noBooks')}</p>
@@ -304,10 +304,10 @@ function Page() {
                         ) : (
                             <>
                                 {viewType === 'table' ? (
-                                    <div className="overflow-x-auto  dark:bg-[#1a1a1a]/40   dark:border-[#1a1a1a]  overflow-y-clip rounded-xl border border-gray-200 bg-white  shadow-sm md:max-w-full max-w-90">
+                                    <div className="overflow-x-auto  dark:bg-gray-900/40   dark:border-gray-900  overflow-y-clip rounded-xl border border-gray-200 bg-white  shadow-sm md:max-w-full max-w-90">
                                         <table className="w-full text-left border-collapse min-w-[800px]">
                                             <thead>
-                                                <tr className="bg-gray-50 border-b  dark:bg-slate-800/60 dark:border-[#1a1a1a] border-gray-200">
+                                                <tr className="bg-gray-50 border-b  dark:bg-slate-800/60 dark:border-gray-900 border-gray-200">
                                                     <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-slate-200">{t('list.table.bookName')}</th>
                                                     <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-slate-200">{t('list.table.id')}</th>
                                                     <th className="p-4 text-xs font-bold uppercase text-gray-500 dark:text-slate-200">{t('list.table.grade')}</th>
@@ -358,7 +358,7 @@ function Page() {
                                                 : `https://student4.softclub.tj${item.textbook.cover_image_url}`;
                                             console.log(imageUrl);
                                             return (
-                                                <div key={item.id} onClick={() => router.push(`/books-school/${item.id}`)} className="bg-white  dark:bg-[#1a1a1a] dark:border-gray-950 p-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 rounded-xl border border-gray-200 shadow-sm  " >
+                                                <div key={item.id} onClick={() => router.push(`/books-school/${item.id}`)} className="bg-white  dark:bg-gray-900/60 blur-in-md dark:border-gray-900 p-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 rounded-xl border border-gray-200 shadow-sm  " >
                                                     <div
                                                         className="flex justify-between items-start mb-3 p-3 rounded-lg h-70 bg-cover bg-center relative overflow-hidden shadow-inner"
                                                         style={{
@@ -366,17 +366,17 @@ function Page() {
                                                         }}
                                                     >
                                                         <span className="text-[10px]  font-bold text-blue-700 dark:text-white dark:bg-gray-950 dark:bg-opacity-50 dark:border-0 bg-white/90 backdrop-blur-sm px-2 py-1 rounded shadow-sm uppercase border border-blue-100">
-                                                            {item.inventory_number}
+                                                            № {item.inventory_number}
                                                         </span>
 
-                                                        <span className="text-[10px] font-medium text-white dark:text-white bg-black/40 backdrop-blur-md px-1.5 py-0.5 rounded">
-                                                            #{item.id}
+                                                        <span className="text-[10px] font-medium text-white dark:text-white bg-gray-800/40 backdrop-blur-md px-1.5 py-0.5 rounded">
+                                                            ID #{item.id}
                                                         </span>
                                                     </div>
-                                                    <h3 className="font-bold text-gray-900 mb-4 line-clamp-1">{item.textbook.title}</h3>
+                                                    <h3 className="font-bold text-gray-900 mb-4 line-clamp-1 dark:text-gray-200">{item.textbook.title}</h3>
                                                     <div className="flex justify-between text-sm border-t border-gray-50 pt-3">
-                                                        <div className="text-gray-500">Синф: <span className="font-bold text-gray-900">{item.textbook.grade}</span></div>
-                                                        <div className="text-gray-500">Сол: <span className="font-bold text-gray-900">{item.textbook.publication_year}</span></div>
+                                                        <div className="text-gray-500 dark:text-gray-300">Синф: <span className="font-bold text-gray-900  dark:text-gray-200">{item.textbook.grade}</span></div>
+                                                        <div className="text-gray-500 dark:text-gray-300">Сол: <span className="font-bold text-gray-900  dark:text-gray-200">{item.textbook.publication_year}</span></div>
                                                     </div>
                                                 </div>
                                             )
@@ -395,7 +395,7 @@ function Page() {
                 )}
 
                 {!summery && (
-                    <div className="flex md:flex-row flex-col-reverse justify-between items-center mt-5 p-4 bg-gray-50 dark:bg-[#1a1a1a] dark:border rounded-xl border">
+                    <div className="flex md:flex-row flex-col-reverse justify-between items-center mt-5 p-4 bg-gray-50 dark:bg-gray-900 dark:border rounded-xl border">
                         <p className="text-sm text-gray-500">
                             {t('list.pagination.showing', { count: books?.items?.length || 0, total: books?.total || 0 })}
                         </p>
@@ -404,7 +404,7 @@ function Page() {
                             <button
                                 disabled={currentPage === 1 || isLoading}
                                 onClick={() => setCurrentPage(prev => prev - 1)}
-                                className="px-4 py-2 border rounded-lg bg-white hover:bg-gray-100 dark:bg-black disabled:opacity-50 transition-all"
+                                className="px-4 py-2 border rounded-lg bg-white hover:bg-gray-100 dark:bg-gray-800 disabled:opacity-50 transition-all"
                             >
                                 {t('list.pagination.prev')}
                             </button>
@@ -416,7 +416,7 @@ function Page() {
                             <button
                                 disabled={currentPage >= totalPages || isLoading}
                                 onClick={() => setCurrentPage(prev => prev + 1)}
-                                className="px-4 py-2 border rounded-lg bg-white  dark:bg-black hover:bg-gray-100 disabled:opacity-50 transition-all"
+                                className="px-4 py-2 border rounded-lg bg-white  dark:bg-gray-800 hover:bg-gray-100 disabled:opacity-50 transition-all"
                             >
                                 {t('list.pagination.next')}
                             </button>

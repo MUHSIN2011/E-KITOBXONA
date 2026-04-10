@@ -60,9 +60,9 @@ export default function OrderBooksPage() {
         <div className="p-4 md:p-8 max-w-3xl mx-auto space-y-6">
             <Toaster position="top-center" />
 
-            <div className="bg-white dark:bg-[#1a1a1a] p-6 rounded-[24px] border shadow-sm flex items-center justify-between">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-[24px] border shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <div className="p-3 bg-blue-100 rounded-xl text-blue-700">
+                    <div className="p-3 bg-blue-100 dark:bg-gray-900 rounded-xl text-blue-700">
                         <BookOpen className="w-6 h-6" />
                     </div>
                     <div>
@@ -74,8 +74,8 @@ export default function OrderBooksPage() {
                 </div>
             </div>
 
-            <Card className="rounded-[24px] border-none shadow-lg py-0 ">
-                <CardHeader className="bg-slate-50 dark:bg-[#1a1a1a] border-b pt-7">
+            <Card className="rounded-[24px]  dark:bg-gray-800 border-none shadow-lg py-0 ">
+                <CardHeader className="bg-slate-50 dark:bg-gray-900/50 border-b pt-7">
                     <CardTitle className="text-slate-900 dark:text-white">Пур кардани форма</CardTitle>
                 </CardHeader>
                 <CardContent className="px-6 pb-6 space-y-5">

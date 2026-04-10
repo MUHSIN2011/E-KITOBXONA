@@ -79,7 +79,7 @@ export default function Page() {
                         {t('subtitle')}
                     </TextAnimate>
                 </div>
-                {userRole !== 'ministry' &&
+                {userRole !== 'ministry' || userRole !== 'region' || userRole !== 'district'   &&
                     <TransferDialog>
                         <Button className='bg-[#0950c3] dark:bg-[#2563eb] hover:bg-blue-700 dark:hover:bg-blue-600 flex gap-2 text-white md:py-5 py-2 px-4 md:w-50 w-full rounded-sm text-sm font-medium'>
                             <Caravan className='w-6 h-6' /> {t('sendButton')}

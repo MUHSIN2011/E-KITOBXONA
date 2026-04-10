@@ -123,7 +123,7 @@ function AsideNavbar() {
                     <Link href="/ministry">
                         <div className={getLinkStyle("/ministry")}>
                             <Landmark className="w-5 h-5" />
-                            <TextAnimate animation="slideUp" by="word">{t('regions')}</TextAnimate>
+                            <TextAnimate animation="slideUp" by="word">{t('district')}</TextAnimate>
                         </div>
                     </Link>
                 </>
@@ -164,7 +164,7 @@ function AsideNavbar() {
                     <Link href="/ministry">
                         <div className={getLinkStyle("/ministry")}>
                             <Landmark className="w-5 h-5" />
-                            <TextAnimate animation="slideUp" by="word">{t('regions')}</TextAnimate>
+                            <TextAnimate animation="slideUp" by="word">{t('schools')}</TextAnimate>
                         </div>
                     </Link>
                 </>
