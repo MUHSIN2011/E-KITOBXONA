@@ -202,7 +202,7 @@ function Page() {
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                <div className="md:col-span-1">
+                                {/* <div className="md:col-span-1">
                                     <Select onValueChange={(value) => setSubject(value)}>
                                         <SelectTrigger className="w-full bg-[#f9fafb]  dark:bg-gray-900/30 py-5 pl-10 h-13 rounded-xl hover:bg-gray-50 transition-colors">
                                             <SelectValue placeholder={t('list.subject.placeholder')} />
@@ -223,7 +223,7 @@ function Page() {
                                             <SelectItem value="other">{t('list.subject.other')}</SelectItem>
                                         </SelectContent>
                                     </Select>
-                                </div>
+                                </div> */}
 
                                 <div className="md:hidden flex bg-gray-100 dark:bg-gray-800 p-1 rounded-xl gap-1">
                                     <button onClick={() => setViewType('grid')} className={`flex-1 flex justify-center py-1.5 rounded-lg ${viewType === 'grid' ? 'bg-white dark:bg-gray-900/30 shadow text-blue-600' : 'text-gray-500'}`}><LayoutGrid size={18} /></button>

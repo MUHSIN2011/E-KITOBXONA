@@ -1,128 +1,156 @@
 "use client";
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { useGetCopiesByIdQuery } from '@/api/api';
-import Image from 'next/image';
+import { useGetCopiesByIdQuery, useGetFinanceTrackingByCopyIdQuery } from '@/api/api';
+import {
+  ArrowLeft, BadgeCheck, CircleDollarSign,
+  Calendar, History, Landmark, Wallet, Timer
+} from 'lucide-react';
 
 export default function BookDetailPage() {
   const params = useParams();
   const router = useRouter();
   const BookById = Number(params?.GetById);
 
-  const { data: book, isLoading, error } = useGetCopiesByIdQuery(BookById, {
-    skip: isNaN(BookById),
-  });
+  const { data: book, isLoading } = useGetCopiesByIdQuery(BookById, { skip: isNaN(BookById) });
+  const { data: finance } = useGetFinanceTrackingByCopyIdQuery(BookById, { skip: isNaN(BookById) });
 
-  if (isLoading) {
-    return (
-      <div className="flex h-[85vh] items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (error || !book) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <div className="text-red-500 text-6xl mb-4">⚠️</div>
-        <h2 className="text-2xl font-bold">Хатогӣ!</h2>
-        <p className="text-gray-500">Маълумот ёфт нашуд ё хатои сервер.</p>
-        <button onClick={() => router.back()} className="mt-6 px-8 py-2 bg-gray-800 text-white rounded-xl">Ба қафо</button>
-      </div>
-    );
-  }
+  if (isLoading) return null;
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] dark:bg-gray-900 ">
-      <div className="bg-white dark:bg-gray-800 border-b ">
-        <div className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <button onClick={() => router.back()} className="flex items-center gap-2 cursor-pointer text-gray-600 dark:text-gray-300 dark:hover:text-blue-600 hover:text-blue-600 transition-all font-semibold">
-            <span>←</span> Рӯйхати китобҳо
+    <div className="min-h-screen bg-[#F3F4F6] dark:bg-gray-900 pb-20">
+      <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 font-bold transition-all"
+          >
+            <ArrowLeft size={18} /> Рӯйхати китобҳо
           </button>
-          <div className="flex gap-2">
-            <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${book.status === 'rented' ? 'bg-orange-100 dark:bg-orange-900 dark:text-orange-300 text-orange-600' : 'bg-green-100 dark:bg-green-900 dark:text-green-300 text-green-600'}`}>
-              {book.status === 'rented' ? 'Ба иҷора дода шудааст' : 'Дастрас'}
+          <div className="flex items-center gap-4">
+            <span className={`text-[10px] font-black px-3 py-1 rounded-md uppercase tracking-widest ${book?.status === 'rented' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+              {book?.status === 'rented' ? 'Дар иҷора' : 'Озод'}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 mt-8">
-        <div className="bg-white dark:bg-gray-800 rounded-[2rem] shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col md:flex-row">
-            <div className="bg-gray-50 dark:bg-gray-700 border-r border-gray-100 dark:border-gray-600">
-              <div className="relative group">
-                <div className="relative w-full md:h-[400px] h-[500px]">
-                  <img
-                    src={`https://student4.softclub.tj${book.textbook.cover_image_url}`}
-                    alt={book.textbook?.title}
-                    // fill
+      <div className="max-w-6xl mx-auto px-6 mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
 
-                    className=" shadow-md w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute -bottom-4 md:-right-4 bg-blue-600 text-white px-4 py-2 rounded-xl font-bold shadow-lg">
-                  {book.textbook?.grade} синф
-                </div>
-              </div>
-            </div>
-
-            <div className="md:w-2/3 p-8 md:p-12">
-              <h1 className="text-2xl md:text-4xl font-black text-gray-900 dark:text-white leading-tight">
-                {book.textbook?.title}
-              </h1>
-              <p className="text-sm md:text-xl  text-blue-600 font-semibold mt-2">{book.textbook?.author}</p>
-
-              <div className="mt-8 space-y-4">
-                <p className="text-gray-600 leading-relaxed italic dark:text-gray-300 border-l-4 border-blue-200 pl-4">
-                  "{book.textbook?.description}"
-                </p>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-                  <div className="p-4 bg-gray-50 dark:bg-gray-900/60 rounded-2xl">
-                    <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">ISBN</span>
-                    <p className="text-gray-800 font-mono dark:text-gray-200">{book.textbook?.isbn || "Мавҷуд нест"}</p>
-                  </div>
-                  <div className="p-4 bg-gray-50 dark:bg-gray-900/60 rounded-2xl">
-                    <span className="text-xs text-gray-400 font-bold uppercase tracking-wider">Нашриёт</span>
-                    <p className="text-gray-800 font-semibold dark:text-gray-200">{book.textbook?.publisher} ({book.textbook?.publication_year})</p>
-                  </div>
-                </div>
+          <div className="lg:col-span-4 ">
+            <div className="bg-white sticky top-20 dark:bg-gray-900 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-100 dark:border-gray-800">
+              <div className="relative rounded-[1.5rem] overflow-hidden bg-gray-100 h-[450px]">
+                <img
+                  src={`https://student4.softclub.tj${book?.textbook.cover_image_url}`}
+                  alt={book?.textbook?.title}
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
 
-          <div className="bg-gray-50/50 dark:bg-gray-800 border-t border-gray-100 p-8 md:p-12">
-            <h3 className="text-lg font-bold text-gray-800 mb-6 dark:text-gray-200">Ҷузъиёти техникӣ</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div>
-                <span className="block text-xs text-gray-400 font-bold mb-1 uppercase dark:text-gray-400">Инвентар №</span>
-                <span className="text-gray-900 font-mono font-bold dark:text-gray-200">{book.inventory_number}</span>
+          <div className="lg:col-span-8 space-y-8">
+
+            <div className="bg-white dark:bg-gray-900 rounded-2xl p-3 shadow-sm border border-slate-200 dark:border-gray-800">
+              <div className="border-b border-slate-100 dark:border-gray-800 pb-6 mb-6">
+                <h1 className="md:text-4xl text-2xl font-black text-slate-900 dark:text-white leading-tight">
+                  {book?.textbook?.title}
+                </h1>
+                <p className="text-blue-600 font-bold flex items-center gap-2 mt-2">
+                  <BadgeCheck size={20} /> {book?.textbook?.author}
+                </p>
               </div>
-              <div>
-                <span className="block text-xs text-gray-400 font-bold mb-1 uppercase dark:text-gray-400">Ҳолат</span>
-                <span className="text-green-600 font-bold dark:text-green-400">{book.condition === 'new' ? 'Нав' : book.condition}</span>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="p-4 bg-slate-50 dark:bg-gray-800 rounded-2xl border border-slate-100 dark:border-gray-700">
+                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">ISBN</span>
+                  <p className="font-mono text-slate-700 dark:text-slate-200">{book?.textbook?.isbn || "—"}</p>
+                </div>
+                <div className="p-4 bg-slate-50 dark:bg-gray-800 rounded-2xl border border-slate-100 dark:border-gray-700">
+                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Нашриёт</span>
+                  <p className="font-bold text-slate-700 dark:text-slate-200">{book?.textbook?.publisher}, {book?.textbook?.publication_year}</p>
+                </div>
               </div>
-              <div>
-                <span className="block text-xs text-gray-400 font-bold mb-1 uppercase dark:text-gray-400">Нархи чоп</span>
-                <span className="text-gray-900 font-bold dark:text-gray-200">{book.textbook?.print_price} сомонӣ</span>
-              </div>
-              <div>
-                <span className="block text-xs text-gray-400 font-bold mb-1 uppercase dark:text-gray-400">Иҷораи солона</span>
-                <span className="text-blue-600 font-bold dark:text-blue-400">{book.textbook?.rent_value_per_year} сомонӣ</span>
-              </div>
+
+              {finance && (
+                <div className="relative overflow-hidden bg-white dark:bg-gray-900 rounded-2xl border-2 border-blue-600/20 p-3 shadow-inner">
+                  <div className="flex md:flex-row flex-col md:gap-0 gap-3 md:items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                      <div className="p-3 bg-blue-600 rounded-2xl text-white">
+                        <Landmark size={24} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tighter">Шиносномаи молиявӣ</h3>
+                        <p className="text-xs text-slate-400">Ҳисоботи пардохтпазирии инвентар</p>
+                      </div>
+                    </div>
+                    {finance.is_paid_off ? (
+                      <div className="bg-emerald-500 text-white px-4 py-2 rounded-xl font-black text-xs animate-bounce">ПАРДОХТ ШУД ✅</div>
+                    ) : (
+                      <div className="bg-blue-50 dark:bg-gray-800 text-blue-600 px-4 py-2 rounded-xl font-black text-xs">ФОИЗ: {finance.payback_percentage}%</div>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase"><Wallet size={12} /> Нархи харид</div>
+                      <p className="text-xl font-black text-slate-900 dark:text-white">{finance.initial_cost} смн.</p>
+                    </div>
+                    <div className="space-y-1 ">
+                      <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase"><CircleDollarSign size={12} /> Ҷамъшуда</div>
+                      <p className="text-xl font-black text-emerald-600">+{finance.accumulated_value} смн.</p>
+                    </div>
+                    <div className="space-y-1 ">
+                      <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase"><Timer size={12} /> Соли истифода</div>
+                      <p className="text-xl font-black text-blue-600">{finance.years_in_use} сол</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-8">
+                    <div className="h-3 w-full bg-slate-100 dark:bg-gray-800 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-600 transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(37,99,235,0.4)]"
+                        style={{ width: `${Math.min(finance.payback_percentage, 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 grid grid-cols-2 gap-4 pt-6 border-t border-slate-100 dark:border-gray-800">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-slate-50 dark:bg-gray-800 rounded-lg text-slate-400"><History size={16} /></div>
+                      <div>
+                        <span className="block text-[9px] text-slate-400 uppercase font-bold">Аввалин иҷора</span>
+                        <span className="text-xs font-bold dark:text-white">{new Date(finance.first_rental_date).toLocaleDateString('tg-TJ')}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 justify-end text-right">
+                      <div>
+                        <span className="block text-[9px] text-slate-400 uppercase font-bold">Охирин иҷора</span>
+                        <span className="text-xs font-bold dark:text-white">{new Date(finance.last_rental_date).toLocaleDateString('tg-TJ')}</span>
+                      </div>
+                      <div className="p-2 bg-slate-50 dark:bg-gray-800 rounded-lg text-slate-400"><Calendar size={16} /></div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="mt-10 p-6 bg-blue-600 dark:bg-gray-900/60 rounded-[1.5rem] flex flex-col md:flex-row items-center justify-between gap-6 text-white shadow-xl shadow-blue-200 dark:shadow-gray-800">
-              <div>
-                <p className="text-blue-100 text-sm">Санаи қабул:</p>
-                <p className="text-xl font-bold">{new Date(book.received_at).toLocaleDateString('tg-TJ')}</p>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 bg-white dark:bg-gray-900 p-6 rounded-2xl border border-slate-200 dark:border-gray-800 flex items-center justify-between shadow-sm">
+                <div>
+                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Рақами инвентарӣ</span>
+                  <p className="text-xl font-mono font-black text-slate-900 dark:text-white">{book?.inventory_number}</p>
+                </div>
+                <div className="h-10 w-[2px] bg-slate-100 dark:bg-gray-800"></div>
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Арзиши иҷора</span>
+                  <p className="text-xl font-black text-blue-600">{book?.textbook?.rent_value_per_year} смн.</p>
+                </div>
               </div>
-              <div className="flex gap-4 w-full md:w-auto">
-                <button className="flex-1 md:flex-none dark:bg-gray-700 dark:text-white px-10 py-4 bg-white text-blue-600 rounded-xl font-black hover:bg-gray-100 transition-colors shadow-lg">
-                  ИҶОРА ГИРИФТАН
-                </button>
-              </div>
+              <button onClick={() => router.push('/rentals')} className="px-14 py-5 bg-slate-900 dark:bg-blue-600 text-white rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-slate-300 dark:shadow-none uppercase tracking-tighter">
+                Иҷора додан
+              </button>
             </div>
           </div>
         </div>

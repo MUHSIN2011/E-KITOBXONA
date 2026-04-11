@@ -313,7 +313,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
 export const Todo = createApi({
     reducerPath: 'todoApi',
     baseQuery: baseQueryWithReauth,
-    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects', 'transfers', 'returns', 'Payments'],
+    tagTypes: ['Todo', 'Textbooks', 'Rentals', 'Region', 'District', 'School', 'Copies', 'Budget', 'Students', 'Supplies', 'AcademicYears', 'BookRequests', 'overview', 'Subjects', 'transfers', 'returns', 'Payments','Finance'],
     endpoints: (builder) => ({
         LoginUser: builder.mutation<ILoginResponse, ILoginRequest>({
             query: (credentials) => ({
@@ -902,6 +902,10 @@ export const Todo = createApi({
                 body: payload,
             }),
         }),
+        getFinanceTrackingByCopyId: builder.query<any, number>({
+            query: (copyId) => `/finance/tracking/copy/${copyId}`,
+            providesTags: ['Finance'], 
+        }),
     }),
 });
 
@@ -981,5 +985,6 @@ export const {
     useLazyGetAiTransferExplanationQuery,
     useGetAiSupplyExplanationQuery,
     useGetTextbookStatsQuery,
-    useEstimateCompensationMutation
+    useEstimateCompensationMutation,
+    useGetFinanceTrackingByCopyIdQuery
 } = Todo;
