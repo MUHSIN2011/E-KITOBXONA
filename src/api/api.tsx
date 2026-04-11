@@ -888,7 +888,20 @@ export const Todo = createApi({
                 url: `/ai/supply/${supply_id}`,
                 method: 'GET',
             }),
-        })
+        }),
+        getTextbookStats: builder.query<any, number>({
+            query: (textbook_id) => ({
+                url: `/finance/tracking/textbook/${textbook_id}/stats`,
+                method: 'GET',
+            }),
+        }),
+        estimateCompensation: builder.mutation({
+            query: (payload) => ({
+                url: '/ai/estimate-compensation',
+                method: 'POST',
+                body: payload,
+            }),
+        }),
     }),
 });
 
@@ -966,5 +979,7 @@ export const {
     useGetTransferPdfQuery,
     useLazyGetDamageReportPdfQuery,
     useLazyGetAiTransferExplanationQuery,
-    useGetAiSupplyExplanationQuery
+    useGetAiSupplyExplanationQuery,
+    useGetTextbookStatsQuery,
+    useEstimateCompensationMutation
 } = Todo;

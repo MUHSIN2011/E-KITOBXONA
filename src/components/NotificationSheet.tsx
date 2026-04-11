@@ -274,26 +274,25 @@ export function NotificationSheet({ user }: { user: any }) {
                                             ) : (
                                                 <div key={index} className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl hover:border-blue-300 dark:hover:border-blue-900 transition-all group">
                                                     <div className="flex items-start gap-4">
+                                                        {/* Иконаи асосӣ */}
                                                         <div className="p-2.5 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all shrink-0">
                                                             <BookCheck size={20} />
                                                         </div>
 
                                                         <div className="flex-1 w-full">
-                                                            <div className="flex justify-between items-start mb-2">
-                                                                <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-none">
+                                                            <div className="flex justify-between items-start gap-2 mb-2">
+                                                                <h4 className="font-bold text-slate-900 dark:text-slate-100 leading-tight">
                                                                     {notif.textbook_title}
                                                                 </h4>
-                                                                <div className="flex flex-col items-end gap-1">
-                                                                    <span className="text-[10px] font-bold bg-amber-100 text-amber-600 px-2 py-0.5 rounded uppercase shrink-0">
+                                                                <div className="flex flex-col items-end gap-2 shrink-0">
+                                                                    <span className="text-[10px] font-bold bg-amber-100 text-amber-600 px-2 py-0.5 rounded uppercase">
                                                                         Интизорӣ
                                                                     </span>
-                                                                    <span className="absolute mt-8">
-                                                                        <AiHelperProps id={notif.supply_id} type="supply" />
-                                                                    </span>
+                                                                    <AiHelperProps id={notif.supply_id} type="supply" />
                                                                 </div>
                                                             </div>
 
-                                                            <div className="space-y-1">
+                                                            <div className="-mt-9">
                                                                 <p className="text-xs text-slate-500 flex items-center gap-1 font-medium">
                                                                     <Info size={12} /> Ҳамагӣ: <span className="font-bold text-slate-700 dark:text-slate-300">{notif.pending_items} дона</span>
                                                                 </p>
@@ -304,7 +303,7 @@ export function NotificationSheet({ user }: { user: any }) {
 
                                                             <div className="mt-4 space-y-2 border-t border-slate-200/50 dark:border-slate-800 pt-3">
                                                                 <div key={notif.supply_id} className="flex items-center justify-between bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-100 dark:border-slate-700 shadow-sm">
-                                                                    <div className="flex flex-col">
+                                                                    <div className="flex flex-col gap-1">
                                                                         <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">
                                                                             Партияи №{notif.supply_id}
                                                                         </span>
@@ -319,14 +318,19 @@ export function NotificationSheet({ user }: { user: any }) {
                                                                             </span>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="flex items-center gap-3">
-                                                                        <span className="text-[11px] font-bold text-blue-600">{notif.pending_items} дона</span>
+
+                                                                    <div className="flex items-center gap-2">
+                                                                        <span className="text-[11px] font-bold text-blue-600 mr-1">
+                                                                            {notif.pending_items} дона
+                                                                        </span>
                                                                         <Button
                                                                             onClick={() => {
                                                                                 setIsNotificationOpen(false);
                                                                                 router.push(`/supplies/${notif.supply_id}`);
                                                                             }}
-                                                                            variant="ghost" size="icon" className="h-8 w-8 text-blue-500 rounded-full"
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            className="h-8 w-8 text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-full transition-colors"
                                                                         >
                                                                             <ArrowRightCircle size={18} />
                                                                         </Button>

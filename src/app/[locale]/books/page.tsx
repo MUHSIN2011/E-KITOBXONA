@@ -11,7 +11,8 @@ import {
     useCreateTextbookMutation,
     useGetSubjectsQuery,
     useGetTextbookByIdQuery,
-    useCreateSubjectsMutation
+    useCreateSubjectsMutation,
+    useGetTextbookStatsQuery
 } from '@/api/api'
 import Card from '@/components/Card'
 import { TextAnimate } from '@/components/ui/text-animate'
@@ -39,25 +40,28 @@ import toast, { Toaster } from 'react-hot-toast'
 import { useTranslations } from 'next-intl'
 
 function Page() {
-    const [subject, setSubject] = useState<string>("all");
     const t = useTranslations('BooksPage')
 
+    const [subject, setSubject] = useState<string>("all");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [isSubjectsDialogOpen, setIsSubjectsDialogOpen] = useState(false);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
 
     const { data: books, isFetching, isLoading: booksLoading } = useGetTextbooksQuery(subject);
-
-
     const { data: subjectsData } = useGetSubjectsQuery();
     const [createTextbook, { isLoading: isCreating }] = useCreateTextbookMutation();
     const [createSubject, { isLoading: isCreatingSubject }] = useCreateSubjectsMutation();
-
     const { register, handleSubmit: onSubmitBooks, setValue, reset, watch } = useForm();
+    const { data: bookDetail, isFetching: isDetailLoading } = useGetTextbookByIdQuery(selectedId!, {
+        skip: !selectedId,
+    });
+    const { data: stats, isLoading, error } = useGetTextbookStatsQuery(selectedId!, {
+        skip: !selectedId
+    });
     const { register: registerSubject, handleSubmit: onSubmitSubjects, setValue: setValueSubject, reset: resetSubject, } = useForm();
     const fileWatcher = watch("file");
 
-    const [selectedId, setSelectedId] = useState<number | null>(null);
-    const [isDetailOpen, setIsDetailOpen] = useState(false);
 
     useEffect(() => {
         AOS.init({ duration: 800, once: true });
@@ -111,9 +115,7 @@ function Page() {
         }
     }
 
-    const { data: bookDetail, isFetching: isDetailLoading } = useGetTextbookByIdQuery(selectedId!, {
-        skip: !selectedId,
-    });
+
 
     const handleRowClick = (id: number) => {
         setSelectedId(id);
@@ -128,7 +130,7 @@ function Page() {
     };
 
     return (
-        <main className="px-4 min-h-screen bg-white dark:bg-gray-900">
+        <main className="px-4 min-h-screen  dark:bg-gray-900">
             <Toaster />
             <div className='flex  md:flex-row flex-col md:gap-0 gap-6 items-center md:justify-between mb-6'>
                 <div className='flex flex-col gap-2 items-center'>
@@ -435,6 +437,58 @@ function Page() {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="space-y-4 pt-2">
+                                    <h3 className="font-bold text-lg flex items-center gap-2">
+                                        <span className="w-2 h-6 bg-emerald-500 rounded-full"></span>
+                                        Статистикаи молиявӣ
+                                    </h3>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="p-3 border dark:border-zinc-800 rounded-xl bg-slate-50/50 dark:bg-zinc-900/50">
+                                            <p className="text-[10px] text-slate-500 uppercase font-bold">Худро пӯшонидааст</p>
+                                            <div className="flex items-end gap-1">
+                                                <p className="text-xl font-black text-emerald-600">{stats?.paid_off_copies}</p>
+                                                <p className="text-xs text-slate-400 mb-1">аз {stats?.total_copies}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-3 border dark:border-zinc-800 rounded-xl bg-slate-50/50 dark:bg-zinc-900/50">
+                                            <p className="text-[10px] text-slate-500 uppercase font-bold">Самаранокӣ</p>
+                                            <div className="mt-1">
+                                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${stats?.efficiency_rating === 'poor'
+                                                    ? 'bg-red-100 text-red-600 dark:bg-red-900/20'
+                                                    : 'bg-green-100 text-green-600 dark:bg-green-900/20'
+                                                    }`}>
+                                                    {stats?.efficiency_rating === 'poor' ? 'Заиф' : 'Аъло'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2 bg-zinc-50 dark:bg-zinc-900/30 p-3 rounded-xl border border-dashed dark:border-zinc-800">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Арзиши умумии аввалия:</span>
+                                            <span className="font-bold">{stats?.total_initial_cost} TJS</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Арзиши ҷамъшуда:</span>
+                                            <span className="font-bold text-blue-600">{stats?.total_accumulated_value} TJS</span>
+                                        </div>
+
+                                        <div className="pt-2">
+                                            <div className="flex justify-between text-[10px] font-bold uppercase text-slate-400 mb-1">
+                                                <span>Фоизи миёнаи бозгашт</span>
+                                                <span>{stats?.average_payback_percentage}%</span>
+                                            </div>
+                                            <div className="w-full h-2 bg-slate-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-blue-600 transition-all duration-500"
+                                                    style={{ width: `${stats?.average_payback_percentage}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div className="space-y-3">
                                     <h3 className="font-bold text-lg flex items-center gap-2">
@@ -463,6 +517,9 @@ function Page() {
                                 </div>
                             </div>
                         )}
+
+
+                        <hr className="dark:border-zinc-800" />
                     </SheetContent>
                 </Sheet>
 
@@ -490,7 +547,7 @@ function Page() {
                                     onClick={() => handleRowClick(book.id)}
                                     className="hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors cursor-pointer group"
                                 >
-                                    <td className="p-4 font-semibold text-gray-800 dark:text-zinc-100 bg-white  dark:bg-gray-900 group-hover:bg-blue-50/50 dark:group-hover:bg-gray-900 transition-colors">
+                                    <td className="p-4 font-semibold text-gray-800 dark:text-zinc-100 bg-white  dark:bg-gray-900 group-hover:bg-blue-50/50 dark:group-hover:bg-gray-900/10   transition-colors">
                                         {book.title}
                                     </td>
                                     <td className="p-4 text-gray-600 dark:text-zinc-400">{book.grade}</td>

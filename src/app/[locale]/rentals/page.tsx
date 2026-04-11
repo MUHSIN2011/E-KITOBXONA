@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Search, BookOpen, User, Calendar, Check, ArrowLeftRight, Loader2, Search as Searchs, User as Userr, Check as Checks } from "lucide-react";
+import { Search, BookOpen, User, Calendar, Check, ArrowLeftRight, Loader2, Search as Searchs, User as Userr, Check as Checks, Sparkles, Bot, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
     useGetRentalsQuery,
@@ -19,6 +19,7 @@ import {
     useGetReportsOverviewQuery,
     useGetActiveYearQuery,
     useGetBooksSchoolQuery,
+    useEstimateCompensationMutation,
 } from '@/api/api';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
@@ -26,6 +27,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Card from '@/components/Card';
 import { Sheet, SheetContent, SheetTitle, SheetHeader } from '@/components/ui/sheet';
+import ReactMarkdown from 'react-markdown';
 
 export default function RentalsPage() {
     const [open, setOpen] = useState(false);
@@ -39,10 +41,11 @@ export default function RentalsPage() {
     const [dateFrom, setDateFrom] = useState<string>("");
     const [dateTo, setDateTo] = useState<string>("");
     const [selectedStudent, setSelectedStudent] = useState<any>(null);
+    const [description, setdescription] = useState("");
+    const amountInputRef = useRef<HTMLInputElement>(null);
+    const [isAdviceOpen, setIsAdviceOpen] = useState(true);
 
     const [returnCondition, setReturnCondition] = useState("good");
-    const [damageType, setDamageType] = useState("minor");
-    const [damageDescription, setDamageDescription] = useState("");
     const [compensationAmount, setCompensationAmount] = useState(0);
 
     const { data: rentals, isLoading: rentalsLoading, refetch: refetchRentals } = useGetRentalsQuery({
@@ -54,6 +57,13 @@ export default function RentalsPage() {
         skip: 0
     });
 
+    const [damageType, setDamageType] = useState("minor");
+    const [damageDescription, setDamageDescription] = useState("");
+    const [aiAdvice, setAiAdvice] = useState<any>(null);
+
+
+    const [estimateCompensation, { data: aiResult, isLoading: isAiLoading }] = useEstimateCompensationMutation();
+
     const { data: studentsData } = useGetStudentsQuery({ search: searchTerm, skip: 0, limit: 20 });
     const { data: booksSchool } = useGetBooksSchoolQuery();
 
@@ -61,6 +71,12 @@ export default function RentalsPage() {
     const [returnBook, { isLoading: isReturnLoading }] = useReturnBookMutation();
     const [addDamageReport] = useAddDamageReportMutation();
     const [createCompensation] = useCreateCompensationMutation();
+    const { data: activeYear } = useGetActiveYearQuery()
+    const currentYearId = activeYear?.id
+
+    const { data: items } = useGetReportsOverviewQuery(currentYearId, {
+        skip: !currentYearId
+    });
 
     const resetReturnForm = () => {
         setReturnCondition("good");
@@ -153,14 +169,54 @@ export default function RentalsPage() {
         setSelectedBookToReturn(book);
         setIsReturnModalOpen(true);
     };
-    const { data: activeYear } = useGetActiveYearQuery()
-    const currentYearId = activeYear?.id
 
-    const { data: items } = useGetReportsOverviewQuery(currentYearId, {
-        skip: !currentYearId
-    });
+    const extractAmountFromText = (text: string) => {
+        const amountMatch = [...text.matchAll(/(?:сумма компенсации|Сумма компенсации|компенсация):?\s*([0-9]+(?:\.[0-9]+)?)/gi)];
+        if (amountMatch.length > 0) {
+            return Number(amountMatch[amountMatch.length - 1][1]);
+        }
 
-    console.log('alo', items);
+        const fallbackMatch = text.match(/([0-9]+(?:\.[0-9]+)?)/g);
+        return fallbackMatch ? Number(fallbackMatch[fallbackMatch.length - 1]) : 0;
+    };
+
+    const handleAiConsult = async () => {
+        if (!damageDescription) {
+            toast.error("Лутфан, аввал сабаби зарарро нависед");
+            return;
+        }
+
+        try {
+            const result = await estimateCompensation({
+                textbook_data: {
+                    title: selectedBookToReturn?.textbook_title || "Китоб",
+                    print_price: 50
+                },
+                copy_data: { inventory_number: "INV-001", years_in_use: 1 },
+                damage_type: damageType,
+                description: damageDescription
+            }).unwrap();
+
+            setAiAdvice(result);
+        } catch (error) {
+            toast.error("Хатогӣ ҳангоми пайваст бо AI");
+        }
+    };
+
+    const handleUseAdvice = () => {
+        const amount = extractAmountFromText(aiAdvice.answer);
+        if (amount > 0) {
+            setCompensationAmount(amount);
+            setIsAdviceOpen(false);
+
+            setTimeout(() => {
+                amountInputRef.current?.focus();
+            }, 100);
+        } else {
+            toast.error("Маблағ ёфт нашуд");
+        }
+    };
+
 
     const availableBooks = booksSchool?.items?.filter(book =>
         book.status !== "rented" && book.status !== "lost"
@@ -170,7 +226,7 @@ export default function RentalsPage() {
     return (
         <div className="px-4 space-y-6 bg-[#f8fafc] dark:bg-gray-900">
             <Toaster />
-            <div className="flex justify-between items-center">
+            <div className="flex md:flex-row flex-col justify-between md:gap-0 gap-3 md:items-center">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Иҷораи китобҳо</h1>
                     <p className="text-gray-500 text-sm dark:text-gray-400">Назорати китобҳои додашуда ва баргардонидашуда</p>
@@ -340,54 +396,114 @@ export default function RentalsPage() {
                     <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="rounded-xl bg-[#f9fafb] border-none h-11" />
                 </div>
 
-                <div className="rounded-2xl overflow-hidden overflow-x-auto bg-white dark:bg-gray-800">
-                    <Table>
-                        <TableHeader className="bg-gray-50/50 dark:bg-gray-900">
-                            <TableRow className="border-b">
-                                <TableHead className="font-bold py-4 pl-4">Хонанда</TableHead>
-                                <TableHead className="font-bold">Синфи</TableHead>
-                                <TableHead className="font-bold">Китоб</TableHead>
-                                <TableHead className="font-bold text-center">Статус</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {rentalsLoading ? (
-                                Array.from({ length: 5 }).map((_, index) => (
-                                    <TableRow key={index} className="animate-pulse">
-                                        <TableCell className="py-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div></TableCell>
-                                        <TableCell className="py-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
-                                        <TableCell className="py-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div></TableCell>
-                                        <TableCell className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded "></div></TableCell>
-                                    </TableRow>
-                                ))
-                            ) : rentals?.items?.map((rental: any) => (
-                                <TableRow onClick={() => setSelectedStudent(rental)} key={rental.student_id} className="hover:bg-gray-50/50 hover:dark:bg-blue-500/50 transition-colors cursor-pointer">
-                                    <TableCell>
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center text-[#0950c3]"><User className="w-4 h-4" /></div>
-                                            <div>
-                                                <div className="font-semibold text-gray-900 dark:text-white">{rental.student_name}</div>
-                                                <div className="text-[10px] text-gray-400">ID: {rental.student_id}</div>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>{rental.class_name}</TableCell>
-                                    <TableCell>{rental.total_books_taken}</TableCell>
-                                    <TableCell className="text-center ">
-                                        <Badge variant={rental.status === 'active' ? 'default' : 'secondary'} className={rental.status === 'active' ? "bg-green-100 text-green-700 " : "dark:bg-gray-900"}>
-                                            {rental.status === 'active' ? 'Дар даст' : 'Бозгашт'}
-                                        </Badge>
-                                    </TableCell>
+                <div className="rounded-xl sm:rounded-2xl overflow-hidden bg-white dark:bg-gray-800 shadow-sm">
+                    <div className="overflow-x-auto">
+                        <Table className="min-w-[500px] sm:min-w-full">
+                            <TableHeader className="bg-gray-50/50 dark:bg-gray-900">
+                                <TableRow className="border-b dark:border-gray-700">
+                                    <TableHead className="font-bold py-3 sm:py-4 pl-3 sm:pl-4 text-xs sm:text-sm">
+                                        Хонанда
+                                    </TableHead>
+                                    <TableHead className="font-bold text-xs sm:text-sm">
+                                        Синф
+                                    </TableHead>
+                                    <TableHead className="font-bold text-xs sm:text-sm">
+                                        Китоб
+                                    </TableHead>
+                                    <TableHead className="font-bold text-center text-xs sm:text-sm">
+                                        Статус
+                                    </TableHead>
                                 </TableRow>
-                            ))}
+                            </TableHeader>
+                            <TableBody>
+                                {rentalsLoading ? (
+                                    Array.from({ length: 5 }).map((_, index) => (
+                                        <TableRow key={index} className="animate-pulse">
+                                            <TableCell className="py-2 sm:py-3 pl-3 sm:pl-4">
+                                                <div className="flex items-center gap-2 sm:gap-3">
+                                                    <div className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+                                                    <div className="space-y-1">
+                                                        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-24 sm:w-32"></div>
+                                                        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-16 sm:w-20"></div>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="py-2 sm:py-3">
+                                                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12 sm:w-16"></div>
+                                            </TableCell>
+                                            <TableCell className="py-2 sm:py-3">
+                                                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12 sm:w-16"></div>
+                                            </TableCell>
+                                            <TableCell className="py-2 sm:py-3">
+                                                <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-16 sm:w-20 mx-auto"></div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : rentals?.items?.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={4} className="text-center py-8 sm:py-10 md:py-12">
+                                            <div className="flex flex-col items-center justify-center">
+                                                <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 dark:text-gray-600 mb-2" />
+                                                <p className="text-sm text-gray-400 dark:text-gray-500">Ҳеҷ маълумоте нест</p>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    rentals?.items?.map((rental: any) => (
+                                        <TableRow
+                                            key={rental.student_id}
+                                            onClick={() => setSelectedStudent(rental)}
+                                            className="hover:bg-gray-50/50 hover:dark:bg-blue-500/10 transition-colors cursor-pointer group"
+                                        >
+                                            
+                                            <TableCell className="py-2 sm:py-3 pl-3 sm:pl-4">
+                                                <div className="flex items-center gap-2 sm:gap-3">
+                                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                                                        <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-blue-600 dark:text-blue-400" />
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <div className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[180px] md:max-w-[200px]">
+                                                            {rental.student_name}
+                                                        </div>
+                                                        <div className="text-[9px] sm:text-[10px] text-gray-400">
+                                                            ID: {rental.student_id}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
 
-                        </TableBody>
-                    </Table>
+                                            <TableCell className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                                                {rental.class_name}
+                                            </TableCell>
+
+                                            <TableCell className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">
+                                                {rental.total_books_taken} 
+                                            </TableCell>
+
+                                            <TableCell className="text-center">
+                                                <Badge
+                                                    variant={rental.status === 'active' ? 'default' : 'secondary'}
+                                                    className={cn(
+                                                        "text-[10px] sm:text-xs font-semibold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full",
+                                                        rental.status === 'active'
+                                                            ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                                                            : "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400"
+                                                    )}
+                                                >
+                                                    {rental.status === 'active' ? 'Дар даст' : 'Бозгашт'}
+                                                </Badge>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
             </div>
 
             <Sheet open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
-                <SheetContent className="sm:max-w-[550px] overflow-y-auto px-4">
+                <SheetContent className="sm:max-w-[550px] dark:bg-gray-900 overflow-y-auto px-4">
                     <SheetHeader className="border-b pb-4">
                         <SheetTitle className="text-2xl font-bold flex items-center gap-2">
                             <User className="w-6 h-6 text-blue-600" /> Маълумоти пурра
@@ -395,8 +511,8 @@ export default function RentalsPage() {
                     </SheetHeader>
 
                     {selectedStudent && (
-                        <div className="py-6 space-y-6">
-                            <div className="flex items-center gap-4 bg-blue-50 dark:bg-[#1a1a1a] p-4 rounded-xl">
+                        <div className="py-6 space-y-6 ">
+                            <div className="flex items-center gap-4 bg-blue-50  dark:bg-gray-800 p-4 rounded-xl">
                                 <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
                                     {selectedStudent.student_name[0]}
                                 </div>
@@ -409,11 +525,11 @@ export default function RentalsPage() {
                             <div className="space-y-4">
                                 <h4 className="font-bold">Китобҳои фаъол</h4>
                                 {selectedStudent.rented_books?.map((book: any, index: number) => (
-                                    <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-xl shadow-sm items-center relative overflow-hidden bg-white dark:bg-black mb-2">
+                                    <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-xl shadow-sm items-center relative overflow-hidden bg-white  dark:bg-gray-800 mb-2">
                                         <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600"></div>
                                         <div className="space-y-1">
                                             <p className="text-xs text-gray-400 uppercase font-semibold">Номи китоб</p>
-                                            <p className="text-sm font-bold text-gray-800">{book.textbook_title}</p>
+                                            <p className="text-sm font-bold text-gray-800 dark:text-white">{book.textbook_title}</p>
                                             <div className="flex items-center gap-2">
                                                 <span className={cn(
                                                     "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
@@ -446,23 +562,23 @@ export default function RentalsPage() {
                 setIsReturnModalOpen(val);
                 if (!val) resetReturnForm();
             }}>
-                <DialogContent className="sm:max-w-[460px] p-0 border-none shadow-lg max-h-[90vh] flex flex-col overflow-hidden">
-                    <DialogHeader className="p-6 pb-4 flex-shrink-0 border-b border-slate-50">
-                        <DialogTitle className="text-xl font-bold text-slate-800 tracking-tight">
+                <DialogContent className="sm:max-w-[460px]  dark:bg-gray-900 p-0 border-none shadow-lg max-h-[90vh] flex flex-col overflow-hidden">
+                    <DialogHeader className="p-6 pb-4 flex-shrink-0 border-b border-slate-50 dark:border-gray-700">
+                        <DialogTitle className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">
                             Қабули китоб
                         </DialogTitle>
-                        <DialogDescription className="text-slate-500 pt-1">
-                            Ҳолати китоби <span className="font-semibold text-slate-700 underline decoration-blue-200">
+                        <DialogDescription className="text-slate-500 dark:text-gray-100 pt-1">
+                            Ҳолати китоби <span className="font-semibold text-slate-700 dark:text-gray-50 underline decoration-blue-200">
                                 {selectedBookToReturn?.textbook_title}
                             </span>-ро ворид кунед.
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="p-6 space-y-6 overflow-y-auto flex-1 custom-scrollbar">
+                    <div className="p-6 space-y-6 overflow-y-auto flex-1  custom-scrollbar">
                         <div className="space-y-3">
-                            <p className="text-sm font-semibold text-slate-600 ml-1">Ҳолати умумӣ:</p>
+                            <p className="text-sm font-semibold text-slate-600 ml-1 dark:text-white">Ҳолати умумӣ:</p>
                             <Select value={returnCondition} onValueChange={setReturnCondition}>
-                                <SelectTrigger className="h-11 w-full border-slate-200 focus:ring-slate-400">
+                                <SelectTrigger className="h-11 w-full border-slate-200 focus:ring-slate-400  dark:border-gray-700">
                                     <SelectValue placeholder="Интихоб кунед" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -475,17 +591,17 @@ export default function RentalsPage() {
                         </div>
 
                         {returnCondition === "damaged" && (
-                            <div className="space-y-4 p-4 rounded-xl border border-slate-200 bg-slate-50/50 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="space-y-4 p-4 rounded-xl border border-slate-200 bg-slate-50/50 dark:bg-gray-800 dark:border-gray-800 animate-in fade-in slide-in-from-top-2 duration-300">
                                 <div className="flex items-center gap-2 mb-1">
                                     <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Тафсилоти зарар</span>
+                                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-white">Тафсилоти зарар</span>
                                 </div>
 
                                 <div className="grid gap-4">
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-slate-600 ml-1">Намуди зарар:</label>
+                                        <label className="text-xs font-medium text-slate-600 ml-1 dark:text-gray-200">Намуди зарар:</label>
                                         <Select value={damageType} onValueChange={setDamageType}>
-                                            <SelectTrigger className="h-9 bg-white border-slate-200">
+                                            <SelectTrigger className="h-9 bg-white border-slate-200 dark:border-gray-700">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -498,31 +614,99 @@ export default function RentalsPage() {
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-slate-600 ml-1">Маблағи ҷарима (сомонӣ):</label>
+                                        <label className="text-xs font-medium text-slate-600 ml-1  dark:text-gray-200">Маблағи ҷарима (сомонӣ):</label>
                                         <Input
                                             type="number"
-                                            className="h-9 bg-white border-slate-200 focus-visible:ring-slate-400"
+                                            ref={amountInputRef}
+                                            className="h-9 bg-white border-slate-200  dark:border-gray-700 focus-visible:ring-slate-400"
                                             value={compensationAmount}
                                             onChange={(e) => setCompensationAmount(Number(e.target.value))}
                                         />
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="text-xs font-medium text-slate-600 ml-1">Тавсиф:</label>
+                                        <label className="text-xs font-medium text-slate-600 ml-1  dark:text-gray-200">Тавсиф:</label>
                                         <Input
-                                            className="h-9 bg-white border-slate-200 focus-visible:ring-slate-400"
+                                            className="h-9 bg-white border-slate-200  dark:border-gray-700 focus-visible:ring-slate-400"
                                             placeholder="Сабаби зарарро шарҳ диҳед..."
                                             value={damageDescription}
                                             onChange={(e) => setDamageDescription(e.target.value)}
                                         />
+                                    </div>
+                                    <div className="mt-4 pt-4 border-t border-slate-200/60 dark:border-gray-700">
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={handleAiConsult}
+                                            disabled={isAiLoading || !damageDescription}
+                                            className="w-full border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 gap-2 h-10 shadow-sm transition-all"
+                                        >
+                                            {isAiLoading ? (
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <Sparkles className="h-4 w-4" />
+                                            )}
+                                            AI Help
+                                        </Button>
+
+                                        {aiAdvice && (
+                                            <div className="mt-3 overflow-hidden rounded-lg border border-blue-200 dark:border-blue-800 bg-white dark:bg-zinc-950 transition-all duration-300">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setIsAdviceOpen(!isAdviceOpen)}
+                                                    className="w-full flex items-center justify-between p-2.5 bg-blue-50/50 dark:bg-blue-900/10 hover:bg-blue-100/50 transition-colors"
+                                                >
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="p-1 bg-blue-600 rounded shadow-lg shadow-blue-500/20">
+                                                            <Bot size={14} className="text-white" />
+                                                        </div>
+                                                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold uppercase tracking-wider">
+                                                            Машварати AI {!isAdviceOpen && "(Пинҳон)"}
+                                                        </span>
+                                                    </div>
+                                                    {isAdviceOpen ? (
+                                                        <ChevronUp size={16} className="text-blue-400" />
+                                                    ) : (
+                                                        <ChevronDown size={16} className="text-blue-400" />
+                                                    )}
+                                                </button>
+
+                                                <div
+                                                    className={`transition-all duration-500 ease-in-out overflow-hidden ${isAdviceOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+                                                        }`}
+                                                >
+                                                    <div className="p-4 pt-2">
+                                                        <div className="prose prose-sm dark:prose-invert max-w-none mb-4">
+                                                            <ReactMarkdown
+                                                                components={{
+                                                                    ol: ({ children }) => <ol className="list-decimal ml-4 mb-2 space-y-1 text-slate-700 dark:text-zinc-300">{children}</ol>,
+                                                                    li: ({ children }) => <li className="text-[13px] leading-relaxed">{children}</li>,
+                                                                    p: ({ children }) => <p className="text-[13px] leading-snug mb-2 last:mb-0 text-slate-700 dark:text-zinc-300">{children}</p>
+                                                                }}
+                                                            >
+                                                                {aiAdvice.answer.replace(/\\n/g, '\n').replace(/^(\d+)\.(?!\s)/gm, '$1. ')}
+                                                            </ReactMarkdown>
+                                                        </div>
+
+                                                        <Button
+                                                            type="button"
+                                                            onClick={handleUseAdvice}
+                                                            className="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white text-[12px] font-semibold gap-2 shadow-sm transition-all active:scale-[0.98]"
+                                                        >
+                                                            <Check size={14} />
+                                                            Истифода бурдани машварат
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* flex-shrink-0 намегузорад, ки Footer фишурда шавад ё ба боло скрол шавад */}
-                    <DialogFooter className="p-6 pt-4 bg-slate-50/80 border-t border-slate-100 gap-2 sm:gap-0 flex-shrink-0">
+                    <DialogFooter className="p-6 pt-4 bg-slate-50/80 dark:bg-gray-900 border-t border-slate-100 dark:border-gray-700/50 gap-2 sm:gap-0 shrink-0">
                         <Button
                             variant="ghost"
                             onClick={() => setIsReturnModalOpen(false)}
