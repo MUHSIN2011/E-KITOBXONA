@@ -261,8 +261,8 @@ function Page() {
                                 : `https://student4.softclub.tj${item?.cover_image_url}`;
                             return (
                                  <div 
-                                // data-aos="fade-left" 
-                                // data-aos-delay="300" 
+                                data-aos="fade-left" 
+                                data-aos-delay="300" 
                                  key={item.textbook_id} onClick={() => {
                                     setTextbook_idx(item.textbook_id);
                                     setSummery(false);
@@ -304,7 +304,7 @@ function Page() {
                         ) : (
                             <>
                                 {viewType === 'table' ? (
-                                    <div className="overflow-x-auto  dark:bg-gray-900/40   dark:border-gray-900  overflow-y-clip rounded-xl border border-gray-200 bg-white  shadow-sm md:max-w-full max-w-90">
+                                    <div className="overflow-x-auto  dark:bg-gray-900/40   dark:border-gray-900  overflow-y-clip rounded-xl border border-gray-200 bg-white  shadow-sm md:max-w-full  max-w-80">
                                         <table className="w-full text-left border-collapse min-w-[800px]">
                                             <thead>
                                                 <tr className="bg-gray-50 border-b  dark:bg-slate-800/60 dark:border-gray-900 border-gray-200">
@@ -327,14 +327,14 @@ function Page() {
                                                             <td className="p-4">
                                                                 <div className="flex flex-col">
                                                                     <span className="font-semibold text-gray-800 dark:text-white">{item.textbook.title}</span>
-                                                                    <span className="text-[10px] text-blue-500 font-mono bg-blue-50 dark:bg-[#080707c4] w-fit px-1 rounded">{item.inventory_number}</span>
+                                                                    <span className="text-[11px] text-blue-500 font-mono bg-blue-50 dark:bg-gray-900 w-fit px-1 rounded">№ {item.inventory_number}</span>
                                                                 </div>
                                                             </td>
                                                             <td className="p-4 text-sm text-gray-600  dark:text-white ">#{item.id}</td>
                                                             <td className="p-4 text-sm text-gray-700 dark:text-white">{item.textbook.grade}</td>
                                                             <td className="p-4 text-sm text-gray-700 dark:text-white">{item.textbook.publication_year}</td>
                                                             <td className="p-4">
-                                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${item.textbook.is_new ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
+                                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${item.textbook.is_new ? 'bg-emerald-50 dark:bg-emerald-900 text-emerald-600 dark:text-emerald-400' : 'bg-orange-50 dark:bg-orange-900 text-orange-600 dark:text-orange-400'}`}>
                                                                     {item.textbook.is_new ? t('list.table.new') : t('list.table.old')}
                                                                 </span>
                                                             </td>

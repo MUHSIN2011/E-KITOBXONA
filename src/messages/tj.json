@@ -88,7 +88,7 @@
     "total": "Нусха",
     "totalLabel": "Ҳамагӣ: {count} адад",
     "status": {
-      "reserved": "баргардонида",
+      "reserved": "Бандшуда",
       "available": "Дастрас",
       "rented": "Иҷорашуда",
       "lost": "Гумшуда",

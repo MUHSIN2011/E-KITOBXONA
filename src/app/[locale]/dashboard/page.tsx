@@ -197,8 +197,8 @@ function Page() {
                 <section
                     className='border rounded-xl p-3 bg-white dark:bg-gray-800'
                 >
-                    <h1 className='text-2xl font-semibold '>{t('returnProcess')}</h1>
-                    <p className='text-foreground text-sm mb-3'>{t('returnProgress')}</p>
+                    {/* <h1 className='text-2xl font-semibold '>{t('returnProcess')}</h1>
+                    <p className='text-foreground text-sm mb-3'>{t('returnProgress')}</p> */}
                     <MyLineChart />
                 </section>
             </div>

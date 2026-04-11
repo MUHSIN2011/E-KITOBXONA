@@ -403,49 +403,43 @@ export default function Page() {
                     <DialogFooter className="p-4 bg-gray-100 dark:bg-gray-800 border-t gap-2">
                         {infoTransfersById?.status === 'pending' &&
                             userRole === infoTransfersById.to_entity_type && (
-                                <Button
-                                    onClick={() => handleApprove(infoTransfersById.id)}
-                                    className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold"
-                                >
-                                    <BadgeCheck className="w-4 h-4 mr-2" />
-                                    Қабул кардан
-                                </Button>
+                                <>
+                                    <DialogClose asChild>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    // variant=""
+                                                    className="w-full sm:w-auto font-semibold border-red-500 duration-300 cursor-pointer hover:text-red-100 hover:bg-red-700 hover:border-red-600 bg-red-500 text-white transition-colors"
+                                                >
+                                                    Бекор кардани интиқол
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Бекор кардани интиқол</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Оё шумо мутмаин ҳастед, ки интиқоли №{infoTransfersById?.id}-ро бекор кардан мехоҳед?
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Не</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={() => handleCancel(infoTransfersById?.id)}
+                                                        className="bg-red-500 text-white">
+                                                        Бале, бекор шавад
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </DialogClose>
+                                    <Button
+                                        onClick={() => handleApprove(infoTransfersById.id)}
+                                        className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold"
+                                    >
+                                        <BadgeCheck className="w-4 h-4 mr-2" />
+                                        Қабул кардан
+                                    </Button>
+                                </>
                             )}
-                        {infoTransfersById?.status === 'pending' && (
-                            <DialogClose asChild>
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            className="w-full sm:w-auto font-semibold border-red-500 duration-300 cursor-pointer text-red-600 hover:bg-red-500 hover:text-white transition-colors"
-                                        >
-                                            Бекор кардани интиқол
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Бекор кардани интиқол</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                Оё шумо мутмаин ҳастед, ки интиқоли №{infoTransfersById?.id}-ро бекор кардан мехоҳед?
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Не</AlertDialogCancel>
-                                            <AlertDialogAction onClick={() => handleCancel(infoTransfersById?.id)}
-                                                className="bg-red-500 text-white">
-                                                Бале, бекор шавад
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            </DialogClose>
-                        )}
-
-                        <DialogClose asChild>
-                            <Button variant="default" className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 font-semibold">
-                                Пӯшидан
-                            </Button>
-                        </DialogClose>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

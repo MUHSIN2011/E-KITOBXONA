@@ -22,7 +22,7 @@ import {
 import { useTranslations } from "next-intl"
 
 const chartConfig = {
-    reserved: { label: "баргардонида", color: "#8b5cf6" },
+    reserved: { label: "Бандшуда", color: "#8b5cf6" },
     available: { label: "Озод", color: "#22c55e" },
     rented: { label: "Дар иҷора", color: "#3b82f6" },
     damaged: { label: "Зарардида", color: "#eab308" },
@@ -63,7 +63,7 @@ export function ChartPieLabel() {
     }
 
     return (
-        <Card className="flex flex-col border-none shadow-none bg-white dark:bg-[#1a1a1a]">
+        <Card className="flex flex-col border-none shadow-none bg-white backdrop-blur-sm p-3 dark:bg-gray-800">
             <CardHeader className="items-center pb-0">
                 <CardTitle className="text-xl font-bold">{t('title')}</CardTitle>
                 <CardDescription>{t('description')}</CardDescription>

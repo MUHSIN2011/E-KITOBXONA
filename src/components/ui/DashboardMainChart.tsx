@@ -31,11 +31,9 @@ export function DashboardMainChart() {
     const { data, isLoading } = useGetRentalsQuery({ skip: 0, limit: 1000 })
 
     const chartData = React.useMemo(() => {
-        if (!data?.items || data.items.length === 0) return [];
-
         const counts: Record<string, number> = {
             "январ": 0, "феврал": 0, "март": 0, "апрел": 0, "май": 0, "июн": 0,
-            "июл": 0, "август": 0, "сентябр": 0, "октябр": 0, "ноябр": 0, "декабр": 0
+            "июл": 0, "avgust": 0, "сентябр": 0, "октябр": 0, "ноябр": 0, "декабр": 0
         };
 
         const monthsInternal = [
@@ -43,39 +41,35 @@ export function DashboardMainChart() {
             "июл", "август", "сентябр", "октябр", "ноябр", "декабр"
         ];
 
-        data.items.forEach((student) => {
-            student.rented_books?.forEach((book: any) => {
-                if (book.rent_start) {
-                    const parts = book.rent_start.split("-");
-                    const monthIndex = parseInt(parts[1], 10) - 1;
-                    const monthName = monthsInternal[monthIndex];
-
-                    if (monthName) {
-                        counts[monthName] += 1;
+        if (data?.items && data.items.length > 0) {
+            data.items.forEach((student) => {
+                student.rented_books?.forEach((book: any) => {
+                    if (book.rent_start) {
+                        const parts = book.rent_start.split("-");
+                        const monthIndex = parseInt(parts[1], 10) - 1;
+                        const monthName = monthsInternal[monthIndex];
+                        if (monthName) {
+                            counts[monthName] += 1;
+                        }
                     }
-                }
+                });
             });
-        });
-
-        const monthsOrder = [
-            "январ", "феврал", "март", "апрел", "май", "июн",
-            "июл", "август", "сентябр", "октябр", "ноябр", "декабр"
-        ];
+        }
 
         const currentMonth = new Date().getMonth();
-        const last6Months = [];
+        const finalData = [];
 
         for (let i = 11; i >= 0; i--) {
             let idx = currentMonth - i;
             if (idx < 0) idx += 12;
-            const m = monthsOrder[idx];
-            last6Months.push({
+            const m = monthsInternal[idx];
+            finalData.push({
                 month: m.charAt(0).toUpperCase() + m.slice(1),
-                rentals: counts[m]
+                rentals: counts[m] || 0 
             });
         }
 
-        return last6Months;
+        return finalData;
     }, [data]);
 
     if (isLoading) return (
@@ -85,7 +79,7 @@ export function DashboardMainChart() {
     )
 
     return (
-        <Card className="border-none shadow-none bg-white dark:bg-[#1a1a1a]">
+        <Card className="border-none shadow-none bg-white dark:bg-gray-800/20 p-4 backdrop-blur-sm">
             <CardHeader>
                 <CardTitle>{t('title')}</CardTitle>
                 <CardDescription>{t('description')}</CardDescription>
