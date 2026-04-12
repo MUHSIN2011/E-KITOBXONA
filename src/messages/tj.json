@@ -749,5 +749,40 @@
       "cancelled": "Рад шуд",
       "accepted": "Қабул Шуд"
     }
+  },
+  "SupplyBatchPage": {
+    "title": "Партияи №{id}",
+    "bookLabel": "Китоб",
+    "total": "Ҳамагӣ: {count} дона",
+    "pending": "Интизорӣ: {count}",
+    "table": {
+      "id": "ID",
+      "name": "Ном",
+      "grade": "Синф",
+      "createdDate": "Санаи Кабул",
+      "postDate": "Санаи Ворид",
+      "status": "Статус",
+      "inventoryNumber": "Рақами инвентарӣ",
+      "action": "Амал",
+      "pending": "Интизорӣ",
+      "accepted": "Қабулшуда",
+      "empty": "Холи",
+      "notProcessed": "—:—:—"
+    },
+    "pagination": {
+      "showing": "Намоиши {start}-{end} аз {total}",
+      "page": "Саҳифаи {current} аз {total}",
+      "prev": "Пештара",
+      "next": "Баъдина"
+    },
+    "dialog": {
+      "title": "Қабули партияи №{id}",
+      "description": "Рақами инвентарии китобро ворид кунед. Ин рақам барои баҳисобгирии минбаъда зарур аст.",
+      "inventoryLabel": "Рақами инвентарӣ",
+      "placeholder": "Масалан: 0001",
+      "back": "Ба Қафо",
+      "confirm": "Тасдиқ ва қабул",
+      "confirming": "Дар ҳоли қабул..."
+    }
   }
 }

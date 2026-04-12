@@ -897,7 +897,7 @@ export const Todo = createApi({
         }),
         estimateCompensation: builder.mutation({
             query: (payload) => ({
-                url: '/ai/estimate-compensation',
+                url: 'ai/assess-book',
                 method: 'POST',
                 body: payload,
             }),

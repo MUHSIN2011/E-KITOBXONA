@@ -132,8 +132,8 @@ function Page() {
 
             <section
                 className='p-3 my-3 bg-white dark:bg-gray-800 rounded-xl border shadow-sm hover:shadow-md transition-shadow duration-300'
-                // data-aos="zoom-in"
-                // data-aos-delay="100"
+            // data-aos="zoom-in"
+            // data-aos-delay="100"
             >
                 <div className="flex items-center gap-4 mb-4">
                     {!summery && (
@@ -254,40 +254,55 @@ function Page() {
                 </div>
 
                 {summery && (
-                    <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4 my-3">
-                        {summaryData?.items?.map((item: any) => {
-                            const imageUrl = item?.cover_image_url?.startsWith('http')
-                                ? item.cover_image_url
-                                : `https://student4.softclub.tj${item?.cover_image_url}`;
-                            return (
-                                 <div 
-                                data-aos="fade-left" 
-                                data-aos-delay="300" 
-                                 key={item.textbook_id} onClick={() => {
-                                    setTextbook_idx(item.textbook_id);
-                                    setSummery(false);
-                                }} className="bg-white  dark:bg-gray-900/80 backdrop-blur-md dark:border-gray-800 p-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 rounded-xl border border-gray-200 shadow-sm  " >
-                                    <div
-                                        className="flex justify-between items-start mb-3 p-3 rounded-lg h-70 bg-cover bg-center relative overflow-hidden shadow-inner"
-                                        style={{
-                                            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0)), url('${imageUrl}')`
-                                        }}
-                                    >
+                    <div className="my-3">
+                        {summaryData?.items?.length === 0 ? (
+                            // Агар китоб набошад, ин блок кор мекунад
+                            <div className="flex flex-col items-center justify-center p-10 bg-white dark:bg-gray-900/50 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-800">
+                                <div className="text-5xl mb-4">📚</div>
+                                <h3 className="text-xl font-bold text-gray-800 dark:text-white">Ягон китоб ёфт нашуд</h3>
+                                <p className="text-gray-500 dark:text-gray-400 mt-2">Мутаассифона, дар ин бахш ҳоло ягон китоб мавҷуд нест.</p>
+                            </div>
+                        ) : (
+                            // Агар китоб бошад, grid-и ту кор мекунад
+                            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                                {summaryData?.items?.map((item: any) => {
+                                    const imageUrl = item?.cover_image_url?.startsWith('http')
+                                        ? item.cover_image_url
+                                        : `https://student4.softclub.tj${item?.cover_image_url}`;
 
-                                        <span className="text-[10px] font-medium text-white dark:text-white bg-gray-800/40 backdrop-blur-md px-1.5 py-0.5 rounded">
-                                            #{item.textbook_id}
-                                        </span>
-                                    </div>
-                                    <h3 className="font-bold text-gray-900 dark:text-gray-200 mb-2 line-clamp-1">{item.textbook_title}</h3>
-                                    <div className="grid grid-cols-2 gap-2 text-sm border-t-2 border-gray-100 pt-3">
-                                        <div className="text-gray-500 dark:text-gray-400">Фанн: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.subject_name}</span></div>
-                                        <div className="text-gray-500 dark:text-gray-400">Синф: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.grade}</span></div>
-                                        <div className="text-gray-500 dark:text-gray-400">Миқдор: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.total_copies}</span></div>
-                                        <div className="text-gray-500 dark:text-gray-400">Дар иҷора: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.rented_copies}</span></div>
-                                    </div>
-                                </div>
-                            )
-                        })}
+                                    return (
+                                        <div
+                                            key={item.textbook_id}
+                                            data-aos="fade-left"
+                                            data-aos-delay="300"
+                                            onClick={() => {
+                                                setTextbook_idx(item.textbook_id);
+                                                setSummery(false);
+                                            }}
+                                            className="bg-white dark:bg-gray-900/80 backdrop-blur-md p-3 cursor-pointer hover:shadow-md hover:scale-[1.02] transition-all duration-300 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm"
+                                        >
+                                            <div
+                                                className="flex justify-between items-start mb-3 p-3 rounded-lg h-70 bg-cover bg-center relative overflow-hidden shadow-inner"
+                                                style={{
+                                                    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0)), url('${imageUrl}')`
+                                                }}
+                                            >
+                                                <span className="text-[10px] font-medium text-white bg-gray-800/40 backdrop-blur-md px-1.5 py-0.5 rounded">
+                                                    #{item.textbook_id}
+                                                </span>
+                                            </div>
+                                            <h3 className="font-bold text-gray-900 dark:text-gray-200 mb-2 line-clamp-1">{item.textbook_title}</h3>
+                                            <div className="grid grid-cols-2 gap-2 text-sm border-t-2 border-gray-100 dark:border-gray-800 pt-3">
+                                                <div className="text-gray-500 dark:text-gray-400">Фанн: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.subject_name}</span></div>
+                                                <div className="text-gray-500 dark:text-gray-400">Синф: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.grade}</span></div>
+                                                <div className="text-gray-500 dark:text-gray-400">Миқдор: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.total_copies}</span></div>
+                                                <div className="text-gray-500 dark:text-gray-400">Дар иҷора: <br /><span className="font-bold text-gray-900 dark:text-gray-200">{item.rented_copies}</span></div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 )}
 

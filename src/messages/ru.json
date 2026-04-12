@@ -743,5 +743,40 @@
       "cancelled": "Отклонено",
       "accepted": "Принято"
     }
+  },
+  "SupplyBatchPage": {
+    "title": "Партия №{id}",
+    "bookLabel": "Книга",
+    "total": "Всего: {count} шт",
+    "pending": "Ожидание: {count}",
+    "table": {
+      "id": "ID",
+      "name": "Название",
+      "grade": "Класс",
+      "createdDate": "Дата ",
+      "postDate": "Дата отправку",
+      "status": "Статус",
+      "inventoryNumber": "Инвентарный номер",
+      "action": "Действие",
+      "pending": "Ожидание",
+      "accepted": "Принято",
+      "empty": "Пусто",
+      "notProcessed": "—:—:—"
+    },
+    "pagination": {
+      "showing": "Показано {start}-{end} из {total}",
+      "page": "Страница {current} из {total}",
+      "prev": "Назад",
+      "next": "Вперед"
+    },
+    "dialog": {
+      "title": "Прием партии №{id}",
+      "description": "Введите инвентарный номер книги. Этот номер необходим для дальнейшего учета.",
+      "inventoryLabel": "Инвентарный номер",
+      "placeholder": "Например: 0001",
+      "back": "Назад",
+      "confirm": "Подтвердить и принять",
+      "confirming": "Принятие..."
+    }
   }
 }

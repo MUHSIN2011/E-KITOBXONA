@@ -20,7 +20,7 @@ import {
     useFulfillBookRequestMutation
 } from '@/api/api'
 import { useSearchParams } from 'next/navigation'
-import { toast } from 'sonner'
+import { toast } from 'react-hot-toast'
 import { Toaster } from 'react-hot-toast'
 import { useTranslations } from 'next-intl'
 

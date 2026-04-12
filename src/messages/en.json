@@ -785,5 +785,40 @@
       "cancelled": "Cancelled",
       "accepted": "Accepted"
     }
+  },
+  "SupplyBatchPage": {
+    "title": "Batch #{id}",
+    "bookLabel": "Book",
+    "total": "Total: {count} items",
+    "pending": "Pending: {count}",
+    "table": {
+      "id": "ID",
+      "name": "Name",
+      "grade": "Grade",
+      "createdDate": "Accept Date",
+      "postDate": "Post Data",
+      "status": "Status",
+      "inventoryNumber": "Inventory Number",
+      "action": "Action",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "empty": "Empty",
+      "notProcessed": "—:—:—"
+    },
+    "pagination": {
+      "showing": "Showing {start}-{end} of {total}",
+      "page": "Page {current} of {total}",
+      "prev": "Previous",
+      "next": "Next"
+    },
+    "dialog": {
+      "title": "Accept Batch #{id}",
+      "description": "Enter the inventory number of the book. This number is required for further accounting.",
+      "inventoryLabel": "Inventory Number",
+      "placeholder": "Example: 0001",
+      "back": "Back",
+      "confirm": "Confirm & Accept",
+      "confirming": "Accepting..."
+    }
   }
 }

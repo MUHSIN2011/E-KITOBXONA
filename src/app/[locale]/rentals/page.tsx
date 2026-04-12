@@ -44,6 +44,7 @@ export default function RentalsPage() {
     const [description, setdescription] = useState("");
     const amountInputRef = useRef<HTMLInputElement>(null);
     const [isAdviceOpen, setIsAdviceOpen] = useState(true);
+    const [statusFilter, setStatusFilter] = useState('all');
 
     const [returnCondition, setReturnCondition] = useState("good");
     const [compensationAmount, setCompensationAmount] = useState(0);
@@ -455,7 +456,7 @@ export default function RentalsPage() {
                                             onClick={() => setSelectedStudent(rental)}
                                             className="hover:bg-gray-50/50 hover:dark:bg-blue-500/10 transition-colors cursor-pointer group"
                                         >
-                                            
+
                                             <TableCell className="py-2 sm:py-3 pl-3 sm:pl-4">
                                                 <div className="flex items-center gap-2 sm:gap-3">
                                                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
@@ -477,7 +478,7 @@ export default function RentalsPage() {
                                             </TableCell>
 
                                             <TableCell className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">
-                                                {rental.total_books_taken} 
+                                                {rental.total_books_taken}
                                             </TableCell>
 
                                             <TableCell className="text-center">
@@ -503,55 +504,155 @@ export default function RentalsPage() {
             </div>
 
             <Sheet open={!!selectedStudent} onOpenChange={() => setSelectedStudent(null)}>
-                <SheetContent className="sm:max-w-[550px] dark:bg-gray-900 overflow-y-auto px-4">
-                    <SheetHeader className="border-b pb-4">
-                        <SheetTitle className="text-2xl font-bold flex items-center gap-2">
-                            <User className="w-6 h-6 text-blue-600" /> Маълумоти пурра
+                <SheetContent className="sm:max-w-[550px] w-full dark:bg-gray-900 overflow-y-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6">
+                    <SheetHeader className="border-b pb-3 sm:pb-4 mb-3 sm:mb-4">
+                        <SheetTitle className="text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-2">
+                            <User className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                            Маълумоти пурра
                         </SheetTitle>
                     </SheetHeader>
 
                     {selectedStudent && (
-                        <div className="py-6 space-y-6 ">
-                            <div className="flex items-center gap-4 bg-blue-50  dark:bg-gray-800 p-4 rounded-xl">
-                                <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
-                                    {selectedStudent.student_name[0]}
+                        <div className="space-y-4 sm:space-y-5 md:space-y-6">
+                            {/* Student Info Card */}
+                            <div className="flex items-center gap-3 sm:gap-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-800/50 p-3 sm:p-4 rounded-xl">
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-md">
+                                    {selectedStudent.student_name?.[0]?.toUpperCase() || '?'}
                                 </div>
-                                <div>
-                                    <h3 className="font-bold text-lg">{selectedStudent.student_name}</h3>
-                                    <p className="text-sm text-gray-500">Синфи: {selectedStudent.class_name}</p>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold text-base sm:text-lg text-gray-900 dark:text-white truncate">
+                                        {selectedStudent.student_name}
+                                    </h3>
+                                    <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                                            Синфи: {selectedStudent.class_name}
+                                        </p>
+                                        <span className="w-1 h-1 bg-gray-300 rounded-full hidden sm:block"></span>
+                                        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+                                            ID: {selectedStudent.student_id}
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-4">
-                                <h4 className="font-bold">Китобҳои фаъол</h4>
-                                {selectedStudent.rented_books?.map((book: any, index: number) => (
-                                    <div key={index} className="grid grid-cols-2 gap-4 border p-4 rounded-xl shadow-sm items-center relative overflow-hidden bg-white  dark:bg-gray-800 mb-2">
-                                        <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600"></div>
-                                        <div className="space-y-1">
-                                            <p className="text-xs text-gray-400 uppercase font-semibold">Номи китоб</p>
-                                            <p className="text-sm font-bold text-gray-800 dark:text-white">{book.textbook_title}</p>
-                                            <div className="flex items-center gap-2">
-                                                <span className={cn(
-                                                    "px-2 py-0.5 rounded-full text-[10px] font-bold uppercase",
-                                                    book.status === 'active' ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"
-                                                )}>
-                                                    {book.status === 'active' ? 'Дар даст' : 'Бозгашт'}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div className="absolute right-2 top-10">
-                                            {book.status === 'active' && (
-                                                <Button size="sm" variant="ghost" className="h-8 text-blue-600" onClick={() => openReturnDialog(book)}>
-                                                    <ArrowLeftRight className="w-4 h-4 mr-1" /> Гирифтан
-                                                </Button>
-                                            )}
-                                        </div>
-                                        <div className="space-y-1">
-                                            <p className="text-xs text-gray-400 uppercase font-semibold">Рақами инвентарӣ</p>
-                                            <p className="text-sm font-mono font-bold text-blue-600">{book.inventory_number}</p>
-                                        </div>
-                                    </div>
+                            <div className="flex gap-2 overflow-x-auto pb-1">
+                                {[
+                                    { key: 'all', label: 'Ҳама', count: selectedStudent.rented_books?.length },
+                                    { key: 'active', label: 'Дар даст', count: selectedStudent.rented_books?.filter((b: any) => b.status === 'active').length },
+                                    { key: 'returned', label: 'Бозгашт', count: selectedStudent.rented_books?.filter((b: any) => b.status === 'returned').length },
+                                    { key: 'damaged', label: 'Ваҳшуда', count: selectedStudent.rented_books?.filter((b: any) => b.status === 'damaged').length },
+                                ].map((tab) => (
+                                    <button
+                                        key={tab.key}
+                                        onClick={() => setStatusFilter(tab.key)}
+                                        className={cn(
+                                            "px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all",
+                                            statusFilter === tab.key
+                                                ? "bg-blue-600 text-white shadow-md"
+                                                : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                                        )}
+                                    >
+                                        {tab.label} ({tab.count})
+                                    </button>
                                 ))}
+                            </div>
+
+                            {/* Books List */}
+                            <div className="space-y-3 sm:space-y-4 max-h-[400px] sm:max-h-[500px] overflow-y-auto pr-1">
+                                {selectedStudent.rented_books
+                                    ?.filter((book: any) => statusFilter === 'all' || book.status === statusFilter)
+                                    .length === 0 ? (
+                                    <div className="text-center py-8 sm:py-10">
+                                        <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                                        <p className="text-sm text-gray-400 dark:text-gray-500">Китобҳо бо ин статус ёфт нашуд</p>
+                                    </div>
+                                ) : (
+                                    selectedStudent.rented_books
+                                        ?.filter((book: any) => statusFilter === 'all' || book.status === statusFilter)
+                                        .map((book: any, index: number) => {
+                                            const statusConfig = {
+                                                active: {
+                                                    label: 'Дар даст',
+                                                    color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                                                    borderColor: 'from-green-500 to-emerald-600'
+                                                },
+                                                returned: {
+                                                    label: 'Бозгашт',
+                                                    color: 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400',
+                                                    borderColor: 'from-gray-400 to-gray-500'
+                                                },
+                                                damaged: {
+                                                    label: 'Ваҳшуда',
+                                                    color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                                                    borderColor: 'from-red-500 to-rose-600'
+                                                }
+                                            };
+
+                                            const config = statusConfig[book.status as keyof typeof statusConfig] || statusConfig.active;
+
+                                            return (
+                                                <div
+                                                    key={book.rental_id || index}
+                                                    className="relative border rounded-xl shadow-sm overflow-hidden bg-white dark:bg-gray-800 hover:shadow-md transition-shadow"
+                                                >
+                                                    <div className={`absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b ${config.borderColor}`}></div>
+
+                                                    <div className="p-3 sm:p-4">
+                                                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
+                                                            <div className="flex-1 min-w-0">
+                                                                <p className="text-[10px] sm:text-xs text-gray-400 uppercase font-semibold tracking-wider">
+                                                                    Номи китоб
+                                                                </p>
+                                                                <p className="text-sm sm:text-base font-bold text-gray-800 dark:text-white line-clamp-2">
+                                                                    {book.textbook_title}
+                                                                </p>
+                                                            </div>
+                                                            <span className={cn(
+                                                                "px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap self-start",
+                                                                config.color
+                                                            )}>
+                                                                {config.label}
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-gray-100 dark:border-gray-700">
+                                                            <div>
+                                                                <p className="text-[10px] sm:text-xs text-gray-400 uppercase font-semibold tracking-wider">
+                                                                    Рақами инвентарӣ
+                                                                </p>
+                                                                <p className="text-xs sm:text-sm font-mono font-bold text-blue-600 dark:text-blue-400">
+                                                                    {book.inventory_number || '—'}
+                                                                </p>
+                                                            </div>
+
+                                                            <div>
+                                                                <p className="text-[10px] sm:text-xs text-gray-400 uppercase font-semibold tracking-wider">
+                                                                    Санаи гирифтан
+                                                                </p>
+                                                                <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                                                                    {book.rent_start ? new Date(book.rent_start).toLocaleDateString('tg-TJ') : '—'}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+
+                                                        {book.status === 'active' && (
+                                                            <div className="mt-3 pt-2 flex justify-end">
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="ghost"
+                                                                    className="h-8 sm:h-9 text-blue-600 hover:text-blue-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 text-xs sm:text-sm"
+                                                                    onClick={() => openReturnDialog(book)}
+                                                                >
+                                                                    <ArrowLeftRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                                                                    Гирифтан
+                                                                </Button>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                )}
                             </div>
                         </div>
                     )}
@@ -638,7 +739,7 @@ export default function RentalsPage() {
                                             type="button"
                                             variant="outline"
                                             onClick={handleAiConsult}
-                                            disabled={isAiLoading || !damageDescription}
+                                            disabled={isAiLoading}
                                             className="w-full border-blue-200 bg-blue-50/50 text-blue-700 hover:bg-blue-100 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-400 gap-2 h-10 shadow-sm transition-all"
                                         >
                                             {isAiLoading ? (
