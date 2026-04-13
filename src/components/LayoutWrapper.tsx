@@ -18,10 +18,13 @@ interface UserToken {
     full_name: string;
     role: string;
     district_id: number;
+    district_name: string;
     email: string;
     exp: number;
+    region_name: string;
     region_id: number;
     school_id: number;
+    school_name: string;
     sub: string;
     type: string;
 }
@@ -178,10 +181,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                                 <div className="flex items-center justify-between group">
                                     <div onClick={() => router.push('/profile')} className="flex items-center gap-3 cursor-pointer overflow-hidden">
                                         <div className="w-9 h-9 min-w-[36px] bg-blue-600 rounded-full flex items-center justify-center font-bold uppercase border border-blue-400/30">
-                                            {user?.email ? user.email[0] : "U"}
+                                            {/* {user?.email ? user.email[0] : "U"} */}
+                                            {user?.role === 'ministry' ? 'ВМ' : user?.role === 'region' ? user?.region_name[0] : user?.role === 'district' ? user?.district_name[0] : user?.role === 'school' ? user?.school_name : '—'}
                                         </div>
                                         <div className="truncate">
-                                            <p className="text-sm font-bold truncate">{user?.email?.split('@')[0]}</p>
+                                            <p className="text-sm font-bold truncate">{user?.role === 'ministry' ? 'Вазирати Маориф' : user?.role === 'region' ? user?.region_name : user?.role === 'district' ? user?.district_name : user?.role === 'school' ? user?.school_name : '—'}</p>
                                             <p className="text-[10px] text-slate-500 truncate">{user?.role === "ministry" ? "Сатҳи Миллӣ" : "Сатҳи Мактабӣ"}</p>
                                         </div>
                                     </div>

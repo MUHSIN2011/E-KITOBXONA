@@ -79,7 +79,7 @@ export function DashboardMainChart() {
     )
 
     return (
-        <Card className="border-none shadow-none bg-white dark:bg-gray-800/20 p-4 backdrop-blur-sm">
+        <Card className="border-none shadow-none bg-white dark:bg-gray-800/20 md:p-4 md:py-4 py-3 backdrop-blur-sm">
             <CardHeader>
                 <CardTitle>{t('title')}</CardTitle>
                 <CardDescription>{t('description')}</CardDescription>

@@ -1,7 +1,7 @@
 'use client'
 import { useCloseAcademicYearMutation, useCreateAcademicYearMutation, useGetActiveYearQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetTextbooksQuery, useGetUsersCountQuery } from '@/api/api'
 import Card from '@/components/Card'
-import { BookOpen, Building2, CalendarDays, GraduationCap, Lock, MapPin, School } from 'lucide-react'
+import { BookOpen, Building2, CalendarDays, GraduationCap, Lock, MapPin, School, WifiOff } from 'lucide-react'
 import MyBarChart from '@/components/ChartComponent'
 import MyLineChart from '@/components/MyLineChart'
 import React, { useEffect } from 'react'
@@ -79,7 +79,8 @@ function Page() {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
     </div>
     if (isError) return <div className="flex justify-center flex-col items-center h-[80vh] gap-3">
-        <h1 className="text-2xl text-center text-red-500 font-semibold">{t('errorTitle')}</h1>
+        <WifiOff className="size-10 text-red-500" />
+        <h1 className="text-2xl text-center font-semibold">{t('errorTitle')}</h1>
         <p>{t('errorDescription')}</p>
         <div
             onClick={() => window.location.reload()}

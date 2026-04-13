@@ -1,7 +1,7 @@
 'use client'
 import { useGetActiveYearQuery, useGetMeQuery, useGetRegionsQuery, useGetReportsOverviewQuery, useGetSchoolBudgetQuery, useGetStudentsQuery } from '@/api/api'
 import Card from '@/components/Card'
-import { Book, BookUser, BookX, BookXIcon, GraduationCap, School } from 'lucide-react'
+import { Book, BookUser, BookX, BookXIcon, GraduationCap, School, WifiOff } from 'lucide-react'
 import React, { useEffect } from 'react'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
@@ -13,7 +13,7 @@ import ProtectedRoute from '@/components/ProtectedRoute'
 import { useTranslations } from 'next-intl'
 
 function Page() {
-    const t = useTranslations('SchoolDashboard')    
+    const t = useTranslations('SchoolDashboard')
 
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
     const { data: me } = useGetMeQuery()
@@ -58,7 +58,8 @@ function Page() {
     )
 
     if (isError) return <div className="flex justify-center flex-col items-center h-[80vh] gap-3">
-        <h1 className="text-2xl text-center text-red-500 font-semibold">Хатогӣ ҳангоми гирифтани маълумот!!</h1>
+        <WifiOff className="size-10 text-red-500" />
+        <h1 className="text-2xl text-center  font-semibold">Хатогӣ ҳангоми гирифтани маълумот!!</h1>
         <p>Лутфан сайтро аз нав кушоед!</p>
         <div onClick={() => window.location.reload()} className='flex gap-2 items-center border bg-blue-600 text-white rounded-sm px-4 py-2 cursor-pointer'>
             <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
@@ -116,13 +117,13 @@ function Page() {
                 <DashboardFlow />
 
                 <section className="grid grid-cols-1 lg:grid-cols-3 gap-6 pb-6">
-                    <div className="lg:col-span-2 bg-white dark:bg-gray-800  rounded-xl border shadow-sm" 
+                    <div className="lg:col-span-2 bg-white dark:bg-gray-800  rounded-xl border shadow-sm"
                     // data-aos="zoom-in"
                     >
                         {/* <h3 className="text-lg font-semibold mb-4">{t('charts.annualStatistics')}</h3> */}
                         <DashboardMainChart />
                     </div>
-                    <div className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl border shadow-sm" 
+                    <div className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-xl border shadow-sm"
                     // data-aos="zoom-in" 
                     // data-aos-delay="200"
                     >

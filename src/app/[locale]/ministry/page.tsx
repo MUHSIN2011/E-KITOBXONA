@@ -16,7 +16,7 @@ import {
 } from '@/api/api'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { MapPin, Landmark, Trash2, School, Search, Plus, Edit2, ChevronRight } from "lucide-react"
+import { MapPin, Landmark, Trash2, School, Search, Plus, Edit2, ChevronRight, WifiOff } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { useTranslations } from 'next-intl'
@@ -36,7 +36,7 @@ export default function MinistryPage() {
     const [activeTab, setActiveTab] = useState("regions");
 
     const { data: DataMe } = useGetMeQuery()
-    const { data: regions } = useGetRegionsQuery()
+    const { data: regions, isError: IsErrorRegion } = useGetRegionsQuery()
     const { data: districts } = useGetDistrictsQuery(Number(selectedRegionId), { skip: !selectedRegionId })
     const { data: schools } = useGetSchoolsByDistrictQuery(Number(selectedDistrictId), { skip: !selectedDistrictId })
 
@@ -49,10 +49,9 @@ export default function MinistryPage() {
     const [deleteSchool] = useDeleteSchoolMutation()
     const [updateRegion] = useUpdateRegionMutation()
     const [deleteRegion] = useDeleteRegionMutation()
-    const [userRole, setUserRole] = useState<'ministry' | 'region' | 'district' | 'school' | string>('ministry');
+    const [userRole, setUserRole] = useState<'ministry' | 'region' | 'district' | 'school' | string>('--');
     const [userTargetId, setUserTargetId] = useState<string | null>(null);
 
-    console.log("me", DataMe);
 
 
 
@@ -168,10 +167,9 @@ export default function MinistryPage() {
         <div className=" px-4 bg-[#f8f9fa] dark:bg-gray-900 min-h-screen font-sans">
             <div className="flex items-center justify-between">
                 <h1 className="md:text-2xl text-xl font-bold text-gray-900 dark:text-white">
-                    {userRole === 'ministry' && "Вазорати маориф ва илм"}
-                    {userRole === 'region' && DataMe?.region_name}
-                    {userRole === 'district' && DataMe?.district_name}
-                    {userRole === 'school' && DataMe?.school_name}
+                    {
+                        userRole === 'ministry' ?  "Вазорати маориф ва илм" : userRole === 'region' ? DataMe?.region_name : userRole === 'district' ? DataMe?.district_name : userRole === 'school' ? DataMe?.school_name : '--- ---' 
+                    }
                 </h1>
                 {(userRole !== 'school') && (
                     <Dialog open={isOpen} onOpenChange={(val) => { if (!val) resetForm(); setIsOpen(val); }}>
@@ -260,57 +258,69 @@ export default function MinistryPage() {
                 )}
 
                 <TabsContent value="regions" className="mt-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {regions?.filter((reg: any) => {
-                            if (userRole === 'ministry') return true;
-                            if (userRole === 'region') return reg.id.toString() === userTargetId;
-                            return false;
-                        }).map((reg: any) => (
-                            <Card onClick={() => handleRegionClick(reg.id.toString())} key={reg.id} className="rounded-[24px] border-none shadow-sm group hover:ring-2 ring-blue-10  dark:bg-gray-800 transition-all">
-                                <CardContent className="md:p-6 p-4 flex justify-between items-center">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 bg-blue-50  dark:bg-gray-900 rounded-2xl flex items-center justify-center text-blue-600">
-                                            <Landmark className="w-6 h-6" />
-                                        </div>
-                                        <div>
-                                            <h4 className="font-bold text-lg">{reg.name}</h4>
-                                            <p className="text-xs text-gray-400">{t('search.regions.country')}</p>
-                                        </div>
-                                    </div>
+                    {
+                        IsErrorRegion ? (
+                            <div className="flex flex-col justify-center h-[50vh] gap-3  items-center">
+                                <WifiOff className="size-10 text-red-500"/>
+                                <div className='flex flex-col justify-center items-center'>
+                                <h1 className="text-2xl">Интернет Қад шуд!</h1>
+                                <p>Барқарор созии Интернет</p>
+                                </div>
+                            </div>
+                        ) :
+                            (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                                    {regions?.filter((reg: any) => {
+                                        if (userRole === 'ministry') return true;
+                                        if (userRole === 'region') return reg.id.toString() === userTargetId;
+                                        return false;
+                                    }).map((reg: any) => (
+                                        <Card onClick={() => handleRegionClick(reg.id.toString())} key={reg.id} className="rounded-[24px] border-none shadow-sm group hover:ring-2 ring-blue-10  dark:bg-gray-800 transition-all">
+                                            <CardContent className="md:p-6 p-4 flex justify-between items-center">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-14 h-14 bg-blue-50  dark:bg-gray-900 rounded-2xl flex items-center justify-center text-blue-600">
+                                                        <Landmark className="w-6 h-6" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-lg">{reg.name}</h4>
+                                                        <p className="text-xs text-gray-400">{t('search.regions.country')}</p>
+                                                    </div>
+                                                </div>
 
-                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        {userRole === 'ministry' && (
-                                            <>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={(e) => { e.stopPropagation(); openEditModal('region', reg) }}
-                                                    className="text-blue-500 dark:hover:bg-gray-900 hover:text-blue-500 rounded-xl"
-                                                >
-                                                    <Edit2 className="w-4 h-4" />
-                                                </Button>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:text-red-400 dark:hover:bg-gray-900 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent className="rounded-[24px]">
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
-                                                            <AlertDialogDescription>{t('dialogs.delete.regionDescription', { name: reg.name })}</AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteRegion(reg.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </>
-                                        )}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
+                                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    {userRole === 'ministry' && (
+                                                        <>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                onClick={(e) => { e.stopPropagation(); openEditModal('region', reg) }}
+                                                                className="text-blue-500 dark:hover:bg-gray-900 hover:text-blue-500 rounded-xl"
+                                                            >
+                                                                <Edit2 className="w-4 h-4" />
+                                                            </Button>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:text-red-400 dark:hover:bg-gray-900 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent className="rounded-[24px]">
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
+                                                                        <AlertDialogDescription>{t('dialogs.delete.regionDescription', { name: reg.name })}</AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
+                                                                        <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteRegion(reg.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            )}
                 </TabsContent>
 
                 <TabsContent value="districts" className="mt-8 space-y-6">

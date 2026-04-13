@@ -19,7 +19,7 @@ export default function Page() {
     const [infoTransfersById, setInfoTransfersById] = useState<any>(null);
     const { data: DataMe, isLoading: isLoadingMe } = useGetMeQuery();
     const userRole = DataMe?.role;
-    const { data: data, isLoading: isLoadingMyTransfers } = useMyTransfersQuery() as { data: { total: number; items: any[] } | undefined; isLoading: boolean }
+    const { data: data, isLoading: isLoadingMyTransfers, isError: MyTransfersIsError } = useMyTransfersQuery() as { data: { total: number; items: any[] } | undefined; isLoading: boolean; isError: boolean }
     const [transfersCancel, { isLoading: isLoadingtransferscancel }] = useTransfersCancelMutation()
     const [triggerGetInfo, { isFetching }] = useLazyTransfersByIdQuery();
     const [downloadTransferId, setDownloadTransferId] = useState<number | null>(null);
@@ -79,7 +79,7 @@ export default function Page() {
                         {t('subtitle')}
                     </TextAnimate>
                 </div>
-                {userRole !== 'ministry' || userRole !== 'region' || userRole !== 'district'   &&
+                {userRole !== 'ministry' || userRole !== 'region' || userRole !== 'district' &&
                     <TransferDialog>
                         <Button className='bg-[#0950c3] dark:bg-[#2563eb] hover:bg-blue-700 dark:hover:bg-blue-600 flex gap-2 text-white md:py-5 py-2 px-4 md:w-50 w-full rounded-sm text-sm font-medium'>
                             <Caravan className='w-6 h-6' /> {t('sendButton')}
@@ -273,8 +273,18 @@ export default function Page() {
                                         <td className="p-4"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16"></div></td>
                                     </tr>
                                 ))
+                            ) : MyTransfersIsError ? (
+                                <tr className="hover:bg-gray-50 dark:hover:bg-gray-500/20 transition-colors">
+                                    <td colSpan={8} className="p-10 text-center dark:text-gray-300">
+                                        <div className="flex flex-col items-center justify-center gap-3 text-gray-400 w-full">
+                                            <SearchAlert size={48} className="opacity-50" />
+                                            <p className="text-lg font-medium">{t('list.empty')}</p>
+                                            <span className="text-sm">{t('list.emptySub')}</span>
+                                        </div>
+                                    </td>
+                                </tr>
                             ) : data?.items?.length === 0 ? (
-                                <tr className="hover:bg-gray-50 dark:hover:bg-[#2a2a2a] transition-colors">
+                                <tr className="hover:bg-gray-50 dark:hover:bg-gray-500/20 transition-colors">
                                     <td colSpan={8} className="p-10 text-center dark:text-gray-300">
                                         <div className="flex flex-col items-center justify-center gap-3 text-gray-400 w-full">
                                             <SearchAlert size={48} className="opacity-50" />
@@ -416,7 +426,7 @@ export default function Page() {
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-4 mt-4 border-t dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/30 rounded-b-xl">
                     <div className="text-sm text-gray-600 dark:text-gray-300">
-                        {t('list.pagination.showing', { start: '1-6', total: '12' , end: '1' })}
+                        {t('list.pagination.showing', { start: '1-6', total: '12', end: '1' })}
                     </div>
                     <div className="flex gap-2">
                         <button className="px-4 py-2 text-sm font-medium border rounded-lg bg-white dark:bg-gray-900 dark:border-gray-600 dark:text-gray-200 cursor-pointer hover:bg-gray-50 dark:hover:bg-[#3d3d3d] disabled:opacity-50 transition-all shadow-sm">

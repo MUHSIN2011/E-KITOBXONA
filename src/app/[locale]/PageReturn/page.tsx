@@ -32,7 +32,7 @@ export default function Page() {
     const { data: infoTransfersById, isLoading: isLoadingInfo } = useGetReturnsSchoolByIdQuery(selectedReturnId as number, {
         skip: selectedReturnId === null,
     });
-    const { data, isLoading: isLoadingReturn } = useGetReturnsQuery({
+    const { data, isLoading: isLoadingReturn, isError: dataError } = useGetReturnsQuery({
         page: currentPage,
         limit: limit
     });
@@ -126,9 +126,18 @@ export default function Page() {
                                         <td className="p-3"><div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-25"></div></td>
                                     </tr>
                                 ))
+                            ) : dataError ? (
+                                <tr>
+                                    <td colSpan={6} className="p-8 sm:p-10 hover:bg-gray-50 dark:hover:bg-gray-500/50 duration-300 transition-colors">
+                                        <div className="flex flex-col items-center justify-center gap-2 text-gray-400">
+                                            <SearchAlertIcon className="w-10 h-10 mb-2 opacity-50" />
+                                            <span className="text-sm font-medium">{t('list.empty')}</span>
+                                        </div>
+                                    </td>
+                                </tr>
                             ) : data?.items?.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="p-8 sm:p-10 hover:bg-gray-50 duration-300 transition-colors">
+                                    <td colSpan={6} className="p-8 sm:p-10 hover:bg-gray-50 dark:hover:bg-gray-500/50 duration-300 transition-colors">
                                         <div className="flex flex-col items-center justify-center gap-2 text-gray-400">
                                             <SearchAlertIcon className="w-10 h-10 mb-2 opacity-50" />
                                             <span className="text-sm font-medium">{t('list.empty')}</span>

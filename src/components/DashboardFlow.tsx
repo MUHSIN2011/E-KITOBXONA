@@ -208,7 +208,7 @@ export default function DashboardFlow({ UsersCount, total_books, BooksCount, Reg
             value: t('stats.status')
           },
         ].map((item, i) => (
-          <div key={i} className="flex items-center justify-between  p-3 bg-white/50 dark:bg-gray-800 backdrop-blur-sm rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
+          <div data-aos="fade-right" key={i} className="flex items-center justify-between  p-3 bg-white/50 dark:bg-gray-800 backdrop-blur-sm rounded-xl border border-gray-100 dark:border-slate-800 shadow-sm hover:shadow-md transition-all">
             <div className="flex items-center gap-2">
               <div className={`w-3 h-3 min-w-[12px] rounded-full bg-gradient-to-r ${item.color}`}></div>
               <div className="overflow-hidden">

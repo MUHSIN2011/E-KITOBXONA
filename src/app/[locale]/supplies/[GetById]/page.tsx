@@ -122,8 +122,8 @@ export default function SupplyDetails() {
                       </div>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${item.status === 'pending'
-                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                      ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                      : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                       }`}>
                       {item.status === 'pending' ? t('table.pending') : t('table.accepted')}
                     </span>
@@ -210,8 +210,8 @@ export default function SupplyDetails() {
                     {/* Status */}
                     <TableCell>
                       <span className={`px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-[9px] sm:text-[10px] font-bold uppercase whitespace-nowrap ${item.status === 'pending'
-                          ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                          : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
+                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                         }`}>
                         {item.status === 'pending' ? t('table.pending') : t('table.accepted')}
                       </span>
@@ -265,9 +265,11 @@ export default function SupplyDetails() {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="sm:max-w-[500px] w-[95%] rounded-xl dark:bg-gray-900">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-base sm:text-lg">
-                <BookCheck className="text-blue-500 w-5 h-5" />
-                {t('dialog.title', { id: selectedSupplyId ?? '--' })}
+              <DialogTitle className=" text-base sm:text-lg">
+                <div className='flex items-center gap-2'>
+                  <BookCheck className="text-blue-500 w-5 h-5" />
+                  {t('dialog.title', { id: selectedSupplyId ?? '--' })}
+                </div>
               </DialogTitle>
               <DialogDescription className="text-xs sm:text-sm">
                 {t('dialog.description')}

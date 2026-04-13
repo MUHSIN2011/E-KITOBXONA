@@ -49,7 +49,7 @@ export default function RentalsPage() {
     const [returnCondition, setReturnCondition] = useState("good");
     const [compensationAmount, setCompensationAmount] = useState(0);
 
-    const { data: rentals, isLoading: rentalsLoading, refetch: refetchRentals } = useGetRentalsQuery({
+    const { data: rentals, isLoading: rentalsLoading, refetch: refetchRentals, isError: rentalsError } = useGetRentalsQuery({
         grade: grade ? Number(grade) : undefined,
         status_filter: (status === "all" || !status) ? undefined : status,
         date_from: dateFrom || undefined,
@@ -443,6 +443,15 @@ export default function RentalsPage() {
                                 ) : rentals?.items?.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={4} className="text-center py-8 sm:py-10 md:py-12">
+                                            <div className="flex flex-col items-center justify-center">
+                                                <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 dark:text-gray-600 mb-2" />
+                                                <p className="text-sm text-gray-400 dark:text-gray-500">Ҳеҷ маълумоте нест</p>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ) : rentalsError ? (
+                                    <TableRow>
+                                        <TableCell colSpan={4} className="text-center py-8 sm:py-10 md:py-12 hover:dark:bg-blue-500/10 duration-200 transition-colors">
                                             <div className="flex flex-col items-center justify-center">
                                                 <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-gray-300 dark:text-gray-600 mb-2" />
                                                 <p className="text-sm text-gray-400 dark:text-gray-500">Ҳеҷ маълумоте нест</p>

@@ -74,8 +74,8 @@ export function NotificationSheet({ user }: { user: any }) {
         <>
             <Sheet open={isNotificationOpen} onOpenChange={setIsNotificationOpen}>
                 <SheetTrigger asChild>
-                    <div className="relative cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
-                        <Bell size={20} className="text-slate-600 dark:text-slate-400" />
+                    <div className="relative cursor-pointer  p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all">
+                        <Bell size={20} className="text-slate-600 dark:text-slate-300" />
                         {IsSchool && pendingData?.items?.some((item: any) => item.status === "pending") ? (
                             <span className="absolute top-2 right-2 flex h-2.5 w-2.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
