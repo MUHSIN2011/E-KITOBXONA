@@ -91,7 +91,7 @@ function AsideNavbar() {
             {role === 'region' && (
                 <>
                     <Link href="/dashboard-region">
-                        <div className={getLinkStyle("/dashboard")}>
+                        <div className={getLinkStyle("/dashboard-region")}>
                             <Gauge className="w-5 h-5" />
                             <TextAnimate animation="slideUp" by="word">{t('dashboard')}</TextAnimate>
                         </div>

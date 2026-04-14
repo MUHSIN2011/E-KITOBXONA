@@ -31,6 +31,5 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // Илова кардани .well-known дар ин ҷо ҳатмист
   matcher: ['/((?!api|_next|.well-known|.*\\..*).*)']
 };

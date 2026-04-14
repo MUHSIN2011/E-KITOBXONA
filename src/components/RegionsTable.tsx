@@ -1,6 +1,7 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useGetRegionsQuery, useGetDistrictsQuery } from '@/api/api';
+import { useTranslations } from 'next-intl';
 
 interface Region {
     id: number;
@@ -11,9 +12,30 @@ interface Region {
 }
 
 const RegionsTable: React.FC = () => {
-    const [selectedRegionId, setSelectedRegionId] = useState<number>(1);
+
+    const [user, setUser] = useState<any>(null);
+    const t = useTranslations("RegionalAnalysis");
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
+    const isRegionUser = user?.role === 'region';
+    const initialRegionId = isRegionUser ? Number(user?.region_id) : 1;
+
+    const [selectedRegionId, setSelectedRegionId] = useState<number>(initialRegionId);
+
+    useEffect(() => {
+        if (isRegionUser && user?.region_id) {
+            setSelectedRegionId(Number(user.region_id));
+        }
+    }, [isRegionUser, user]);
 
     const { data: regions, isLoading: isRegionsLoading } = useGetRegionsQuery();
+
     const { data: districts, isLoading: isDistrictsLoading } = useGetDistrictsQuery(selectedRegionId);
 
     if (isRegionsLoading) return (

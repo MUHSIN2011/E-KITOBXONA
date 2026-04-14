@@ -1,7 +1,7 @@
 'use client'
 import { useGetRegionsQuery, useGetReportsOverviewQuery } from '@/api/api'
 import Card from '@/components/Card'
-import { BookOpen, GraduationCap, MapPin, School } from 'lucide-react'
+import { BookCheckIcon, BookOpen, GraduationCap, MapPin, School } from 'lucide-react'
 import MyBarChart from '@/components/ChartComponent'
 import RegionsTable from '@/components/RegionsTable'
 import MyLineChart from '@/components/MyLineChart'
@@ -35,66 +35,59 @@ function Page() {
 
     return (
         <div className="px-4 py-3 overflow-hidden">
-            <div className="mb-6 bg-white p-5 rounded-2xl border border-blue-50 shadow-sm flex justify-between items-center" data-aos="fade-down">
-                <div>
-                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <MapPin className="text-blue-600" /> Саҳифаи назорати вилоятӣ
-                    </h2>
-                    <p className="text-sm text-slate-500">Назорати фондҳои китоб дар ноҳияҳо ва мактабҳо</p>
-                </div>
-            </div>
 
             <section data-aos="fade-up">
                 <div className="grid grid-cols-1 mb-8 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div data-aos="fade-right" data-aos-delay="100">
-                        <Card
-                            path='/districts'
-                            NameRole={'Ноҳияҳо'}
-                            cnt={overview?.total_districts?.toString() || '0'}
-                            Icons={<MapPin />}
-                            description={'Дар вилоят'}
-                        />
-                    </div>
                     <Card
+                        path='/ministry'
                         NameRole='Мактабҳо'
                         cnt={overview?.total_schools?.toString() || '0'}
                         Icons={<School />}
-                        description='Фаъол дар вилоят'
+                        description='Фаъол дар Нохия'
                     />
                     <Card
                         NameRole='Китобҳо'
                         cnt={overview?.total_books?.toLocaleString() || '0'}
                         Icons={<BookOpen />}
-                        description='Фонди умумии вилоят'
+                        description='Микдори Китобхо'
                     />
                     <Card
-                        NameRole='Бозпардохт'
-                        cnt="85"
+                        NameRole='Микдори Хонандагон'
+                        cnt={overview?.total_books?.toLocaleString() || '0'}
                         Icons={<GraduationCap />}
-                        description='Нишондиҳандаи миёна'
+                        description='Дар Мактабхо'
                     />
+                    <div data-aos="fade-right" data-aos-delay="100">
+                        <Card
+                            // path=''
+                            NameRole={'Микдори ичора дода'}
+                            cnt={overview?.rented_books?.toString() || '0'}
+                            Icons={<BookCheckIcon />}
+                            description={'Дар Хамаи мактабхо'}
+                        />
+                    </div>
                 </div>
             </section>
 
             <DashboardFlow />
 
             <section className='my-8 grid gap-5 grid-cols-1 lg:grid-cols-3'>
-                <div className="lg:col-span-2 bg-white p-4 rounded-xl border " data-aos="fade-right">
+                <div className="lg:col-span-2 bg-white  dark:bg-gray-800 p-4 rounded-xl border " data-aos="fade-right">
                     <MyBarChart />
                 </div>
-                <div className="lg:col-span-1 bg-white p-4 rounded-xl border" data-aos="fade-left">
+                <div className="lg:col-span-1 bg-white  dark:bg-gray-800 p-4 rounded-xl border" data-aos="fade-left">
                     <ChartRadialLabel />
                 </div>
             </section>
 
-            <section className='border rounded-xl p-5 my-5 bg-white shadow-sm' data-aos="fade-up">
-                <h2 className='text-2xl font-bold text-slate-800'>Вазъият дар ноҳияҳо</h2>
+            {/* <section className='border rounded-xl p-5 my-5 bg-white dark:bg-gray-800 shadow-sm' data-aos="fade-up">
+                <h2 className='text-2xl font-bold text-slate-800 dark:text-gray-200'>Вазъият дар ноҳияҳо</h2>
                 <p className='text-slate-500 text-sm mb-5'>Нишондиҳандаҳои асосии ҳар як ноҳияи вилоят</p>
                 <RegionsTable />
-            </section>
+            </section> */}
 
-            <section className='border rounded-xl p-5 bg-white shadow-sm' data-aos="fade-up">
-                <h2 className='text-2xl font-bold text-slate-800'>Динамикаи бозпардохт</h2>
+            <section className='border rounded-xl p-5 bg-white  dark:bg-gray-800 shadow-sm' data-aos="fade-up">
+                <h2 className='text-2xl font-bold text-slate-800 dark:text-gray-200'>Динамикаи бозпардохт</h2>
                 <p className='text-slate-500 text-sm mb-5'>Пешрафти бозпардохт дар сатҳи вилоят</p>
                 <MyLineChart />
             </section>

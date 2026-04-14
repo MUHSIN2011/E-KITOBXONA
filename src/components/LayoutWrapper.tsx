@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { BookOpenText, LogOut, Menu, PanelRightClose, PanelLeftClose, Search, Settings, BellDot, X, BookCheck, Info, ArrowRight, ArrowRightCircle, Calendar, Languages, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import AsideNavbar from "@/components/AsideNavbar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -13,8 +13,9 @@ import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
 import { NotificationSheet } from "./NotificationSheet";
 import Image from "next/image";
 import ChatAIComponent from "./ChatAIComponent";
+import { useGetMeQuery } from "@/api/api";
 
-interface UserToken {
+interface meDataToken {
     full_name: string;
     role: string;
     district_id: number;
@@ -33,11 +34,13 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     const pathname = usePathname();
     const router = useRouter();
 
-    const [user, setUser] = useState<UserToken | null>(null);
+    const [user, setUser] = useState<meDataToken | null>(null);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+    const { data: IsMeData, isLoading: IsMeDataLoading } = useGetMeQuery();
 
     const isLoginPage = pathname === "/" || /^\/(tj|ru|en)?$/.test(pathname);
 
@@ -46,6 +49,32 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     const isVerifyResetCodePage = pathname.includes("/Verify-Reset-Code");
     const isResetPasswordPage = pathname.includes("/Reset-Password");
 
+
+    const displayLabel = useMemo(() => {
+        const role = IsMeData?.role;
+        const fullName = IsMeData?.full_name;
+        const email = IsMeData?.email;
+
+        if (role === 'ministry') return 'ВМ';
+
+        if (role === 'region' || role === 'district') {
+            if (!fullName) return '—';
+
+            const parts = fullName.split(/[\s,]+/).filter(Boolean);
+
+            if (parts.length >= 2) {
+                return `${parts[0][0]}.${parts[1][0]}`.toUpperCase();
+            }
+            return fullName[0].toUpperCase();
+        }
+
+        // 3. Агар Мактаб бошад (Ҳарфи аввали Email)
+        if (role === 'school') {
+            return email ? email[0].toUpperCase() : 'U';
+        }
+
+        return '—';
+    }, [IsMeData]);
 
     useEffect(() => {
         setIsSheetOpen(false);
@@ -56,8 +85,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
         const token = localStorage.getItem('access_token');
         if (token) {
             try {
-                const decoded = jwtDecode<UserToken>(token);
+                const decoded = jwtDecode<meDataToken>(token);
                 setUser(decoded);
+                console.log('meData', decoded);
             } catch (error) {
                 setUser(null);
             }
@@ -147,11 +177,11 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                                     <footer className="mt-auto px-4 py-4 space-y-2 border-t border-slate-800">
                                         <div onClick={() => router.push('/profile')} className="flex cursor-pointer hover:bg-slate-800 p-2 rounded-lg items-center gap-3 transition-colors">
                                             <div className="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center font-bold uppercase">
-                                                {user?.email ? user.email[0] : "U"}
+                                                {IsMeData?.email ? IsMeData.email[0] : "U"}
                                             </div>
                                             <div className="overflow-hidden">
-                                                <p className="font-bold text-sm truncate">{user?.email?.split('@')[0]}</p>
-                                                <p className="text-[10px] text-slate-400 uppercase">{user?.role}</p>
+                                                <p className="font-bold text-sm truncate">{IsMeData?.email?.split('@')[0]}</p>
+                                                <p className="text-[10px] text-slate-400 uppercase">{IsMeData?.role}</p>
                                             </div>
                                         </div>
                                         <button onClick={Logout} className="w-full flex items-center gap-2 px-3 py-2 text-slate-300 hover:text-red-400 transition-colors">
@@ -180,13 +210,12 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                             <footer className="pt-4 border-t border-slate-800 space-y-4">
                                 <div className="flex items-center justify-between group">
                                     <div onClick={() => router.push('/profile')} className="flex items-center gap-3 cursor-pointer overflow-hidden">
-                                        <div className="w-9 h-9 min-w-[36px] bg-blue-600 rounded-full flex items-center justify-center font-bold uppercase border border-blue-400/30">
-                                            {/* {user?.email ? user.email[0] : "U"} */}
-                                            {user?.role === 'ministry' ? 'ВМ' : user?.role === 'region' ? user?.region_name[0] : user?.role === 'district' ? user?.district_name[0] : user?.role === 'school' ? user?.school_name : '—'}
+                                        <div className="w-9 h-9 min-w-[36px] bg-blue-600 rounded-full flex items-center justify-center text-[13px] text-white font-bold uppercase border border-blue-400/30 ">
+                                            {displayLabel}
                                         </div>
                                         <div className="truncate">
-                                            <p className="text-sm font-bold truncate">{user?.role === 'ministry' ? 'Вазирати Маориф' : user?.role === 'region' ? user?.region_name : user?.role === 'district' ? user?.district_name : user?.role === 'school' ? user?.school_name : '—'}</p>
-                                            <p className="text-[10px] text-slate-500 truncate">{user?.role === "ministry" ? "Сатҳи Миллӣ" : "Сатҳи Мактабӣ"}</p>
+                                            <p className="text-sm font-bold truncate">{IsMeData?.role === 'ministry' ? 'Вазирати Маориф' : IsMeData?.role === 'region' ? IsMeData?.region_name : IsMeData?.role === 'district' ? IsMeData?.district_name : IsMeData?.role === 'school' ? IsMeData?.full_name : '—'}</p>
+                                            <p className="text-[10px] text-slate-500 truncate">{IsMeData?.role === "ministry" ? "Сатҳи Миллӣ" : "Сатҳи Мактабӣ"}</p>
                                         </div>
                                     </div>
                                     <Menubar className="border-none bg-transparent">
@@ -213,13 +242,13 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                     <header className={`fixed md:w-auto sm:w-full w-full top-0 right-0 z-20 h-16 bg-white/80 dark:bg-gray-900/50 backdrop-blur-sm border-b border-gray-100 dark:border-slate-800 px-4 md:px-8 flex items-center justify-between transition-all duration-300 ease-in-out ${isSidebarOpen ? "lg:left-64 sm:left-0" : "left-0"}`}>
                         <div className="flex items-center gap-4">
                             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="hidden lg:flex items-center justify-center size-9 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors text-slate-500">
-                                {isSidebarOpen ? <PanelRightClose size={20} /> : <PanelLeftClose size={20} />}
+                                {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelRightClose size={20} />}
                             </button>
                             <div className="ml-10 lg:ml-0 flex items-center gap-2">
-                                {user?.role === "ministry" ? (
+                                {IsMeData?.role === "ministry" ? (
                                     <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Вазорати маориф</span>
                                 ) : (
-                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">Сатҳи мактабӣ: {user?.email?.split('@')[0] || ""}</span>
+                                    <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{IsMeData?.full_name}</span>
                                 )}
                             </div>
                         </div>
@@ -268,7 +297,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
                             </Menubar>
 
                             <AnimatedThemeToggler className=" cursor-pointer p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-all" />
-                            <NotificationSheet user={user} />
+                            <NotificationSheet user={IsMeData} />
 
                             <div className="relative hidden sm:block focus:cursor-wait ">
                                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />

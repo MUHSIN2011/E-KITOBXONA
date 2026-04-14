@@ -87,11 +87,11 @@ function Page() {
                 </div>
             </section>
 
-            <section className='border rounded-xl p-5 my-5 bg-white  dark:bg-gray-800 shadow-sm' data-aos="fade-up">
+            {/* <section className='border rounded-xl p-5 my-5 bg-white  dark:bg-gray-800 shadow-sm' data-aos="fade-up">
                 <h2 className='text-2xl font-bold text-slate-800 dark:text-white'>Вазъият дар ноҳияҳо</h2>
                 <p className='text-slate-500 text-sm mb-5 dark:text-slate-400'>Нишондиҳандаҳои асосии ҳар як ноҳияи вилоят</p>
                 <RegionsTable />
-            </section>
+            </section> */}
 
             <section className='border rounded-xl p-5 bg-white  dark:bg-gray-800 shadow-sm' data-aos="fade-up">
                 <h2 className='text-2xl font-bold text-slate-800 dark:text-white'>Динамикаи бозпардохт</h2>

@@ -8,7 +8,8 @@
     "transfer": "Transfer",
     "schools": "Schools",
     "district": "district",
-    "regions": "Regions"
+    "regions": "Regions",
+    "ministry": "Ministry"
   },
   "LoginPage": {
     "welcome": "Welcome",

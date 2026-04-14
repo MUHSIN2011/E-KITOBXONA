@@ -52,6 +52,12 @@ export default function MinistryPage() {
     const [userRole, setUserRole] = useState<'ministry' | 'region' | 'district' | 'school' | string>('--');
     const [userTargetId, setUserTargetId] = useState<string | null>(null);
 
+    const canEditRegion = userRole === 'ministry'
+    const canDeleteRegion = userRole === 'ministry'
+    const canEditDistrict = userRole === 'ministry' || userRole === 'region'
+    const canDeleteDistrict = userRole === 'ministry' || userRole === 'region'
+    const canEditSchool = userRole === 'ministry' || userRole === 'region' || userRole === 'district'
+    const canDeleteSchool = userRole === 'ministry' || userRole === 'region' || userRole === 'district'
 
 
 
@@ -67,8 +73,8 @@ export default function MinistryPage() {
         setEditId(item.id);
         setFormData({
             name: item.name,
-            region_id: type === 'district' ? selectedRegionId : "",
-            district_id: type === 'school' ? selectedDistrictId : ""
+            region_id: type === 'district' ? item.region_id?.toString() ?? selectedRegionId : "",
+            district_id: type === 'school' ? item.district_id?.toString() ?? selectedDistrictId : ""
         });
         setStep(2);
         setIsOpen(true);
@@ -82,21 +88,23 @@ export default function MinistryPage() {
         if (userRole === 'district' && addType === 'school') {
             finalData.district_id = userTargetId!;
         }
+
         try {
             if (isEditMode && editId) {
                 if (addType === 'district') {
                     await updateDistrict({ id: editId, name: formData.name, region_id: Number(selectedRegionId) }).unwrap();
                 }
                 if (addType === 'school') {
-                    await updateSchool({ id: editId, name: formData.name, district_id: Number(selectedDistrictId) }).unwrap();
+                    const district_id = userRole === 'district' ? Number(userTargetId) : Number(selectedDistrictId)
+                    await updateSchool({ id: editId, name: formData.name, district_id }).unwrap();
                 }
                 if (addType === 'region') {
                     await updateRegion({ id: editId, name: formData.name }).unwrap();
                 }
             } else {
                 if (addType === 'region') await addRegion({ name: formData.name }).unwrap();
-                if (addType === 'district') await addDistrict({ name: formData.name, region_id: Number(formData.region_id) }).unwrap();
-                if (addType === 'school') await addSchool({ name: formData.name, district_id: Number(formData.district_id) }).unwrap();
+                if (addType === 'district') await addDistrict({ name: formData.name, region_id: Number(finalData.region_id) }).unwrap();
+                if (addType === 'school') await addSchool({ name: formData.name, district_id: Number(finalData.district_id) }).unwrap();
             }
             resetForm();
         } catch (err) { console.error(err) }
@@ -154,7 +162,7 @@ export default function MinistryPage() {
             setSelectedRegionId(rId);
             setSelectedDistrictId(dId);
             setSelectedSchoolId(sId);
-            setUserTargetId(dId);
+            setUserTargetId(sId);
             setFormData((prev) => ({ ...prev, district_id: dId ?? "" }));
             setActiveTab("schools");
 
@@ -168,7 +176,7 @@ export default function MinistryPage() {
             <div className="flex items-center justify-between">
                 <h1 className="md:text-2xl text-xl font-bold text-gray-900 dark:text-white">
                     {
-                        userRole === 'ministry' ?  "Вазорати маориф ва илм" : userRole === 'region' ? DataMe?.region_name : userRole === 'district' ? DataMe?.district_name : userRole === 'school' ? DataMe?.school_name : '--- ---' 
+                        userRole === 'ministry' ? "Вазорати маориф ва илм" : userRole === 'region' ? DataMe?.region_name : userRole === 'district' ? DataMe?.district_name : userRole === 'school' ? DataMe?.school_name : '--- ---'
                     }
                 </h1>
                 {(userRole !== 'school') && (
@@ -261,10 +269,10 @@ export default function MinistryPage() {
                     {
                         IsErrorRegion ? (
                             <div className="flex flex-col justify-center h-[50vh] gap-3  items-center">
-                                <WifiOff className="size-10 text-red-500"/>
+                                <WifiOff className="size-10 text-red-500" />
                                 <div className='flex flex-col justify-center items-center'>
-                                <h1 className="text-2xl">Интернет Қад шуд!</h1>
-                                <p>Барқарор созии Интернет</p>
+                                    <h1 className="text-2xl">Интернет Қад шуд!</h1>
+                                    <p>Барқарор созии Интернет</p>
                                 </div>
                             </div>
                         ) :
@@ -288,32 +296,32 @@ export default function MinistryPage() {
                                                 </div>
 
                                                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    {userRole === 'ministry' && (
-                                                        <>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={(e) => { e.stopPropagation(); openEditModal('region', reg) }}
-                                                                className="text-blue-500 dark:hover:bg-gray-900 hover:text-blue-500 rounded-xl"
-                                                            >
-                                                                <Edit2 className="w-4 h-4" />
-                                                            </Button>
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild>
-                                                                    <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:text-red-400 dark:hover:bg-gray-900 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
-                                                                </AlertDialogTrigger>
-                                                                <AlertDialogContent className="rounded-[24px]">
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
-                                                                        <AlertDialogDescription>{t('dialogs.delete.regionDescription', { name: reg.name })}</AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteRegion(reg.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
-                                                        </>
+                                                    {canEditRegion && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={(e) => { e.stopPropagation(); openEditModal('region', reg) }}
+                                                            className="text-blue-500 dark:hover:bg-gray-900 hover:text-blue-500 rounded-xl"
+                                                        >
+                                                            <Edit2 className="w-4 h-4" />
+                                                        </Button>
+                                                    )}
+                                                    {canDeleteRegion && (
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:text-red-400 dark:hover:bg-gray-900 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent className="rounded-[24px]">
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
+                                                                    <AlertDialogDescription>{t('dialogs.delete.regionDescription', { name: reg.name })}</AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteRegion(reg.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     )}
                                                 </div>
                                             </CardContent>
@@ -355,22 +363,26 @@ export default function MinistryPage() {
                                         <h4 className="font-bold">{dist.name}</h4>
                                     </div>
                                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); openEditModal('district', dist) }} className="text-blue-500 hover:bg-blue-50 dark:hover:bg-gray-900 dark:hover:text-blue-500 rounded-xl"><Edit2 className="w-4 h-4" /></Button>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl dark:hover:bg-gray-900 dark:hover:text-red-500"><Trash2 className="w-4 h-4" /></Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent className="rounded-[24px]">
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
-                                                    <AlertDialogDescription>{t('dialogs.delete.districtDescription', { name: dist.name })}</AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteDistrict(dist.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        {canEditDistrict && (
+                                            <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); openEditModal('district', dist) }} className="text-blue-500 hover:bg-blue-50 dark:hover:bg-gray-900 dark:hover:text-blue-500 rounded-xl"><Edit2 className="w-4 h-4" /></Button>
+                                        )}
+                                        {canDeleteDistrict && (
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button onClick={(e) => { e.stopPropagation() }} variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl dark:hover:bg-gray-900 dark:hover:text-red-500"><Trash2 className="w-4 h-4" /></Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent className="rounded-[24px]">
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
+                                                        <AlertDialogDescription>{t('dialogs.delete.districtDescription', { name: dist.name })}</AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel onClick={(e) => { e.stopPropagation() }} className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={(e) => { e.stopPropagation(); deleteDistrict(dist.id) }} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -414,22 +426,26 @@ export default function MinistryPage() {
                                         <h4 className="font-bold">{school.name}</h4>
                                     </div>
                                     <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <Button variant="ghost" size="icon" onClick={() => openEditModal('school', school)} className="text-blue-500 hover:bg-blue-50 rounded-xl"><Edit2 className="w-4 h-4" /></Button>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent className="rounded-[24px]">
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
-                                                    <AlertDialogDescription>{t('dialogs.delete.schoolDescription', { name: school.name })}</AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => deleteSchool(school.id)} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        {canEditSchool && (
+                                            <Button variant="ghost" size="icon" onClick={() => openEditModal('school', school)} className="text-blue-500 hover:bg-blue-50 rounded-xl"><Edit2 className="w-4 h-4" /></Button>
+                                        )}
+                                        {canDeleteSchool && (
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="text-red-400 hover:bg-red-50 rounded-xl"><Trash2 className="w-4 h-4" /></Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent className="rounded-[24px]">
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>{t('dialogs.delete.title')}</AlertDialogTitle>
+                                                        <AlertDialogDescription>{t('dialogs.delete.schoolDescription', { name: school.name })}</AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel className="rounded-xl">{t('dialogs.delete.cancel')}</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => deleteSchool(school.id)} className="rounded-xl bg-red-500 hover:bg-red-600 border-none">{t('dialogs.delete.confirm')}</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
