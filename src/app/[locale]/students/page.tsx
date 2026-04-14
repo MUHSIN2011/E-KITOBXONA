@@ -394,10 +394,10 @@ function StudentsPage() {
 
             <Sheet open={!!idx} onOpenChange={() => setIdx(null)}>
                 {/* <SheetContent className="sm:max-w-[500px] md:max-w-[500px] max-w-full overflow-y-auto px-0"> */}
-                <SheetContent className="w-full sm:max-w-[500px] p-0 overflow-y-auto border-none">
-                    <SheetHeader className="px-6 pb-6 pt-2 bg-gradient-to-r from-blue-50 to-white border-b">
+                <SheetContent className="w-full sm:max-w-[500px] p-0 overflow-y-auto border-none dark:bg-gray-900">
+                    <SheetHeader className="px-6 pb-6 pt-2 bg-gradient-to-r from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 border-b">
                         <div className="flex justify-between items-start pt-4">
-                            <SheetTitle className="text-xl font-bold flex items-center gap-3 text-slate-800">
+                            <SheetTitle className="text-xl font-bold flex items-center gap-3 text-slate-800 dark:text-white">
                                 <div className="p-2 bg-blue-600 rounded-lg">
                                     <User className="w-5 h-5 text-white" />
                                 </div>
@@ -506,7 +506,7 @@ function StudentsPage() {
                                                         </button>
                                                     </DialogTrigger>
 
-                                                    <DialogContent className="sm:max-w-[425px]">
+                                                    <DialogContent className="sm:max-w-[425px] dark:bg-gray-900">
                                                         <DialogHeader>
                                                             <DialogTitle>Қабули пардохт: {studentbyid ? `${studentbyid.last_name} ${studentbyid.first_name}` : '?'}</DialogTitle>
                                                         </DialogHeader>
@@ -545,7 +545,7 @@ function StudentsPage() {
                                                         <Button
                                                             onClick={() => handlePay(debt)}
                                                             disabled={isFinancePay}
-                                                            className="w-full bg-blue-600 hover:bg-blue-700"
+                                                            className="w-full bg-blue-600 text-white hover:bg-blue-700"
                                                         >
                                                             {isFinancePay ? "Дар ҳоли иҷро..." : "Тасдиқи пардохт"}
                                                         </Button>
@@ -669,7 +669,7 @@ function StudentsPage() {
                                         setIdx(null);
                                         setIsEditOpen(true);
                                     }}
-                                    className="bg-blue-600 hover:bg-blue-700 rounded-lg sm:rounded-xl h-9 sm:h-10 md:h-11 font-semibold shadow-md shadow-blue-200 dark:shadow-none transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                                    className="bg-blue-600 text-white hover:bg-blue-700 rounded-lg sm:rounded-xl h-9 sm:h-10 md:h-11 font-semibold shadow-md shadow-blue-200 dark:shadow-none transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     {t('profile.edit')}
                                 </Button>
@@ -847,7 +847,7 @@ function StudentsPage() {
                                 <th className="p-4 text-xs font-bold uppercase text-gray-500">{t('list.table.notes')}</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y ">
                             {students?.items && students.items.length > 0 ? (
                                 students.items.map((student: IGetStudents) => (
                                     <tr key={student.id} onClick={() => setIdx(student.id)} className="hover:bg-gray-50/50 dark:bg-gray-900/30 dark:hover:bg-gray-900 transition-colors">

@@ -9,14 +9,13 @@ const handleI18nRouting = createMiddleware({
   localeDetection: true
 });
 
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const role = request.cookies.get('role')?.value;
 
   const isMinistryDashboard = /\/dashboard(\/|$)/.test(pathname);
   const isSchoolDashboard = /\/dashboard-school(\/|$)/.test(pathname);
 
-  // Редирект аз рӯи рол
   if (isMinistryDashboard && role === 'school') {
     const newPath = pathname.replace('/dashboard', '/dashboard-school');
     return NextResponse.redirect(new URL(newPath, request.url));
