@@ -17,6 +17,8 @@ function Page() {
 
     const { data: regions, isLoading, isError } = useGetRegionsQuery()
     const { data: me } = useGetMeQuery()
+    console.log("Me",me);
+    
     const { data: activeYear } = useGetActiveYearQuery()
     const currentYearId = activeYear?.id
 

@@ -92,7 +92,7 @@ export function AiHelperProps({ id, type }: AiHelperProps) {
                 </ReactMarkdown>
               </div>
 
-              <div className="mt-4 p-3 bg-slate-50 rounded-lg flex gap-2 items-start border border-slate-100">
+              <div className="mt-4 p-3 bg-slate-50 dark:bg-gray-900 rounded-lg flex gap-2 items-start border border-slate-100 dark:border-gray-700">
                 <Info className="w-4 h-4 text-slate-400 mt-0.5" />
                 <p className="text-[10px] text-slate-400 uppercase italic">
                   {result.data.disclaimer}
